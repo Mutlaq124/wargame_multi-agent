@@ -94,15 +94,6 @@ class BaseAgent(ABC):
         """
         pass
     
-    def reset(self) -> None:
-        """
-        Reset agent state between episodes.
-        
-        Called at the start of each new game. Override if your agent
-        maintains internal state that needs to be reset.
-        """
-        pass
-    
     def __str__(self) -> str:
         """String representation."""
         return f"{self.name} ({self.team.name})"

@@ -161,8 +161,3 @@ class RandomAgent(BaseAgent):
         
         else:
             return Action.wait()
-    
-    def reset(self) -> None:
-        """Reset agent state (reinitialize RNG if needed)."""
-        # Random agent is stateless, so nothing to reset
-        pass

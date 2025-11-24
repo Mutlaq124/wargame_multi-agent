@@ -131,10 +131,6 @@ class GameRunner:
         self.env = GridCombatEnv(verbose=self.verbose)
         state = self.env.reset(scenario=scenario_dict)
         
-        # Reset agents
-        self.blue_agent.reset()
-        self.red_agent.reset()
-        
         # Reset statistics
         self.turn_history = []
         self.cumulative_rewards = {Team.BLUE: 0.0, Team.RED: 0.0}
