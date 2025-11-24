@@ -13,7 +13,7 @@ Usage:
     state = env.reset(scenario=scenario.to_dict())
     
     while not done:
-        actions = get_actions(state)  # Your AI here
+        actions, _metadata = agent.get_actions(state)  # Your AI here
         state, rewards, done, info = env.step(actions)
     
     print(f"Winner: {state['world'].winner}")

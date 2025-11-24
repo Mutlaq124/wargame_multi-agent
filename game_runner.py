@@ -8,7 +8,7 @@ This module provides the main game loop that:
 4. Collects statistics and results
 """
 
-from typing import Dict, Optional, List, Tuple
+from typing import Any, Dict, Optional, List
 from dataclasses import dataclass, field
 from env import GridCombatEnv
 from env.scenario import Scenario
@@ -105,6 +105,7 @@ class GameRunner:
         
         # Environment (created in run_episode)
         self.env: Optional[GridCombatEnv] = None
+        self.last_agent_metadata: Dict[str, Dict[str, Any]] = {}
         
         # Statistics tracking
         self.turn_history: List[TurnInfo] = []
@@ -137,6 +138,7 @@ class GameRunner:
         # Reset statistics
         self.turn_history = []
         self.cumulative_rewards = {Team.BLUE: 0.0, Team.RED: 0.0}
+        self.last_agent_metadata = {}
         
         # Get initial entity counts
         world = state["world"]
@@ -164,8 +166,9 @@ class GameRunner:
                 break
             
             # Get actions from both agents
-            blue_actions = self.blue_agent.get_actions(state)
-            red_actions = self.red_agent.get_actions(state)
+            blue_actions, blue_meta = self.blue_agent.get_actions(state)
+            red_actions, red_meta = self.red_agent.get_actions(state)
+            self.last_agent_metadata = {"blue": blue_meta, "red": red_meta}
             
             # Combine actions
             all_actions = {**blue_actions, **red_actions}
@@ -385,4 +388,3 @@ def run_multiple_games(
         print(f"\nCompleted {num_games} games.")
     
     return results
-

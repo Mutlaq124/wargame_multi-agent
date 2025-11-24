@@ -26,9 +26,11 @@ if __name__ == "__main__":
     done = False
     while not done:
         # Agents should also accepts commands?
-        actions = {**blue.get_actions(state), **red.get_actions(state)}
+        blue_actions, blue_meta = blue.get_actions(state)
+        red_actions, red_meta = red.get_actions(state)
+        actions = {**blue_actions, **red_actions}
         renderer.capture(state, actions) # We should also capture action metadata derived by agents?
-        state, _, done, _ = env.step(actions)
+        state, _, done, info = env.step(actions)
         time.sleep(0.35)
         if done:
             break

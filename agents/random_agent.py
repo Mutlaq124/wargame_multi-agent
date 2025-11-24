@@ -51,15 +51,21 @@ class RandomAgent(BaseAgent):
         self.move_probability = move_probability
         self.rng = random.Random(seed)
     
-    def get_actions(self, state: Dict[str, Any]) -> Dict[int, Action]:
+    def get_actions(
+        self,
+        state: Dict[str, Any],
+        commands: Dict[str, Any] | None = None,
+        **kwargs: Any,
+    ) -> tuple[Dict[int, Action], Dict[str, Any]]:
         """
         Generate random actions for all entities.
         
         Args:
             state: Current game state
+            commands: Optional runtime commands (ignored for random policy)
         
         Returns:
-            Dict of entity_id -> Action
+            Tuple of (actions, metadata)
         """
         world: WorldState = state["world"]
         actions = {}
@@ -83,7 +89,12 @@ class RandomAgent(BaseAgent):
             else:
                 actions[entity.id] = self._get_entity_action(entity, enemy_ids)
         
-        return actions
+        metadata = {
+            "policy": "random",
+            "commands": commands or {},
+            "actions_count": len(actions),
+        }
+        return actions, metadata
     
     def _get_entity_action(self, entity: Entity, enemy_ids: List[int]) -> Action:
         """
@@ -155,4 +166,3 @@ class RandomAgent(BaseAgent):
         """Reset agent state (reinitialize RNG if needed)."""
         # Random agent is stateless, so nothing to reset
         pass
-

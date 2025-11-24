@@ -37,15 +37,21 @@ class BaseAgent(ABC):
         self.name = name or self.__class__.__name__
     
     @abstractmethod
-    def get_actions(self, state: Dict[str, Any]) -> Dict[int, Action]:
+    def get_actions(
+        self,
+        state: Dict[str, Any],
+        commands: Dict[str, Any] | None = None,
+        **kwargs: Any,
+    ) -> tuple[Dict[int, Action], Dict[str, Any]]:
         """
         Get actions for all controlled entities.
         
         This is called once per turn. The agent should:
         1. Extract relevant information from the state
         2. Use team_view for fog-of-war observations
-        3. Decide on actions for each entity
-        4. Return a dict mapping entity_id -> Action
+        3. Consume optional runtime commands/instructions
+        4. Decide on actions for each entity
+        5. Return (actions, metadata)
         
         State structure:
             {
@@ -56,6 +62,11 @@ class BaseAgent(ABC):
                     "check_missile_exhaustion": bool,
                 }
             }
+        commands:
+            Optional dict of runtime instructions (e.g., LLM prompts,
+            debugging flags). May be ignored by simple agents.
+        **kwargs:
+            Reserved for future fields (e.g., step_info, history).
         
         To get your entities:
             world = state["world"]
@@ -68,9 +79,12 @@ class BaseAgent(ABC):
         
         Args:
             state: Current game state from environment
+            commands: Optional command dictionary for runtime guidance
         
         Returns:
-            Dict mapping entity_id to Action for each entity
+            Tuple of:
+                - Dict mapping entity_id to Action for each entity
+                - Metadata dict (reasoning/logs/errors/etc.)
             
         Notes:
             - Must return actions for ALL alive entities on your team
@@ -96,4 +110,3 @@ class BaseAgent(ABC):
     def __repr__(self) -> str:
         """Detailed representation."""
         return f"{self.__class__.__name__}(team={self.team.name}, name='{self.name}')"
-
