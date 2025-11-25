@@ -9,8 +9,8 @@ from typing import Dict, Any, Optional, TYPE_CHECKING
 from env.core.actions import Action
 from env.core.types import Team
 from env.world import WorldState
-from .base_agent import BaseAgent
-from .registry import register_agent
+from ..base_agent import BaseAgent
+from ..registry import register_agent
 
 if TYPE_CHECKING:
     from env.environment import StepInfo
