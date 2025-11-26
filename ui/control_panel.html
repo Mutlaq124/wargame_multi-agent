@@ -268,6 +268,34 @@
       font-size: 12px;
       cursor: pointer;
     }
+    .detail-row {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #0f1421;
+      margin-bottom: 8px;
+    }
+    .detail-row .label { display: block; margin-bottom: 4px; }
+    .entity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .entity-chip {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      background: #0f1421;
+    }
+    .entity-chip .label { margin: 0 0 4px 0; }
+    .entity-action {
+      margin-top: 10px;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(124,210,255,0.04);
+    }
   </style>
 </head>
 <body>
@@ -322,8 +350,7 @@
       </div>
       <canvas id="main-canvas" width="900" height="520"></canvas>
       <div class="row">
-        <div class="pill" id="status-pill">Status: waiting</div>
-        <div class="pill" id="winner-pill">Winner: —</div>
+        <div class="pill" id="winner-pill">Victory: —</div>
         <div class="pill" id="tracking-pill">Tracking: —</div>
       </div>
     </div>
@@ -487,6 +514,20 @@
     </div>
   </div>
 
+  <div class="modal" id="entity-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <div class="flex-between">
+        <div>
+          <div class="label">Entity details</div>
+          <div class="tag" id="entity-modal-title">—</div>
+        </div>
+        <button class="btn ghost" id="entity-modal-close">Close</button>
+      </div>
+      <div id="entity-modal-body"></div>
+    </div>
+  </div>
+
   <script>
     const canvas = document.getElementById("main-canvas");
     const ctx = canvas.getContext("2d");
@@ -512,6 +553,7 @@
       scenarioName: null,
       recordingName: null,
       injectionMode: "once",
+      victoryInfo: null,
     };
 
     function isFrameDone(frame) {
@@ -573,6 +615,23 @@
       const modeLabel = state.injectionMode === "persistent" ? "every step" : "next step";
       setStatus(pill, message || `Pending (${modeLabel})`, variant || "good");
       setStatus(modalPill, message || `Pending (${modeLabel})`, variant || "good");
+    }
+
+    function getVictoryForIndex(idx) {
+      for (let i = idx; i >= 0; i--) {
+        const frame = state.frames[i];
+        const victory = frame?.step_info?.victory;
+        if (victory) return victory;
+      }
+      return null;
+    }
+
+    function formatVictory(victory) {
+      if (!victory) return "Victory: —";
+      const result = victory.result || "IN_PROGRESS";
+      const winner = victory.winner || "—";
+      const reason = victory.reason || "";
+      return `Victory: ${result}${winner !== "—" ? ` (${winner})` : ""}${reason ? ` — ${reason}` : ""}`;
     }
 
     function getInjectionTemplate() {
@@ -652,6 +711,12 @@
     const frameModalEditor = document.getElementById("frame-modal-editor");
     const frameModalLabel = document.getElementById("frame-modal-label");
     const frameModalMeta = document.getElementById("frame-modal-meta");
+    const entityModal = document.getElementById("entity-modal");
+    const entityModalBody = document.getElementById("entity-modal-body");
+    const entityModalTitle = document.getElementById("entity-modal-title");
+
+    let lastLayout = null;
+    let lastFrame = null;
 
     function setModalStatus(text, variant = "warn") {
       modalStatus.textContent = text;
@@ -706,6 +771,41 @@
       frameModalMeta.textContent = "Read only";
       frameModalEditor.value = JSON.stringify(data ?? {}, null, 2);
       frameModal.classList.add("open");
+    }
+
+    function renderEntityDetails(entity, frame) {
+      const chips = [];
+      const add = (label, value) => chips.push(`<div class="entity-chip"><span class="label">${label}</span><div>${value}</div></div>`);
+      const pos = entity.position || entity.pos || [0, 0];
+      add("ID", `#${entity.id}`);
+      add("Team", entity.team || "—");
+      add("Kind", entity.kind || "—");
+      add("Alive", entity.alive === false ? "No" : "Yes");
+      add("Position", `${pos[0]}, ${pos[1]}`);
+      if (entity.missiles !== undefined) add("Missiles", entity.missiles);
+      if (entity.radar_range !== undefined) add("Radar range", entity.radar_range);
+      if (entity.active_radar !== undefined) add("Active radar", entity.active_radar);
+      if (entity.cooldown_remaining !== undefined || entity.cooldown_steps !== undefined) {
+        add("Cooldown", `${entity.cooldown_remaining ?? 0} / ${entity.cooldown_steps ?? entity.cooldown_remaining ?? 0}`);
+      }
+      const action = (frame.actions || []).find(a => a.entity_id === entity.id);
+      let actionHtml = "";
+      if (action) {
+        const label = action.label || action.type || "Action";
+        actionHtml = `<div class="entity-action"><span class="label">Current action</span><div>${label}</div></div>`;
+      }
+      entityModalBody.innerHTML = `
+        <div class="entity-grid">
+          ${chips.join("")}
+        </div>
+        ${actionHtml}
+      `;
+    }
+
+    function openEntityModal(entity, frame) {
+      entityModalTitle.textContent = `${entity.kind || "Entity"} #${entity.id}`;
+      renderEntityDetails(entity, frame);
+      entityModal.classList.add("open");
     }
 
     // ----------- Connection -----------
@@ -800,6 +900,7 @@
         state.frames = [];
         state.currentIndex = 0;
         state.mode = "live";
+        state.victoryInfo = null;
         setPlaying(true);
         state.pendingInjection = null;
         updateInjectionStatus();
@@ -823,6 +924,7 @@
         state.pendingInjection = null;
         updateInjectionStatus("Applied once; cleared", "warn");
       }
+      if (frame.step_info?.victory) state.victoryInfo = frame.step_info.victory;
       state.frames.push(frame);
       state.currentIndex = state.frames.length - 1;
       updateTimeline();
@@ -830,7 +932,6 @@
       updateMeta();
       if (isFrameDone(frame)) {
         setPlaying(false);
-        setStatus(document.getElementById("status-pill"), "Status: finished", "warn");
         // Try to fetch the terminal world-only frame once
         if (frame.actions || frame.step_info || frame.action_metadata) {
           try {
@@ -907,6 +1008,7 @@
       state.currentIndex = 0;
       state.recordingScenario = null;
       state.recordingName = null;
+      state.victoryInfo = null;
       if (state.mode === "replay") state.mode = "idle";
       updateRecordingSummary();
       updateTimeline();
@@ -983,7 +1085,10 @@
         updateScenarioSummary();
       }
       const frame = state.frames[state.currentIndex];
-      startLive(frame.world ?? null);
+      const worldOverride = frame.world
+        ? { ...frame.world, game_over: false, winner: null }
+        : null;
+      startLive(worldOverride);
     });
     document.getElementById("open-injection-modal-btn").addEventListener("click", () => {
       const editor = document.getElementById("injection-modal-editor");
@@ -1032,6 +1137,27 @@
       e.stopPropagation();
       const frame = state.frames[state.currentIndex] || {};
       openFrameModal("Info", frame.step_info || {});
+    });
+    document.getElementById("entity-modal-close").addEventListener("click", () => entityModal.classList.remove("open"));
+    document.querySelector("#entity-modal .modal-backdrop").addEventListener("click", () => entityModal.classList.remove("open"));
+    canvas.addEventListener("click", e => {
+      if (!lastFrame || !lastLayout) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const { originX, originY, gridSize, gridHeight } = lastLayout;
+      if (x < originX || y < originY) return;
+      const gx = Math.floor((x - originX) / gridSize);
+      const gyRaw = Math.floor((y - originY) / gridSize);
+      if (gx < 0 || gyRaw < 0) return;
+      const gy = gridHeight - 1 - gyRaw;
+      const frame = lastFrame;
+      const entities = getEntitiesForView(frame);
+      const match = entities.find(ent => {
+        const pos = ent.position || ent.pos || [0, 0];
+        return pos[0] === gx && pos[1] === gy;
+      });
+      if (match) openEntityModal(match, frame);
     });
 
     // ----------- Rendering -----------
@@ -1328,15 +1454,17 @@
         return;
       }
       const helpers = drawGrid(frame.world);
+      lastLayout = { ...helpers, gridHeight: frame.world.grid.height };
+      lastFrame = frame;
       drawActions(frame, helpers);
       drawEntities(frame, helpers);
       document.getElementById("turn-pill").textContent = `Turn ${frame.world.turn ?? frame.turn ?? state.currentIndex}`;
       document.getElementById("timeline").value = state.currentIndex;
       document.getElementById("timeline-label").textContent = `${state.currentIndex} / ${Math.max(state.frames.length - 1, 0)}`;
-      document.getElementById("winner-pill").textContent = `Winner: ${frame.world.winner || "—"}`;
+      const victory = getVictoryForIndex(state.currentIndex) || state.victoryInfo;
+      document.getElementById("winner-pill").textContent = formatVictory(victory);
       const tracking = `NoShoot: ${frame.world.turns_without_shooting ?? "?"}, NoMove: ${frame.world.turns_without_movement ?? "?"}`;
       document.getElementById("tracking-pill").textContent = `Tracking: ${tracking}`;
-      setStatus(document.getElementById("status-pill"), `Status: ${frame.world.game_over ? "finished" : "running"}`, frame.world.game_over ? "warn" : "good");
       renderJSON(document.getElementById("actions-json"), frame.actions || []);
       renderJSON(document.getElementById("meta-json"), frame.action_metadata || {});
       renderJSON(document.getElementById("info-json"), frame.step_info || {});
