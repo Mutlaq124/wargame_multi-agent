@@ -316,7 +316,7 @@
     </div>
     <div class="row" style="gap:8px;">
       <button class="btn success" id="start-btn">▶ Launch Scenario</button>
-      <button class="btn" id="fork-btn" title="Start a new live run from the selected frame">⧉ Fork from frame</button>
+      <button class="btn" id="fork-btn" title="Start a new live run from the selected frame">⧉ Fork</button>
     </div>
     <div class="spacer"></div>
     <span class="pill" id="mode-pill">Idle</span>
@@ -688,6 +688,7 @@
       updateStartButton();
       updateExportButton();
       updateUploadSummary();
+      updateForkButton();
     }
 
     function loadRecordingUpload(frames, scenario, name) {
@@ -1108,6 +1109,7 @@
       updateStartButton();
       updateExportButton();
       updateUploadSummary();
+      updateForkButton();
     });
     document.getElementById("scenario-modal-close").addEventListener("click", closeScenarioModal);
     document.querySelector("#scenario-modal .modal-backdrop").addEventListener("click", closeScenarioModal);
@@ -1616,6 +1618,7 @@
     updateUploadSummary();
     updateInjectionStatus();
     updatePlayButton();
+    updateForkButton();
     setModePill();
     pingBackend();
   </script>
