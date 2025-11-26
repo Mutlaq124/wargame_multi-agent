@@ -317,6 +317,7 @@
     <button class="btn success" id="start-btn">▶ Start Live</button>
     <div class="spacer"></div>
     <span class="pill" id="mode-pill">Idle</span>
+    <button class="btn" id="export-btn" disabled title="No frames to export">⬇ Export</button>
   </header>
 
   <div id="app">
@@ -370,9 +371,6 @@
           <div>
             <div class="drop-zone" id="scenario-drop">Drop scenario JSON or click to choose</div>
             <input type="file" id="scenario-file" accept=".json" style="display:none">
-            <div class="row" style="margin-top:8px;">
-              <button class="btn" id="export-btn">Export Recording</button>
-            </div>
             <div class="summary-row" id="scenario-summary-row">
               <button class="link-btn" id="scenario-summary" style="display:none"></button>
               <button class="link-btn" id="scenario-clear-btn" aria-label="Clear scenario" style="display:none">✕</button>
@@ -613,6 +611,15 @@
       btn.disabled = !hasScenario;
       btn.textContent = state.mode === "live" && hasScenario ? "⟳ Restart Live" : "▶ Start Live";
       btn.title = hasScenario ? "Start a new live run with the loaded scenario" : "Load a scenario to start";
+    }
+
+    function updateExportButton() {
+      const btn = document.getElementById("export-btn");
+      if (!btn) return;
+      const hasFrames = state.frames.length > 0;
+      btn.disabled = !hasFrames;
+      btn.title = hasFrames ? `Export ${state.frames.length} frame(s)` : "No frames to export";
+      btn.textContent = hasFrames ? `⬇ Export (${state.frames.length})` : "⬇ Export";
     }
 
     function renderJSON(el, data) {
@@ -1080,17 +1087,18 @@
       drawCurrent();
       updateMeta();
     });
-    document.getElementById("export-btn").addEventListener("click", () => {
-      if (!state.frames.length) return alert("No frames to export.");
-      const payload = { source: "wg-control-panel", generated_at: new Date().toISOString(), scenario: state.scenario, frames: state.frames };
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "recording.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+      document.getElementById("export-btn").addEventListener("click", () => {
+        if (!state.frames.length) return alert("No frames to export.");
+        const payload = { source: "wg-control-panel", generated_at: new Date().toISOString(), scenario: state.scenario, frames: state.frames };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "recording.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        updateExportButton();
+      });
     document.getElementById("resume-from-frame-btn").addEventListener("click", () => {
       if (!state.frames.length) return alert("Load a recording and pick a frame.");
       if (!state.recordingScenario && !state.scenario) {
@@ -1473,6 +1481,7 @@
       const helpers = drawGrid(frame.world);
       lastLayout = { ...helpers, gridHeight: frame.world.grid.height };
       lastFrame = frame;
+      updateExportButton();
       drawActions(frame, helpers);
       drawEntities(frame, helpers);
       document.getElementById("timeline").value = state.currentIndex;
@@ -1511,6 +1520,7 @@
       slider.max = Math.max(state.frames.length - 1, 0);
       slider.value = state.currentIndex;
       document.getElementById("timeline-label").textContent = `${state.currentIndex} / ${slider.max}`;
+      updateExportButton();
     }
 
     function updateMeta() {
@@ -1533,6 +1543,7 @@
     function setModePill() {
       setStatus(document.getElementById("mode-pill"), state.mode === "live" ? "Live" : state.mode === "replay" ? "Replay" : "Idle", "warn");
       updateStartButton();
+      updateExportButton();
     }
 
     // Init
