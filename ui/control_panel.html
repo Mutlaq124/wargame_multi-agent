@@ -367,28 +367,17 @@
     <div class="panel">
       <div class="surface">
         <div class="card-title">Load Scenario / Recording</div>
-        <div class="stack">
-          <div>
-            <div class="drop-zone" id="scenario-drop">Drop scenario JSON or click to choose</div>
-            <input type="file" id="scenario-file" accept=".json" style="display:none">
-            <div class="summary-row" id="scenario-summary-row">
-              <button class="link-btn" id="scenario-summary" style="display:none"></button>
-              <button class="link-btn" id="scenario-clear-btn" aria-label="Clear scenario" style="display:none">✕</button>
-              <div class="summary-text" id="scenario-empty">No scenario loaded.</div>
-            </div>
+        <div>
+          <div class="drop-zone" id="upload-drop">Drop scenario or recording JSON</div>
+          <input type="file" id="upload-file" accept=".json" style="display:none">
+          <div class="row" style="margin-top:8px;">
+            <button class="btn" id="resume-from-frame-btn">Start backend from this frame</button>
           </div>
-          <div>
-            <div class="drop-zone" id="recording-drop">Drop recording JSON (frames) or click to choose</div>
-            <input type="file" id="recording-file" accept=".json" style="display:none">
-            <div class="row" style="margin-top:8px;">
-              <button class="btn" id="replay-btn">Enter Replay Mode</button>
-              <button class="btn" id="resume-from-frame-btn">Start backend from this frame</button>
-            </div>
-            <div class="summary-row" id="recording-summary-row">
-              <button class="link-btn" id="recording-summary" style="display:none"></button>
-              <button class="link-btn" id="recording-clear-btn" aria-label="Clear recording" style="display:none">✕</button>
-              <div class="summary-text" id="recording-empty">No recording loaded.</div>
-            </div>
+          <div class="summary-row" id="upload-summary-row">
+            <button class="link-btn" id="upload-summary" style="display:none"></button>
+            <span class="pill" id="upload-type-pill" style="display:none"></span>
+            <button class="link-btn" id="upload-clear-btn" aria-label="Clear upload" style="display:none">✕</button>
+            <div class="summary-text" id="upload-empty">No file loaded.</div>
           </div>
         </div>
       </div>
@@ -469,7 +458,6 @@
       <textarea id="scenario-modal-editor" spellcheck="false"></textarea>
       <div class="modal-actions">
         <button class="btn primary" id="scenario-modal-save">Save changes</button>
-        <button class="btn" id="scenario-modal-use-live">Save + use for live game</button>
         <span class="pill warn" id="scenario-modal-status">Viewing only</span>
       </div>
     </div>
@@ -558,6 +546,7 @@
       recordingName: null,
       injectionMode: "once",
       victoryInfo: null,
+      uploadInfo: null,
     };
 
     function isFrameDone(frame) {
@@ -647,6 +636,70 @@
       setStatus(modalPill, message || `Pending (${modeLabel})`, variant || "good");
     }
 
+    function isScenario(obj) {
+      if (!obj || typeof obj !== "object") return false;
+      return !!(obj.config && Array.isArray(obj.entities) && Array.isArray(obj.agents));
+    }
+
+    function normalizeRecordingUpload(json) {
+      if (Array.isArray(json.frames)) return { frames: json.frames, scenario: json.scenario };
+      if (Array.isArray(json.turns)) return { frames: json.turns, scenario: json.scenario };
+      if (Array.isArray(json)) return { frames: json, scenario: null };
+      return null;
+    }
+
+    function detectUpload(json) {
+      const recording = normalizeRecordingUpload(json);
+      if (recording) {
+        if (recording.scenario && !isScenario(recording.scenario)) {
+          throw new Error("Recording scenario missing required fields");
+        }
+        return { kind: "recording", frames: recording.frames, scenario: recording.scenario || null };
+      }
+      if (isScenario(json)) {
+        return { kind: "scenario", scenario: json };
+      }
+      throw new Error("JSON is neither scenario nor recording");
+    }
+
+    function loadScenarioUpload(scenario, name) {
+      state.scenario = scenario;
+      state.scenarioName = name || "scenario.json";
+      state.uploadInfo = {
+        kind: "scenario",
+        name: state.scenarioName,
+        detail: summarizeScenario(scenario),
+      };
+      updateStartButton();
+      updateExportButton();
+      updateUploadSummary();
+    }
+
+    function loadRecordingUpload(frames, scenario, name) {
+      state.frames = frames;
+      state.recordingScenario = scenario || null;
+      state.recordingName = name || "recording.json";
+      state.uploadInfo = {
+        kind: "recording",
+        name: state.recordingName,
+        detail: `${frames.length} frames${scenario ? ` • ${summarizeScenario(scenario)}` : ""}`,
+      };
+      if (scenario) {
+        state.scenario = scenario;
+        state.scenarioName = `${state.recordingName} scenario`;
+      }
+      state.mode = "replay";
+      state.currentIndex = 0;
+      setPlaying(false);
+      updateTimeline();
+      setModePill();
+      drawCurrent();
+      updateMeta();
+      updateStartButton();
+      updateExportButton();
+      updateUploadSummary();
+    }
+
     function getVictoryForIndex(idx) {
       for (let i = idx; i >= 0; i--) {
         const frame = state.frames[i];
@@ -695,43 +748,27 @@
       });
     }
 
-    function updateScenarioSummary() {
-      const summaryBtn = document.getElementById("scenario-summary");
-      const clearBtn = document.getElementById("scenario-clear-btn");
-      const empty = document.getElementById("scenario-empty");
-      if (!state.scenario) {
+    function updateUploadSummary() {
+      const summaryBtn = document.getElementById("upload-summary");
+      const typePill = document.getElementById("upload-type-pill");
+      const clearBtn = document.getElementById("upload-clear-btn");
+      const empty = document.getElementById("upload-empty");
+      if (!state.uploadInfo) {
         summaryBtn.style.display = "none";
-        clearBtn.style.display = "none";
-        empty.style.display = "block";
-        updateStartButton();
-        updateExportButton();
-        return;
-      }
-      summaryBtn.textContent = `${state.scenarioName || "scenario.json"} — ${summarizeScenario(state.scenario)}`;
-      summaryBtn.style.display = "inline-flex";
-      clearBtn.style.display = "inline-flex";
-      empty.style.display = "none";
-      updateStartButton();
-      updateExportButton();
-    }
-
-    function updateRecordingSummary() {
-      const summaryBtn = document.getElementById("recording-summary");
-      const clearBtn = document.getElementById("recording-clear-btn");
-      const empty = document.getElementById("recording-empty");
-      if (!state.frames.length) {
-        summaryBtn.style.display = "none";
+        typePill.style.display = "none";
         clearBtn.style.display = "none";
         empty.style.display = "block";
         return;
       }
-      const scenarioNote = state.recordingScenario ? "scenario available" : "no scenario";
-      summaryBtn.textContent = `${state.recordingName || "recording.json"} — ${state.frames.length} frames, ${scenarioNote}`;
+      const { name, kind, detail } = state.uploadInfo;
+      summaryBtn.textContent = `${name} — ${detail}`;
       summaryBtn.style.display = "inline-flex";
-      summaryBtn.disabled = !state.recordingScenario;
-      summaryBtn.title = state.recordingScenario ? "View recording scenario JSON" : "No scenario in recording";
+      typePill.textContent = kind === "recording" ? "Recording" : "Scenario";
+      typePill.style.display = "inline-flex";
       clearBtn.style.display = "inline-flex";
       empty.style.display = "none";
+      summaryBtn.disabled = kind !== "scenario" && !state.recordingScenario;
+      summaryBtn.title = kind === "scenario" ? "View scenario JSON" : state.recordingScenario ? "View recording scenario JSON" : "No scenario found";
     }
 
     const modal = document.getElementById("scenario-modal");
@@ -787,17 +824,17 @@
         setModalStatus("Invalid JSON: " + err.message, "bad");
         return;
       }
-      if (currentScenarioSource === "recording") {
-        state.recordingScenario = parsed;
-        if (useAsLive) state.scenario = parsed;
-        updateRecordingSummary();
-        if (useAsLive) updateScenarioSummary();
-        setModalStatus(useAsLive ? "Saved and set as live scenario" : "Recording scenario updated", "good");
-      } else {
-        state.scenario = parsed;
-        setModalStatus("Live scenario updated", "good");
-        updateScenarioSummary();
+      state.scenario = parsed;
+      if (currentScenarioSource === "recording") state.recordingScenario = parsed;
+      if (state.uploadInfo?.kind === "scenario") {
+        state.uploadInfo.detail = summarizeScenario(state.scenario);
+      } else if (state.uploadInfo?.kind === "recording" && state.recordingScenario) {
+        state.uploadInfo.detail = `${state.frames.length} frames • ${summarizeScenario(state.recordingScenario)}`;
       }
+      setModalStatus("Scenario updated", "good");
+      updateStartButton();
+      updateExportButton();
+      updateUploadSummary();
     }
 
     function openFrameModal(label, data) {
@@ -882,45 +919,21 @@
     }
 
     attachDrop(
-      document.getElementById("scenario-drop"),
-      document.getElementById("scenario-file"),
-      (json, name) => {
-        state.scenario = json;
-        state.scenarioName = name || "scenario.json";
-        updateScenarioSummary();
-      }
-    );
-
-    attachDrop(
-      document.getElementById("recording-drop"),
-      document.getElementById("recording-file"),
+      document.getElementById("upload-drop"),
+      document.getElementById("upload-file"),
       (json, name) => {
         try {
-          const parsed = normalizeRecording(json);
-          state.frames = parsed.frames;
-          state.recordingScenario = parsed.scenario || null;
-          state.recordingName = name || "recording.json";
-          state.mode = "replay";
-          state.currentIndex = 0;
-          setPlaying(false);
-          updateTimeline();
-          updateRecordingSummary();
-          setModePill();
-          drawCurrent();
-          updateMeta();
+          const detected = detectUpload(json);
+          if (detected.kind === "scenario") {
+            loadScenarioUpload(detected.scenario, name);
+          } else {
+            loadRecordingUpload(detected.frames, detected.scenario, name);
+          }
         } catch (err) {
           alert(err.message);
         }
       }
     );
-
-    function normalizeRecording(json) {
-      // Expected shape: { frames: [...], scenario?: {...} }
-      if (Array.isArray(json.frames)) return { frames: json.frames, scenario: json.scenario };
-      if (Array.isArray(json.turns)) return { frames: json.turns, scenario: json.scenario }; // compat with old saves
-      if (Array.isArray(json)) return { frames: json, scenario: null };
-      throw new Error("Recording missing frames array");
-    }
 
     // ----------- Live play -----------
     async function startLive(worldOverride = null) {
@@ -1029,31 +1042,33 @@
     });
     document.getElementById("connection-status").addEventListener("click", pingBackend);
     document.getElementById("start-btn").addEventListener("click", () => startLive(null));
-    document.getElementById("scenario-summary").addEventListener("click", () => openScenarioModal("scenario"));
-    document.getElementById("recording-summary").addEventListener("click", () => openScenarioModal("recording"));
-    document.getElementById("scenario-clear-btn").addEventListener("click", () => {
-      state.scenario = null;
-      state.scenarioName = null;
-      updateScenarioSummary();
+    document.getElementById("upload-summary").addEventListener("click", () => {
+      const source = state.uploadInfo?.kind === "recording" ? "recording" : "scenario";
+      openScenarioModal(source);
     });
-    document.getElementById("recording-clear-btn").addEventListener("click", () => {
+    document.getElementById("upload-clear-btn").addEventListener("click", () => {
       setPlaying(false);
       state.frames = [];
       state.currentIndex = 0;
       state.recordingScenario = null;
       state.recordingName = null;
+      state.scenario = null;
+      state.scenarioName = null;
+      state.uploadInfo = null;
       state.victoryInfo = null;
-      if (state.mode === "replay") state.mode = "idle";
-      updateRecordingSummary();
+      state.mode = "idle";
       updateTimeline();
       drawCurrent();
       updateMeta();
       setModePill();
+      updateStartButton();
+      updateExportButton();
+      updateUploadSummary();
     });
     document.getElementById("scenario-modal-close").addEventListener("click", closeScenarioModal);
     document.querySelector("#scenario-modal .modal-backdrop").addEventListener("click", closeScenarioModal);
     document.getElementById("scenario-modal-save").addEventListener("click", () => saveScenarioFromEditor(false));
-    document.getElementById("scenario-modal-use-live").addEventListener("click", () => saveScenarioFromEditor(true));
+    document.getElementById("scenario-modal-save").addEventListener("click", () => saveScenarioFromEditor(false));
     document.getElementById("play-toggle-btn").addEventListener("click", () => {
       setPlaying(!state.playing);
       if (state.playing) loop();
@@ -1087,16 +1102,6 @@
       drawCurrent();
       updateMeta();
     });
-    document.getElementById("replay-btn").addEventListener("click", () => {
-      if (!state.frames.length) return alert("Load a recording first.");
-      state.mode = "replay";
-      state.currentIndex = 0;
-      setPlaying(false);
-      setModePill();
-      updateTimeline();
-      drawCurrent();
-      updateMeta();
-    });
       document.getElementById("export-btn").addEventListener("click", () => {
         if (!state.frames.length) return alert("No frames to export.");
         const payload = { source: "wg-control-panel", generated_at: new Date().toISOString(), scenario: state.scenario, frames: state.frames };
@@ -1117,7 +1122,12 @@
       if (state.recordingScenario) {
         state.scenario = state.recordingScenario;
         state.scenarioName = state.recordingName ? `${state.recordingName} scenario` : "recording scenario";
-        updateScenarioSummary();
+        if (state.uploadInfo?.kind === "recording") {
+          state.uploadInfo.detail = `${state.frames.length} frames • ${summarizeScenario(state.recordingScenario)}`;
+        }
+        updateStartButton();
+        updateExportButton();
+        updateUploadSummary();
       }
       const frame = state.frames[state.currentIndex];
       const worldOverride = frame.world
@@ -1557,8 +1567,7 @@
     }
 
     // Init
-    updateScenarioSummary();
-    updateRecordingSummary();
+    updateUploadSummary();
     updateInjectionStatus();
     updatePlayButton();
     setModePill();
