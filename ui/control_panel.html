@@ -169,14 +169,71 @@
     input[type="range"] { accent-color: var(--accent); }
     .drop-zone {
       border: 1px dashed var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px;
-      text-align: center;
       color: var(--muted);
-      background: rgba(20,26,40,0.7);
+      background: linear-gradient(180deg, rgba(20,26,40,0.85), rgba(13,18,32,0.9));
       cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.25s;
     }
     .drop-zone.drag { border-color: var(--accent); color: var(--accent); background: rgba(124,210,255,0.07); }
+    .upload-empty { text-align: center; opacity: 0.9; }
+    .upload-loaded {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      justify-content: space-between;
+    }
+    .upload-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+    .type-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+    .type-dot.scenario { background: var(--accent); box-shadow: 0 0 0 4px rgba(124,210,255,0.12); }
+    .type-dot.recording { background: var(--accent-2); box-shadow: 0 0 0 4px rgba(255,179,107,0.12); }
+    .upload-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .upload-name {
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .upload-detail { color: var(--muted); font-size: 13px; }
+    .icon-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+    .icon-btn:hover { color: var(--text); border-color: var(--accent); }
     #meta-json, #actions-json, #info-json {
       background: #0f1422;
       border-radius: 10px;
@@ -189,17 +246,6 @@
     }
     .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
     .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .summary-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; color: var(--muted); }
-    .link-btn {
-      background: rgba(124,210,255,0.08);
-      color: var(--accent);
-      border: 1px solid rgba(124,210,255,0.3);
-      padding: 6px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-    .link-btn:hover { border-color: var(--accent); }
     .tag {
       display: inline-flex;
       align-items: center;
@@ -313,13 +359,13 @@
       <label class="label" for="backend-url">Backend</label>
       <input id="backend-url" type="text" value="http://localhost:8000" style="width: 220px;">
       <span id="connection-status" class="pill dot warn clickable">Checking...</span>
+      <span class="pill" id="mode-pill">Idle</span>
     </div>
     <div class="row" style="gap:8px;">
       <button class="btn success" id="start-btn" disabled>▶ Launch Scenario</button>
       <button class="btn" id="fork-btn" title="Start a new live run from the selected frame" disabled>⧉ Fork</button>
     </div>
     <div class="spacer"></div>
-    <span class="pill" id="mode-pill">Idle</span>
     <button class="btn" id="export-btn" disabled title="No frames to export">⬇ Export</button>
   </header>
 
@@ -345,7 +391,7 @@
             <span class="label">Actions</span>
           </label>
           <label class="row" style="gap:4px;">
-            <input id="toggle-radar" type="checkbox">
+            <input id="toggle-radar" type="checkbox" checked>
             <span class="label">Radar</span>
           </label>
           <label class="row" style="gap:4px;">
@@ -371,14 +417,20 @@
       <div class="surface">
         <div class="card-title">Load Scenario / Recording</div>
         <div>
-          <div class="drop-zone" id="upload-drop">Drop scenario or recording JSON</div>
-          <input type="file" id="upload-file" accept=".json" style="display:none">
-          <div class="summary-row" id="upload-summary-row">
-            <button class="link-btn" id="upload-summary" style="display:none"></button>
-            <span class="pill" id="upload-type-pill" style="display:none"></span>
-            <button class="link-btn" id="upload-clear-btn" aria-label="Clear upload" style="display:none">✕</button>
-            <div class="summary-text" id="upload-empty">No file loaded.</div>
+          <div class="drop-zone" id="upload-drop">
+            <div class="upload-empty" id="upload-empty">Drop scenario or recording JSON</div>
+            <div class="upload-loaded" id="upload-loaded">
+              <div class="upload-chip">
+                <span class="type-dot" id="upload-type-dot" title="Upload type"></span>
+                <div class="upload-meta">
+                  <button class="upload-name" id="upload-summary" type="button"></button>
+                  <div class="upload-detail" id="upload-detail-text"></div>
+                </div>
+              </div>
+              <button class="icon-btn" id="upload-clear-btn" aria-label="Clear upload">×</button>
+            </div>
           </div>
+          <input type="file" id="upload-file" accept=".json" style="display:none">
         </div>
       </div>
 
@@ -767,25 +819,30 @@
 
     function updateUploadSummary() {
       const summaryBtn = document.getElementById("upload-summary");
-      const typePill = document.getElementById("upload-type-pill");
+      const typeDot = document.getElementById("upload-type-dot");
       const clearBtn = document.getElementById("upload-clear-btn");
       const empty = document.getElementById("upload-empty");
+      const loaded = document.getElementById("upload-loaded");
+      const detailEl = document.getElementById("upload-detail-text");
       if (!state.uploadInfo) {
         summaryBtn.style.display = "none";
-        typePill.style.display = "none";
         clearBtn.style.display = "none";
         empty.style.display = "block";
+        loaded.style.display = "none";
+        typeDot.className = "type-dot";
         return;
       }
       const { name, kind, detail } = state.uploadInfo;
-      summaryBtn.textContent = `${name} — ${detail}`;
+      summaryBtn.textContent = name;
       summaryBtn.style.display = "inline-flex";
-      typePill.textContent = kind === "recording" ? "Recording" : "Scenario";
-      typePill.style.display = "inline-flex";
-      clearBtn.style.display = "inline-flex";
-      empty.style.display = "none";
       summaryBtn.disabled = kind !== "scenario" && !state.recordingScenario;
       summaryBtn.title = kind === "scenario" ? "View scenario JSON" : state.recordingScenario ? "View recording scenario JSON" : "No scenario found";
+      detailEl.textContent = detail;
+      loaded.style.display = "flex";
+      empty.style.display = "none";
+      typeDot.className = `type-dot ${kind}`;
+      typeDot.title = kind === "recording" ? "Recording" : "Scenario";
+      clearBtn.style.display = "inline-flex";
     }
 
     const modal = document.getElementById("scenario-modal");
@@ -923,7 +980,11 @@
 
     // ----------- File helpers -----------
     function attachDrop(zone, input, onData) {
-      zone.addEventListener("click", () => input.click());
+      zone.addEventListener("click", e => {
+        // Ignore clicks on the loaded summary/clear area
+        if (e.target.closest(".upload-loaded") || e.target.closest(".upload-name") || e.target.closest(".icon-btn")) return;
+        input.click();
+      });
       ["dragenter", "dragover"].forEach(evt =>
         zone.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); zone.classList.add("drag"); })
       );
@@ -1099,11 +1160,13 @@
         : null;
       startLive(worldOverride);
     });
-    document.getElementById("upload-summary").addEventListener("click", () => {
+    document.getElementById("upload-summary").addEventListener("click", e => {
+      e.stopPropagation();
       const source = state.uploadInfo?.kind === "recording" ? "recording" : "scenario";
       openScenarioModal(source);
     });
-    document.getElementById("upload-clear-btn").addEventListener("click", () => {
+    document.getElementById("upload-clear-btn").addEventListener("click", e => {
+      e.stopPropagation();
       setPlaying(false);
       state.frames = [];
       state.currentIndex = 0;
