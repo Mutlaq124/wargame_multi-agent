@@ -945,7 +945,15 @@
       let actionHtml = "";
       if (action) {
         const label = action.label || action.type || "Action";
-        actionHtml = `<div class="entity-action"><span class="label">Current action</span><div>${label}</div></div>`;
+        let extra = "";
+        if (action.params?.target_id) {
+          const targetId = action.params.target_id;
+          const hitProbs = buildHitProbabilityMap(frame);
+          const prob = hitProbs[`${entity.id}-${targetId}`];
+          const probText = typeof prob === "number" ? `${Math.round(prob * 100)}%` : "—";
+          extra = `<div style="margin-top:6px;color:var(--muted);font-size:13px;">Target: #${targetId} • Hit prob: ${probText}</div>`;
+        }
+        actionHtml = `<div class="entity-action"><span class="label">Current action</span><div>${label}</div>${extra}</div>`;
       }
       entityModalBody.innerHTML = `
         <div class="entity-grid">
@@ -1526,6 +1534,41 @@
       }
     }
 
+    function buildHitProbabilityMap(frame) {
+      const results = frame?.step_info?.combat?.combat_results;
+      if (!Array.isArray(results)) return {};
+      const map = {};
+      for (const res of results) {
+        const attacker = res?.attacker_id;
+        const target = res?.target_id;
+        const prob = res?.hit_probability;
+        if (Number.isInteger(attacker) && Number.isInteger(target) && typeof prob === "number") {
+          map[`${attacker}-${target}`] = prob;
+        }
+      }
+      return map;
+    }
+
+    function drawHitProbabilityLabel(x, y, text, color) {
+      const padding = 4;
+      const font = "bold 11px Inter, sans-serif";
+      ctx.save();
+      ctx.font = font;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const metrics = ctx.measureText(text);
+      const w = metrics.width + padding * 2;
+      const h = 16;
+      ctx.fillStyle = "rgba(8,12,20,0.86)";
+      ctx.strokeStyle = "rgba(255,255,255,0.2)";
+      ctx.lineWidth = 1;
+      ctx.fillRect(x - w / 2, y - h / 2, w, h);
+      ctx.strokeRect(x - w / 2, y - h / 2, w, h);
+      ctx.fillStyle = color;
+      ctx.fillText(text, x, y + 0.5);
+      ctx.restore();
+    }
+
     function drawActions(frame, helpers) {
       if (!state.showActions) return;
       const actions = frame.actions || [];
@@ -1533,6 +1576,7 @@
       const entities = frame.entities || world.entities || [];
       const byId = {};
       entities.forEach(e => { byId[e.id] = e; });
+      const hitProbs = buildHitProbabilityMap(frame);
       const { gridSize, originX, originY } = helpers;
       const obs = state.view === "god" ? null : frame.observations?.[state.view] || {};
       const visibleIds = new Set(
@@ -1561,8 +1605,9 @@
         const [x, y] = pos;
         const cx = originX + x * gridSize + gridSize / 2;
         const cy = originY + (world.grid.height - y - 1) * gridSize + gridSize / 2;
-        ctx.strokeStyle = actor.team === "BLUE" ? "rgba(124,210,255,0.9)" : "rgba(255,123,123,0.9)";
-        ctx.fillStyle = ctx.strokeStyle;
+        const strokeColor = actor.team === "BLUE" ? "rgba(124,210,255,0.9)" : "rgba(255,123,123,0.9)";
+        ctx.strokeStyle = strokeColor;
+        ctx.fillStyle = strokeColor;
         ctx.lineWidth = 2;
         const type = (action.type || action.label || "").toString();
 
@@ -1587,9 +1632,13 @@
             const [tx, tyRaw] = tpos;
             let txPx = originX + tx * gridSize + gridSize / 2;
             let tyPx = originY + (world.grid.height - tyRaw - 1) * gridSize + gridSize / 2;
+            const hitKey = `${actor.id}-${target.id}`;
+            const hitProb = hitProbs[hitKey];
             // If reciprocal edge exists, offset the line a bit to avoid overlap
             const key = actor.id < target.id ? `${actor.id}-${target.id}` : `${target.id}-${actor.id}`;
             const isReciprocal = pairCount[key] >= 2;
+            let labelX = null;
+            let labelY = null;
             let ox = 0, oy = 0, dx = txPx - cx, dy = tyPx - cy;
             ctx.save();
             ctx.setLineDash([8, 6]);
@@ -1614,15 +1663,23 @@
               const ddx = endX - midX;
               const ddy = endY - midY;
               drawArrowHead(endX, endY, ddx, ddy, true);
+              labelX = 0.25 * startX + 0.5 * midX + 0.25 * endX;
+              labelY = 0.25 * startY + 0.5 * midY + 0.25 * endY;
               ctx.restore();
-              continue;
+            } else {
+              ctx.beginPath();
+              ctx.moveTo(cx + ox, cy + oy);
+              ctx.lineTo(txPx + ox, tyPx + oy);
+              ctx.stroke();
+              drawArrowHead(txPx + ox, tyPx + oy, dx, dy, true);
+              labelX = (cx + ox + txPx + ox) / 2;
+              labelY = (cy + oy + tyPx + oy) / 2;
             }
-            ctx.beginPath();
-            ctx.moveTo(cx + ox, cy + oy);
-            ctx.lineTo(txPx + ox, tyPx + oy);
-            ctx.stroke();
-            drawArrowHead(txPx + ox, tyPx + oy, dx, dy, true);
             ctx.restore();
+            if (labelX !== null && hitProb !== undefined) {
+              const pct = `${Math.round(hitProb * 100)}%`;
+              drawHitProbabilityLabel(labelX, labelY, pct, strokeColor);
+            }
           }
         }
       }
