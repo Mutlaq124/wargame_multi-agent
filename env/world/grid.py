@@ -4,7 +4,6 @@ Grid - Spatial logic for the combat environment.
 The Grid handles:
 - Coordinate validation
 - Distance calculations
-- Occupancy tracking
 - Coordinate system conversions
 
 Coordinate System:
