@@ -598,6 +598,7 @@
       injectionMode: "once",
       victoryInfo: null,
       uploadInfo: null,
+      startingRun: false,
     };
 
     function isFrameDone(frame) {
@@ -648,10 +649,16 @@
       const btn = document.getElementById("start-btn");
       if (!btn) return;
       const hasScenario = !!state.scenario;
-      btn.disabled = !hasScenario;
       const restarting = state.mode === "live" && hasScenario;
-      btn.textContent = restarting ? "⟳ Re-launch Scenario" : "▶ Launch Scenario";
-      btn.title = hasScenario ? "Start a new live run with the loaded scenario" : "Load a scenario to start";
+      const starting = state.startingRun;
+      btn.disabled = !hasScenario || starting;
+      if (starting) {
+        btn.textContent = "… Starting";
+        btn.title = "Launching run...";
+      } else {
+        btn.textContent = restarting ? "⟳ Re-launch Scenario" : "▶ Launch Scenario";
+        btn.title = hasScenario ? "Start a new live run with the loaded scenario" : "Load a scenario to start";
+      }
     }
 
     function updateForkButton() {
@@ -659,14 +666,23 @@
       if (!btn) return;
       const hasScenario = !!state.scenario;
       const hasFrames = state.frames.length > 0;
-      btn.disabled = !(hasScenario && hasFrames);
-      if (!hasFrames) {
+      const starting = state.startingRun;
+      btn.disabled = !(hasScenario && hasFrames) || starting;
+      if (starting) {
+        btn.title = "Launching run...";
+      } else if (!hasFrames) {
         btn.title = "Load or play to get frames first";
       } else if (!hasScenario) {
         btn.title = "Load a scenario to fork";
       } else {
         btn.title = "Start a new live run from the selected frame";
       }
+    }
+
+    function setStartingRun(isStarting) {
+      state.startingRun = isStarting;
+      updateStartButton();
+      updateForkButton();
     }
 
     function updateExportButton() {
@@ -1031,6 +1047,7 @@
         alert("Load a scenario first.");
         return;
       }
+      setStartingRun(true);
       try {
         const payload = { scenario: state.scenario, world: worldOverride };
         await fetchJson("/start", { method: "POST", body: JSON.stringify(payload) });
@@ -1056,6 +1073,8 @@
       } catch (err) {
         console.error(err);
         alert("Failed to start game: " + err.message);
+      } finally {
+        setStartingRun(false);
       }
     }
 
