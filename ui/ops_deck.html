@@ -1594,11 +1594,12 @@
             if (isReciprocal) {
               const len = Math.hypot(dx, dy) || 1;
               const sign = actor.id < target.id ? 1 : -1;
-              const offset = 12;
+              const offset = Math.max(14, gridSize * 0.4);
               ox = (-dy / len) * offset * sign;
               oy = (dx / len) * offset * sign;
-              const midX = (cx + txPx) / 2 + ox;
-              const midY = (cy + tyPx) / 2 + oy;
+              const bend = 1.6;
+              const midX = (cx + txPx) / 2 + ox * bend;
+              const midY = (cy + tyPx) / 2 + oy * bend;
               ctx.beginPath();
               ctx.moveTo(cx + ox, cy + oy);
               ctx.quadraticCurveTo(midX, midY, txPx + ox, tyPx + oy);
