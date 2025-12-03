@@ -7,7 +7,9 @@ from typing import Union
 
 from infra.paths import STORAGE_DIR
 
-# Simple, centralized logging setup for the backend.
+# Logging setup:
+# - Configured once at startup (see main.py) via configure_logging().
+# - Other modules call get_logger(__name__) to emit logs; output goes to stdout and storage/logs/backend.log by default.
 DEFAULT_FORMAT = "%(asctime)s %(levelname)s [%(name)s:%(lineno)d] %(message)s"
 JSON_FORMAT = (
     '{"time":"%(asctime)s","level":"%(levelname)s","logger":"%(name)s","line":%(lineno)d,"msg":"%(message)s"}'
@@ -58,4 +60,4 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
-# Usage: from infra.logger import configure_logging, get_logger, STORAGE_DIR; configure_logging("DEBUG", logfile=STORAGE_DIR/"logs"/"backend.log"); log = get_logger(__name__); log.info("ready")
+# Usage (configured in main.py): from infra.logger import configure_logging, get_logger, STORAGE_DIR; configure_logging("INFO", logfile=STORAGE_DIR/"logs"/"backend.log"); log = get_logger(__name__); log.debug("message")
