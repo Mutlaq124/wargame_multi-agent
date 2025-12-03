@@ -3,7 +3,7 @@
 2D turn-based air combat sim with a FastAPI backend and a lightweight HTML control panel.
 
 ## Get Running (Python 3.11+)
-1) Install uv (once): `pip install uv`  (or `curl -LsSf https://astral.sh/uv/install.sh | sh`)
+1) Install uv (once): `pip install uv`
 2) Install deps: `uv sync`
 3) Launch backend + UI: `uv run python main.py`
    - Starts FastAPI (`api/app.py`) and serves `ui/ops_deck.html`
@@ -34,4 +34,4 @@ class MyAgent(BaseAgent):
 - Defaults to console + `storage/logs/backend.log` with line numbers.
 
 ## Need More Structure?
-See `ARCHITECTURE.md` for the module map. Keep changes simple: run `uv sync`, run `uv run python main.py`, add agents via `@register_agent`.
+See `ARCHITECTURE.md` for the module map.
