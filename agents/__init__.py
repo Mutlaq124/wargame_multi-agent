@@ -8,10 +8,12 @@ This module provides:
 
 from .base_agent import BaseAgent
 from .factory import PreparedAgent, create_agent_from_spec
+
 from .registry import register_agent, resolve_agent_class
 from .spec import AgentSpec
 from .random_agent import RandomAgent
 from .greedy_agent import GreedyAgent
+from .llm_agent import LLMAgent
 from .team_intel import TeamIntel, VisibleEnemy
 
 __all__ = [
@@ -23,6 +25,7 @@ __all__ = [
     "resolve_agent_class",
     "RandomAgent",
     "GreedyAgent",
+    "LLMAgent",
     "TeamIntel",
     "VisibleEnemy",
 ]

@@ -20,7 +20,19 @@ def main():
     parser = argparse.ArgumentParser(description="Run the WG backend and UI together.")
     parser.add_argument("--host", default="127.0.0.1", help="Host to bind (default: 127.0.0.1)")
     parser.add_argument("--port", type=int, default=8000, help="Port for the API/UI (default: 8000)")
-    parser.add_argument("--reload", action="store_true", help="Enable auto-reload for development")
+    parser.add_argument(
+        "--reload",
+        dest="reload",
+        action="store_true",
+        default=True,
+        help="Enable auto-reload for development (default: on)",
+    )
+    parser.add_argument(
+        "--no-reload",
+        dest="reload",
+        action="store_false",
+        help="Disable auto-reload",
+    )
     parser.add_argument("--no-browser", action="store_true", help="Do not auto-open the UI in the browser")
     args = parser.parse_args()
 
