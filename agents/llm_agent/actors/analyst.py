@@ -10,12 +10,58 @@ ANALYST_TASK = (
     "1) threats to AWACS or exposed units and safe repositioning ideas, "
     "2) high-value targets and feasible strikes this turn, "
     "3) radar/visibility gaps plus missing contacts with last-seen details, "
-    "4) recommended team intent for the next turn. Keep it under 120 words."
+    "4) recommended team intent for the next turn. Keep each entry short, direct, and commander-ready."
 )
 
 
+class Position(BaseModel):
+    x: int = Field(description="X coordinate on the grid.")
+    y: int = Field(description="Y coordinate on the grid.")
+
+
+class Action(BaseModel):
+    type: str = Field(description="Action keyword such as MOVE, SHOOT, TOGGLE, or WAIT.")
+    target: int | None = Field(default=None, description="Target unit id if relevant to the action.")
+    direction: str | None = Field(default=None, description="Cardinal movement direction when applicable.")
+    destination: Position | None = Field(default=None, description="Destination coordinates for movement actions.")
+    on: bool | None = Field(default=None, description="Whether the action toggles a system on or off.")
+
+
+class ActionAnalysis(BaseModel):
+    action: Action = Field(description="Specific action being considered for the unit.")
+    implication: str = Field(description="Expected tactical effect or tradeoff of this action.")
+
+
+class UnitInsight(BaseModel):
+    unit_id: int = Field(description="Identifier for the unit in the current game_state.")
+    role: str = Field(description="Role or mission context of the unit (e.g., escort, decoy, SAM).")
+    key_considerations: list[str] = Field(
+        description="Bullet points on threats, resources, positioning, or timing relevant to this unit."
+    )
+    action_analysis: list[ActionAnalysis] = Field(
+        description="Action options for the unit with their implications. Include all feasible options, even 'WAIT'."
+    )
+
+
 class GameAnalysis(BaseModel):
-    analysis: str = Field(description="Your game analysis/suggestions will be given to the field commander directly.")
+    unit_insights: list[UnitInsight] = Field(
+        description="Unit-level analysis items. Start with the most threatened or impactful units."
+    )
+    critical_alerts: list[str] = Field(
+        description="Ordered list of urgent risks that demand commander attention, prefixed with severity."
+    )
+    opportunities: list[str] = Field(
+        description="Offensive or positional openings the team can exploit, prefixed with severity."
+    )
+    constraints: list[str] = Field(
+        description="Key limitations such as ammo, detection gaps, terrain edges, or coordination risks."
+    )
+    spatial_status: str = Field(
+        description="Short narrative of formation posture, positioning relative to enemies, and maneuver space."
+    )
+    situation_summary: str = Field(
+        description="Overall tactical snapshot combining threats, openings, and intent for the next turn."
+    )
 
 
 analyst_agent = Agent(
@@ -34,6 +80,15 @@ def full_prompt(ctx: RunContext[GameDeps]) -> str:
 
 ### TACTICAL GUIDE (REFERENCE ONLY)
 {TACTICAL_GUIDE}
+
+### OUTPUT FORMAT
+Return JSON that matches the GameAnalysis schema:
+- unit_insights: ordered list of UnitInsight objects with key considerations and action analyses per unit.
+- critical_alerts: most urgent issues first, each prefixed with severity (e.g., HIGH/MEDIUM/LOW).
+- opportunities: actionable openings, prefixed with severity.
+- constraints: limiting factors or coordination risks that affect options.
+- spatial_status: brief posture and positioning narrative.
+- situation_summary: concise commander-ready summary tying alerts and intent together.
 
 ### GAME STATE 
 {ctx.deps.game_state}
