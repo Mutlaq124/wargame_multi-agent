@@ -1,6 +1,4 @@
 from typing import Literal, Union, List, Optional, Annotated
-
-import logfire
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, ModelSettings
 
@@ -60,11 +58,7 @@ class TeamAction(BaseModel):
     )
 
 
-from dotenv import load_dotenv
-load_dotenv()
 
-logfire.configure(service_name="basic_agent")
-logfire.instrument_pydantic_ai()
 
 # --- Agent definition ---
 player = Agent(

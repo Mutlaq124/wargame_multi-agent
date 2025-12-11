@@ -5,7 +5,10 @@ This agent makes random valid decisions for all its entities.
 """
 import json
 import random
-from typing import Dict, Any, Optional, TYPE_CHECKING
+from typing import Dict, Any, Optional, TYPE_CHECKING, List, Set
+
+import logfire
+
 from env.core.actions import Action
 from env.core.types import Team, ActionType, MoveDir
 from env.world import WorldState
@@ -25,6 +28,10 @@ from agents.llm_agent.helpers.prompt_formatter import PromptFormatter, PromptCon
 if TYPE_CHECKING:
     from env.environment import StepInfo
 
+from dotenv import load_dotenv
+load_dotenv()
+logfire.configure(service_name="basic_agent")
+logfire.instrument_pydantic_ai()
 
 @register_agent("llm_basic")
 class LLMAgent(BaseAgent):
@@ -50,6 +57,9 @@ class LLMAgent(BaseAgent):
         self.rng = random.Random(seed)
         self.prompt_formatter = PromptFormatter()
         self.prompt_config = PromptConfig()
+        # Track last-seen info for enemies that drop out of visibility.
+        self._enemy_memory: Dict[int, Dict[str, Any]] = {}
+
 
 
     def get_actions(
@@ -73,6 +83,9 @@ class LLMAgent(BaseAgent):
         actions: Dict[int, Action] = {}
         allowed_actions: Dict[int, list[Action]] = {}
 
+        visible_enemy_ids = self._update_enemy_memory(intel, world.turn)
+        missing_enemies = self._collect_missing_enemies(visible_enemy_ids, world.turn)
+
         for entity in intel.friendlies:
             if not entity.alive:
                 continue
@@ -87,6 +100,7 @@ class LLMAgent(BaseAgent):
             allowed_actions=allowed_actions,
             config=self.prompt_config,
             turn_number=world.turn,
+            missing_enemies=missing_enemies,
         )
 
         commands = kwargs.get("commands") or ""
@@ -165,3 +179,37 @@ class LLMAgent(BaseAgent):
         """Choose a safe fallback action from allowed list, preferring WAIT."""
         wait_action = next((a for a in allowed if a.type == ActionType.WAIT), None)
         return wait_action or allowed[0]
+
+    def _update_enemy_memory(self, intel: TeamIntel, turn: int) -> Set[int]:
+        """
+        Refresh last-seen data for visible enemies and return currently visible IDs.
+        """
+        visible_ids: Set[int] = set()
+        for enemy in intel.visible_enemies:
+            visible_ids.add(enemy.id)
+            self._enemy_memory[enemy.id] = {
+                "enemy_id": enemy.id,
+                "team": enemy.team.name if hasattr(enemy.team, "name") else str(enemy.team),
+                "type": enemy.kind.name if hasattr(enemy.kind, "name") else str(enemy.kind),
+                "last_seen_position": {"x": enemy.position[0], "y": enemy.position[1]},
+                "last_seen_turn": turn,
+            }
+        return visible_ids
+
+    def _collect_missing_enemies(self, visible_ids: Set[int], turn: int) -> List[Dict[str, Any]]:
+        """
+        Build a list of enemies that were seen before but are not currently visible.
+        """
+        missing: List[Dict[str, Any]] = []
+        for enemy_id, entry in self._enemy_memory.items():
+            if enemy_id in visible_ids:
+                continue
+            last_seen_turn = entry.get("last_seen_turn", turn)
+            turns_since_seen = max(turn - last_seen_turn, 0)
+            missing.append(
+                {
+                    **entry,
+                    "turns_since_seen": turns_since_seen,
+                }
+            )
+        return missing

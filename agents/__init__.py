@@ -7,7 +7,7 @@ This module provides:
 """
 
 from .base_agent import BaseAgent
-from .factory import PreparedAgent, create_agent_from_spec
+from .factory import create_agent_from_spec
 
 from .registry import register_agent, resolve_agent_class
 from .spec import AgentSpec
@@ -19,7 +19,6 @@ from .team_intel import TeamIntel, VisibleEnemy
 __all__ = [
     "BaseAgent",
     "AgentSpec",
-    "PreparedAgent",
     "create_agent_from_spec",
     "register_agent",
     "resolve_agent_class",

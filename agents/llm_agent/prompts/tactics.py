@@ -1,5 +1,7 @@
 TACTICAL_GUIDE = f"""
-### TACTICAL GUIDE FOR 2D COMBAT GRID GAME
+### TACTICAL PRINCIPLES & CONSIDERATIONS FOR 2D COMBAT GRID GAME
+**Purpose:** This guide presents core tactical concepts and strategic patterns observed in 2D combat grid scenarios. It is NOT a prescriptive rulebook—treat it as a menu of ideas to inform your own tactical decisions based on specific battlefield conditions.
+
 
 ## VICTORY CONDITION
 Destroy enemy AWACS while protecting yours. Time costs resources - aggressive progress required.
@@ -13,10 +15,9 @@ Destroy enemy AWACS while protecting yours. Time costs resources - aggressive pr
 - Never expose AWACS unless victory is guaranteed
 
 ### 2. INFORMATION WARFARE
-- Radar detection is SHARED across team - maximize coverage, minimize overlap
-- Position units to cover maximum grid area (redundant detection wastes positioning)
+- Radar detection is SHARED across team (if one unit sees an enemy, all units can target it)
 - Use decoys to probe unknown areas and reveal enemy SAM positions
-- Push radar forward for early warning of enemy advances
+- Avoid clustering units (limits tactical flexibility and creates single points of failure)
 
 ### 3. TARGET PRIORITY
 1. Enemy AWACS (if accessible - game-winning)
@@ -24,8 +25,9 @@ Destroy enemy AWACS while protecting yours. Time costs resources - aggressive pr
 3. Enemy SAMs blocking your advance path
 4. Enemy decoys (LOWEST - avoid wasting ammunition)
 
-### 4. AMMUNITION ECONOMY
-- Fire at closer range for higher hit probability
+### 4. DISTANCE CONTROL & AMMUNITION ECONOMY
+- **Control engagement distance:** Stay outside enemy weapon range when not attacking; close distance to engage
+- Fire at closer range for higher hit probability (distance determines hit chance)
 - Coordinate multi-unit strikes on tough targets (avoid overkill)
 - Don't waste missiles on suspected decoys
 - Each shot counts - make them matter
@@ -45,7 +47,6 @@ Destroy enemy AWACS while protecting yours. Time costs resources - aggressive pr
 ### 7. FORMATION CONCEPTS
 **Defense:** Layered screen with aircraft forward, AWACS back, hidden SAMs for surprise
 **Offense:** Decoys on flanks, real aircraft concentrated, probe multiple corridors
-**Never:** Cluster all units together (wastes radar coverage + vulnerable to focus fire)
 
 ### 8. TEMPO & AGGRESSION
 - Static defense loses to operational costs over time
@@ -77,9 +78,8 @@ Destroy enemy AWACS while protecting yours. Time costs resources - aggressive pr
 
 ## REMEMBER
 - Every turn costs resources - make progress toward enemy AWACS
-- Shared radar = spread units for coverage, don't cluster
+- Control distance: stay safe when repositioning, close in when engaging
 - Decoys are disposable intelligence assets - use them
 - SAMs are ambush weapons, not frontline fighters
-- Close distance before shooting when safe to do so
 - Protect AWACS > Everything else
 """

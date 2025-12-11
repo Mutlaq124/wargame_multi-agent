@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from agents import PreparedAgent, create_agent_from_spec
+from agents import BaseAgent, create_agent_from_spec
 from env import GridCombatEnv
 from env.core.types import Team
 from env.environment import StepInfo
@@ -90,12 +90,12 @@ class GameRunner:
 
         injections = injections or {}
         world_before: WorldState = self._clone_world_with_observations(self._state["world"])
-        blue_actions, blue_meta = self._blue_agent.agent.get_actions(
+        blue_actions, blue_meta = self._blue_agent.get_actions(
             self._state,
             step_info=self._last_info,
             **injections.get("blue", {}),
         )
-        red_actions, red_meta = self._red_agent.agent.get_actions(
+        red_actions, red_meta = self._red_agent.get_actions(
             self._state,
             step_info=self._last_info,
             **injections.get("red", {}),
@@ -144,7 +144,7 @@ class GameRunner:
         return Frame(world=self._clone_world_with_observations(world) if world else None, done=True)
 
     # Helpers
-    def _agent_from_scenario(self, scenario: Scenario, team: Team) -> PreparedAgent:
+    def _agent_from_scenario(self, scenario: Scenario, team: Team) -> BaseAgent:
         if not scenario.agents:
             raise ValueError("Scenario is missing agent specs.")
         matches = [spec for spec in scenario.agents if spec.team == team]

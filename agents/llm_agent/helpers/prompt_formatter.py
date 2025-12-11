@@ -81,6 +81,7 @@ class PromptFormatter:
         config: Optional[PromptConfig] = None,
         turn_number: int = 0,
         team_name: Optional[str] = None,
+        missing_enemies: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
         """
         Build the JSON prompt and return both the string and the underlying dict.
@@ -90,9 +91,12 @@ class PromptFormatter:
         enemy_positions = [e.position for e in intel.visible_enemies]
         move_conflicts = self._collect_move_conflicts(allowed_actions, intel)
 
-        situation = self._build_situation(intel, friendly_positions, enemy_positions, cfg)
+        missing_enemies = missing_enemies or []
+
+        situation = self._build_situation(intel, friendly_positions, enemy_positions, cfg, missing_enemies)
         # Add far-away enemies not covered by per-unit threat listings.
         situation["distant_enemies"] = self._get_distant_enemies(intel, friendly_positions, cfg)
+        situation["missing_enemies"] = missing_enemies
 
         payload: Dict[str, Any] = {
             "metadata": self._build_metadata(intel, turn_number, team_name),
@@ -188,6 +192,7 @@ class PromptFormatter:
         friendly_positions: List[Tuple[int, int]],
         enemy_positions: List[Tuple[int, int]],
         cfg: PromptConfig,
+        missing_enemies: List[Dict[str, Any]],
     ) -> Dict[str, Any]:
         ally_center = self._calculate_center_of_mass(friendly_positions)
         enemy_center = self._calculate_center_of_mass(enemy_positions)
@@ -221,6 +226,7 @@ class PromptFormatter:
                 "visible_now": len(intel.visible_enemies),
                 "visible_shooters": sum(1 for e in intel.visible_enemies if e.has_fired_before),
                 "killed_units": None,  # Enemy casualties are not tracked in TeamIntel
+                "missing_contacts": len(missing_enemies),
             },
             "spatial_analysis": {
                 "ally_center_of_mass": ally_center,
@@ -245,9 +251,6 @@ class PromptFormatter:
         grouped_map: Dict[int, List[int]],
         move_conflicts: Dict[Tuple[int, int], List[int]],
     ) -> Dict[str, Any]:
-        threats = self._get_threats(entity, intel, cfg, grouped_map)
-        nearby_allies = self._get_nearby_allies(entity, intel, cfg)
-
         unit_data = {
             "unit_id": entity.id,
             "type": entity.kind.name if hasattr(entity.kind, "name") else str(entity.kind),
@@ -256,26 +259,33 @@ class PromptFormatter:
             "nearby_allies": {
                 "reference_unit": entity.id,
                 "radius_checked": cfg.nearby_ally_radius,
-                "allies": nearby_allies,
+                "allies": self._get_nearby_allies(entity, intel, cfg),
             },
-            "threats": threats,
+            "threats": self._get_threats(entity, intel, cfg, grouped_map),
             "actions": self._get_actions(entity, allowed_actions, intel, cfg, move_conflicts),
         }
         return unit_data
 
     def _get_capabilities(self, entity: Entity) -> Dict[str, Any]:
+        shoot_state = self._shoot_state(entity)
+        missiles = getattr(entity, "missiles", None)
+        weapon_range = getattr(entity, "missile_max_range", None)
+
         capabilities: Dict[str, Any] = {
             "can_move": entity.can_move,
-            "can_shoot": entity.can_shoot,
+            "can_shoot": shoot_state["can_shoot_now"],
         }
 
-        if self._is_armed(entity):
-            missiles = getattr(entity, "missiles", None)
-            weapon_range = getattr(entity, "missile_max_range", None)
-            if missiles is not None:
-                capabilities["missiles_remaining"] = missiles
-            if weapon_range is not None:
-                capabilities["weapon_max_range"] = weapon_range
+        if missiles is not None:
+            capabilities["missiles_remaining"] = missiles
+        if weapon_range is not None:
+            capabilities["weapon_max_range"] = weapon_range
+        if shoot_state["status"] != "READY":
+            capabilities["shoot_status"] = shoot_state["status"]
+        if shoot_state["reason"]:
+            capabilities["shoot_status_reason"] = shoot_state["reason"]
+        if shoot_state["cooldown_remaining"] > 0:
+            capabilities["cooldown_turns_remaining"] = shoot_state["cooldown_remaining"]
 
         radar_range = getattr(entity, "get_active_radar_range", lambda: None)()
         if radar_range is not None:
@@ -298,6 +308,7 @@ class PromptFormatter:
                 continue
             dx = other.pos[0] - entity.pos[0]
             dy = other.pos[1] - entity.pos[1]
+            shoot_state = self._shoot_state(other)
             allies.append(
                 {
                     "unit_id": other.id,
@@ -310,7 +321,7 @@ class PromptFormatter:
                         "distance": round(distance, 1),
                         "direction": self._get_cardinal_direction(dx, dy),
                     },
-                    "can_shoot": self._is_armed(other),
+                    "can_shoot": shoot_state["can_shoot_now"],
                     "missiles_remaining": getattr(other, "missiles", None),
                 }
             )
@@ -381,8 +392,9 @@ class PromptFormatter:
         cfg: PromptConfig,
     ) -> Optional[Dict[str, Any]]:
         # Skip engagement details if the unit cannot shoot or has no missiles left.
+        shoot_state = self._shoot_state(entity)
         missiles = getattr(entity, "missiles", None)
-        if not entity.can_shoot or (missiles is not None and missiles <= 0):
+        if not shoot_state["can_shoot_now"]:
             return None
 
         max_range = getattr(entity, "missile_max_range", None)
@@ -596,6 +608,48 @@ class PromptFormatter:
             direction_map = {"UP": (0, 1), "DOWN": (0, -1), "LEFT": (-1, 0), "RIGHT": (1, 0)}
             delta = direction_map.get(str(direction).upper(), (0, 0))
         return current_pos[0] + delta[0], current_pos[1] + delta[1]
+
+    def _cooldown_remaining(self, entity: Entity) -> int:
+        cooldown = getattr(entity, "_cooldown", 0)
+        try:
+            return max(int(cooldown), 0)
+        except (TypeError, ValueError):
+            return 0
+
+    def _shoot_state(self, entity: Entity) -> Dict[str, Any]:
+        """
+        Normalize shooting readiness so cooldowns are reflected in prompts.
+        """
+        cooldown_remaining = self._cooldown_remaining(entity)
+        missiles = getattr(entity, "missiles", None)
+
+        # Default state assumes the unit can shoot right now.
+        state: Dict[str, Any] = {
+            "can_shoot_now": bool(entity.can_shoot),
+            "status": "READY",
+            "reason": None,
+            "cooldown_remaining": cooldown_remaining,
+        }
+
+        if not entity.can_shoot:
+            state.update({"can_shoot_now": False, "status": "UNARMED"})
+            return state
+
+        if cooldown_remaining > 0:
+            state.update(
+                {
+                    "can_shoot_now": False,
+                    "status": "COOLING_DOWN",
+                    "reason": f"Cooling down for {cooldown_remaining} more turn(s)",
+                }
+            )
+            return state
+
+        if missiles is not None and missiles <= 0:
+            state.update({"can_shoot_now": False, "status": "OUT_OF_MISSILES", "reason": "No missiles remaining"})
+            return state
+
+        return state
 
     def _is_armed(self, entity: Entity) -> bool:
         return bool(getattr(entity, "missiles", 0)) or entity.can_shoot
