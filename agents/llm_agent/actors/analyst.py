@@ -1,4 +1,4 @@
-from typing import Annotated, List, Literal, Optional, Union
+from typing import List, Literal, Optional
 
 from pydantic_ai import Agent, RunContext
 from pydantic import BaseModel, Field
@@ -21,47 +21,36 @@ class Position(BaseModel):
     y: int = Field(description="Y coordinate on the grid.")
 
 
-class MoveAction(BaseModel):
-    type: Literal["MOVE"] = Field(
-        default="MOVE",
-        description="Discriminator for movement actions.",
+class Action(BaseModel):
+    """
+    Flat action schema for simpler LLM outputs. Type is an enum; other fields are conditional by type.
+    """
+
+    type: Literal["MOVE", "SHOOT", "TOGGLE", "WAIT"] = Field(
+        description="Action keyword. Allowed: MOVE | SHOOT | TOGGLE | WAIT.",
+        examples=["MOVE", "SHOOT", "TOGGLE", "WAIT"],
     )
-    direction: Literal["UP", "DOWN", "LEFT", "RIGHT"] = Field(
-        description="Cardinal direction for the move.",
+    direction: Optional[Literal["UP", "DOWN", "LEFT", "RIGHT"]] = Field(
+        default=None,
+        description="MOVE only: direction to move one cell.",
         examples=["UP", "DOWN", "LEFT", "RIGHT"],
     )
     destination: Optional[Position] = Field(
         default=None,
-        description="Destination after the move if known (x,y).",
+        description="MOVE only: destination after moving (x,y).",
     )
-
-
-class ShootAction(BaseModel):
-    type: Literal["SHOOT"] = Field(default="SHOOT", description="Fire a weapon at a target unit.")
-    target: int = Field(description="Target unit id to engage.")
-
-
-class WaitAction(BaseModel):
-    type: Literal["WAIT"] = Field(default="WAIT", description="Hold position and take no action this turn.")
-
-
-class ToggleAction(BaseModel):
-    type: Literal["TOGGLE"] = Field(default="TOGGLE", description="Toggle a system on/off. Use only for SAM units.")
-    on: bool = Field(
-        description="True to activate SAM radar/weapon system, False to go dark/stealth. Only valid for SAM entities."
+    target: Optional[int] = Field(
+        default=None,
+        description="SHOOT only: enemy unit id to target.",
     )
-
-
-Action = Annotated[
-    Union[MoveAction, ShootAction, ToggleAction, WaitAction],
-    Field(discriminator="type"),
-]
-
+    on: Optional[bool] = Field(
+        default=None,
+        description="TOGGLE only: true to activate SAM radar/weapon system, false to go dark/stealth (SAM units only).",
+    )
 
 class ActionAnalysis(BaseModel):
     action: Action = Field(description="Specific action being considered for the unit.")
     implication: str = Field(description="Expected tactical effect or tradeoff of this action.")
-
 
 class UnitInsight(BaseModel):
     unit_id: int = Field(description="Identifier for the unit in the current game_state.")
@@ -73,10 +62,12 @@ class UnitInsight(BaseModel):
         description="Action options for the unit with their implications. Include all feasible options, even 'WAIT'."
     )
 
-
 class GameAnalysis(BaseModel):
     unit_insights: List[UnitInsight] = Field(
         description="Unit-level analysis items. Start with the most threatened or impactful units."
+    )
+    spatial_status: str = Field(
+        description="Short narrative of formation posture, positioning relative to enemies, and maneuver space."
     )
     critical_alerts: List[str] = Field(
         description="Ordered list of urgent risks that demand commander attention, prefixed with severity."
@@ -87,13 +78,9 @@ class GameAnalysis(BaseModel):
     constraints: List[str] = Field(
         description="Key limitations such as ammo, detection gaps, terrain edges, or coordination risks."
     )
-    spatial_status: str = Field(
-        description="Short narrative of formation posture, positioning relative to enemies, and maneuver space."
-    )
     situation_summary: str = Field(
         description="Overall tactical snapshot combining threats, openings, and intent for the next turn."
     )
-
 
 analyst_agent = Agent(
     "openai:gpt-5-mini",
@@ -120,11 +107,13 @@ Return JSON that matches the GameAnalysis schema:
 - constraints: limiting factors or coordination risks that affect options.
 - spatial_status: brief posture and positioning narrative.
 - situation_summary: concise commander-ready summary tying alerts and intent together.
-- Actions must use these types only (discriminator is 'type'):
-  - MOVE: direction in [UP, DOWN, LEFT, RIGHT], optional destination.
-  - SHOOT: target is enemy unit id.
-  - TOGGLE: on=true/false, only for SAM units (activates/deactivates radar/weapon system).
-  - WAIT: hold position.
+- Actions must use this flat schema:
+  - type: MOVE | SHOOT | TOGGLE | WAIT (enum)
+  - MOVE fields: direction in [UP, DOWN, LEFT, RIGHT], optional destination {x,y}
+  - SHOOT fields: target is enemy unit id
+  - TOGGLE fields: on=true/false, only for SAM units (activates/deactivates radar/weapon system)
+  - WAIT fields: no additional fields
+  - Examples: {"type":"MOVE","direction":"UP","destination":{"x":10,"y":8}} | {"type":"SHOOT","target":3} | {"type":"TOGGLE","on":false} | {"type":"WAIT"}
 
 ### GAME STATE 
 {ctx.deps.game_state}
