@@ -5,10 +5,9 @@ This agent makes random valid decisions for all its entities.
 """
 import json
 import random
+from copy import deepcopy
 from typing import Dict, Any, Optional, TYPE_CHECKING, List, Set
-
-import logfire
-
+from .actors.analyst import analyst_agent, GameAnalysis, ActionAnalysis
 from env.core.actions import Action
 from env.core.types import Team, ActionType, MoveDir
 from env.world import WorldState
@@ -20,6 +19,10 @@ from .actors.executer import (
     ToggleAction,
     EntityAction as LLMEntityAction,
 )
+from .actors.game_deps import GameDeps
+from .actors.strategist import strategist_agent
+from .prompts.analyst import ANALYST_USER_PROMPT_TEMPLATE
+from .prompts.game_info import GAME_INFO
 from ..base_agent import BaseAgent
 from ..team_intel import TeamIntel
 from ..registry import register_agent
@@ -27,11 +30,6 @@ from agents.llm_agent.helpers.prompt_formatter import PromptFormatter, PromptCon
 
 if TYPE_CHECKING:
     from env.environment import StepInfo
-
-from dotenv import load_dotenv
-load_dotenv()
-logfire.configure(service_name="basic_agent")
-logfire.instrument_pydantic_ai()
 
 
 @register_agent("llm_basic")
@@ -51,15 +49,17 @@ class LLMAgent(BaseAgent):
 
         Args:
             team: Team to control
-            name: Agent name (default: "RandomAgent")
+            name: Agent name (default: "LLMAgent")
             seed: Random seed for reproducibility (None = random)
         """
         super().__init__(team, name)
         self.rng = random.Random(seed)
-        self.prompt_formatter = PromptFormatter()
+        self.state_formatter = PromptFormatter()
         self.prompt_config = PromptConfig()
         # Track last-seen info for enemies that drop out of visibility.
         self._enemy_memory: Dict[int, Dict[str, Any]] = {}
+
+        self.game_deps = GameDeps()
 
     def get_actions(
             self,
@@ -80,6 +80,7 @@ class LLMAgent(BaseAgent):
         world: WorldState = state["world"]
         intel: TeamIntel = TeamIntel.build(world, self.team)
         actions: Dict[int, Action] = {}
+        metadata: Dict[str, Any] = {}
         allowed_actions: Dict[int, list[Action]] = {}
 
         visible_enemy_ids = self._update_enemy_memory(intel, world.turn)
@@ -92,9 +93,8 @@ class LLMAgent(BaseAgent):
             if not allowed:
                 continue
             allowed_actions[entity.id] = allowed
-            actions[entity.id] = self.rng.choice(allowed)
 
-        prompt_dict = self.prompt_formatter.build_prompt(
+        state_dict = self.state_formatter.build_prompt(
             intel=intel,
             allowed_actions=allowed_actions,
             config=self.prompt_config,
@@ -102,19 +102,95 @@ class LLMAgent(BaseAgent):
             missing_enemies=missing_enemies,
         )
 
-        commands = kwargs.get("commands") or ""
-        prompt_text = f"{commands}. Here is the game state:\n{json.dumps(prompt_dict, indent=2, ensure_ascii=False)}"
-        res = player.run_sync(user_prompt=prompt_text)
-        llm_actions = res.output.entity_actions
-        actions, conversion_errors = self._convert_entity_actions(llm_actions, allowed_actions)
-        metadata = {"llm_prompt_dict": prompt_dict}
-        if conversion_errors: metadata["llm_action_errors"] = conversion_errors
+        self.game_deps.current_state_dict = state_dict
+        include_strategy = self.game_deps.current_turn_number == 0
+        actions, metadata = self._play_turn(state_dict, allowed_actions, include_strategy)
+        self.game_deps.current_turn_number += 1
+
+
+
+        # prompt_dict = self.prompt_formatter.build_prompt(
+        #     intel=intel,
+        #     allowed_actions=allowed_actions,
+        #     config=self.prompt_config,
+        #     turn_number=world.turn,
+        #     missing_enemies=missing_enemies,
+        # )
+        #
+        # commands = kwargs.get("commands") or ""
+        # prompt_text = f"{commands}. Here is the game state:\n{json.dumps(prompt_dict, indent=2, ensure_ascii=False)}"
+        #
+        # res = player.run_sync(user_prompt=prompt_text)
+        # llm_actions = res.output.entity_actions
+
+        # actions, conversion_errors = self._convert_entity_actions(llm_actions, allowed_actions)
+        # metadata = {"llm_prompt_dict": prompt_dict}
+        # if conversion_errors: metadata["llm_action_errors"] = conversion_errors
 
         # Action formatting
         # Action responses? like collision warnings, invalid actions, etc.
         #
 
         return actions, metadata
+
+
+    def _play_turn(
+            self,
+            state_dict: dict[str, Any],
+            allowed_actions: Dict[int, list[Action]],
+            include_strategy: bool,
+    ):
+        # Analyse current state
+        user_prompt = ANALYST_USER_PROMPT_TEMPLATE.format(
+            game_info=GAME_INFO,
+            game_state_json=json.dumps(state_dict, default=str, indent=2, ensure_ascii=False),
+        )
+        analyst_res = analyst_agent.run_sync(user_prompt=user_prompt)
+        analysis: Optional[GameAnalysis] = getattr(analyst_res, "output", None)
+        analysed_state_dict = self._merge_analysis(state_dict, analysis) if analysis else None
+        self.game_deps.analysed_state_dict = analysed_state_dict
+
+        # Optionally (first turn) create strategy
+        strategy_output = None
+        if include_strategy:
+            strategist_res = strategist_agent.run_sync(
+                user_prompt=(
+                    "Use the analysed state below to issue a concise multi-phase plan.\n"
+                    "ANALYSED STATE:\n"
+                    f"{json.dumps(analysed_state_dict or state_dict, indent=2, ensure_ascii=False)}"
+                ),
+                deps=self.game_deps,
+            )
+            strategy_output = getattr(strategist_res, "output", None)
+            if strategy_output:
+                self.game_deps.multi_phase_strategy = self._safe_model_dump(strategy_output.multi_phase_plan)
+                self.game_deps.current_phase_strategy = self._safe_model_dump(strategy_output.current_phase_plan)
+                self.game_deps.entity_roles = {role.entity_id: role.role for role in strategy_output.roles}
+                self.game_deps.callback_conditions = self._safe_model_dump(strategy_output.callbacks)
+
+        # Execute based on strategy and analysed state
+        exec_user_prompt = (
+            "Use the analysed state JSON to pick one action per friendly unit. "
+            "Follow the current phase guidance and assigned roles. "
+            "Return the TeamAction schema only.\n"
+            f"{json.dumps(analysed_state_dict or state_dict, indent=2, ensure_ascii=False)}"
+        )
+        executer_res = player.run_sync(user_prompt=exec_user_prompt, deps=self.game_deps)
+        executor_output: Optional[Any] = getattr(executer_res, "output", None)
+
+        llm_actions: List[LLMEntityAction] = executor_output.entity_actions if executor_output else []
+        actions, conversion_errors = self._convert_entity_actions(llm_actions, allowed_actions)
+
+        metadata: Dict[str, Any] = {
+            "analyst_raw_response": self._safe_model_dump(analysis),
+            "analysed_state_dict": analysed_state_dict,
+            "strategy_raw_response": self._safe_model_dump(strategy_output),
+            "executor_raw_response": self._safe_model_dump(executor_output),
+            "executor_action_conversion_errors": conversion_errors if conversion_errors else None,
+        }
+        return actions, metadata
+
+
 
     def _convert_entity_actions(
             self,
@@ -212,3 +288,131 @@ class LLMAgent(BaseAgent):
                 }
             )
         return missing
+
+    def _merge_analysis(self, state_dict: dict[str, Any], analysis: GameAnalysis) -> dict[str, Any]:
+        """
+        Overlay analyst insights onto the raw state dict while marking the source.
+        """
+        merged = deepcopy(state_dict)
+
+        merged["situation"] = merged.get("situation", {})
+        merged["situation"]["analyst_overlay"] = {
+            "source": "analyst_agent",
+            "spatial_status": analysis.spatial_status,
+            "critical_alerts": analysis.critical_alerts,
+            "opportunities": analysis.opportunities,
+            "constraints": analysis.constraints,
+            "situation_summary": analysis.situation_summary,
+        }
+
+        merged_units: list[dict[str, Any]] = merged.get("units", [])
+        insights_by_unit = {ins.unit_id: ins for ins in analysis.unit_insights}
+        merged["units"] = [
+            self._merge_unit_analysis(unit, insights_by_unit.get(unit.get("unit_id"))) for unit in merged_units
+        ]
+
+        return merged
+
+    def _merge_unit_analysis(
+        self, unit: dict[str, Any], insight: Optional[Any]
+    ) -> dict[str, Any]:
+        if insight is None:
+            return unit
+
+        unit_overlay = {
+            "source": "analyst_agent",
+            "role": insight.role,
+            "key_considerations": insight.key_considerations,
+        }
+
+        actions = unit.get("actions", [])
+        merged_actions, unmatched = self._merge_action_implications(actions, insight.action_analysis)
+        unit["actions"] = merged_actions
+        if unmatched:
+            unit_overlay["unmatched_action_analysis"] = unmatched
+
+        unit["analyst_overlay"] = unit_overlay
+        return unit
+
+    def _merge_action_implications(
+        self, actions: list[dict[str, Any]], action_analysis: list[ActionAnalysis]
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        merged_actions: list[dict[str, Any]] = []
+        matched_indices: set[int] = set()
+
+        for action in actions:
+            match_idx, implication = self._find_action_match(action, action_analysis, matched_indices)
+            if implication is not None:
+                action["implication_analysis"] = implication.implication
+            merged_actions.append(action)
+
+        unmatched = [
+            self._safe_model_dump(action_analysis[idx])
+            for idx in range(len(action_analysis))
+            if idx not in matched_indices
+        ]
+        return merged_actions, unmatched
+
+    def _find_action_match(
+        self,
+        action: dict[str, Any],
+        analyses: list[ActionAnalysis],
+        matched_indices: set[int],
+    ) -> tuple[Optional[int], Optional[ActionAnalysis]]:
+        action_sig = self._action_signature(action)
+
+        for idx, analysis in enumerate(analyses):
+            if idx in matched_indices:
+                continue
+            analysis_sig = self._analysis_action_signature(analysis.action)
+            if self._action_signatures_match(action_sig, analysis_sig):
+                matched_indices.add(idx)
+                return idx, analysis
+        return None, None
+
+    @staticmethod
+    def _action_signature(action: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "type": action.get("type"),
+            "direction": str(action.get("direction")).upper() if action.get("direction") else None,
+            "destination": action.get("destination"),
+            "target": action.get("target_id"),
+            "on": action.get("on"),
+        }
+
+    @staticmethod
+    def _analysis_action_signature(action: Any) -> dict[str, Any]:
+        destination = None
+        if getattr(action, "destination", None):
+            destination = {"x": action.destination.x, "y": action.destination.y}
+        return {
+            "type": action.type,
+            "direction": action.direction,
+            "destination": destination,
+            "target": action.target,
+            "on": action.on,
+        }
+
+    @staticmethod
+    def _action_signatures_match(prompt_action: dict[str, Any], analysis_action: dict[str, Any]) -> bool:
+        if prompt_action.get("type") != analysis_action.get("type"):
+            return False
+        for key in ("direction", "destination", "target", "on"):
+            expected = analysis_action.get(key)
+            if expected is None:
+                continue
+            if prompt_action.get(key) != expected:
+                return False
+        return True
+
+    @staticmethod
+    def _safe_model_dump(model_obj: Any) -> Any:
+        if model_obj is None:
+            return None
+        dump = getattr(model_obj, "model_dump", None)
+        if callable(dump):
+            return dump()
+        to_dict = getattr(model_obj, "dict", None)
+        if callable(to_dict):
+            return to_dict()
+        return model_obj

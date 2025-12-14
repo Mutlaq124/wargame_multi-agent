@@ -10,6 +10,10 @@ from pydantic import BaseModel
 from env.scenario import Scenario
 from runtime.runner import GameRunner
 from infra.paths import UI_ENTRYPOINT
+from runtime.logfire_config import configure_logfire
+
+# Configure observability before app/agent imports are used.
+configure_logfire()
 
 app = FastAPI()
 runner: GameRunner | None = None

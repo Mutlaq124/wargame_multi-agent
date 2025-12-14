@@ -1,6 +1,12 @@
-from typing import Literal, Union, List, Optional, Annotated
+import json
+from typing import Literal, Union, List, Annotated
+
 from pydantic import BaseModel, Field
-from pydantic_ai import Agent, ModelSettings
+from pydantic_ai import Agent, ModelSettings, RunContext
+
+from agents.llm_agent.actors.game_deps import GameDeps
+from agents.llm_agent.prompts.game_info import GAME_INFO
+from agents.llm_agent.prompts.tactics import TACTICAL_GUIDE
 
 
 # --- Action definitions ---
@@ -12,16 +18,19 @@ class MoveAction(BaseModel):
         description="Cardinal direction to move (one cell)"
     )
 
+
 class ShootAction(BaseModel):
     """Command a unit to fire at an enemy target."""
     type: Literal["SHOOT"] = "SHOOT"
     entity_id: int = Field(description="ID of the unit that will fire")
     target_id: int = Field(description="ID of the enemy unit to target")
 
+
 class WaitAction(BaseModel):
     """Command a unit to hold position and skip this turn."""
     type: Literal["WAIT"] = "WAIT"
     entity_id: int = Field(description="ID of the unit that will wait")
+
 
 class ToggleAction(BaseModel):
     """Toggle a unit's special ability or system on/off."""
@@ -29,28 +38,28 @@ class ToggleAction(BaseModel):
     entity_id: int = Field(description="ID of the unit to toggle")
     on: bool = Field(description="True to activate, False to deactivate")
 
+
 Action = Annotated[
     Union[MoveAction, ShootAction, WaitAction, ToggleAction],
-    Field(discriminator="type")
+    Field(discriminator="type"),
 ]
+
 
 # --- Entity-level reasoning wrapper ---
 class EntityAction(BaseModel):
     """A single unit's action with tactical justification."""
-    reasoning: str = Field(description="Brief tactical rationale for this action")
+    reasoning: str = Field(
+        description="Brief tactical rationale for this action aligned to current phase and role."
+    )
     action: Action = Field(description="The action this unit will execute")
 
+
 class TeamAction(BaseModel):
-    """Complete turn plan with strategic analysis and per-unit actions."""
+    """Complete turn plan with per-unit actions."""
     analysis: str = Field(
         description=(
-            "Detailed analysis of the current game state. Include: "
-            "1) Positions of all friendly and enemy units, "
-            "2) Immediate threats and which of our units are in danger, "
-            "3) Vulnerable enemy targets and kill opportunities, "
-            "4) Positional advantages or disadvantages, "
-            "5) How to integrate the director's strategic orders with the tactical situation. "
-            "Think step-by-step before deciding on actions."
+            "Concise rationale tying chosen actions to the current phase objective and roles. "
+            "Do not restate the full game rules."
         )
     )
     entity_actions: List[EntityAction] = Field(
@@ -58,32 +67,65 @@ class TeamAction(BaseModel):
     )
 
 
+# --- System prompt template ---
+EXECUTER_SYSTEM_PROMPT = f"""
+You are the Execution Commander. Your purpose is to convert the strategist's current plan into concrete actions for each friendly unit this turn.
+
+Follow the game rules and doctrine below. Obey current phase guidance and unit roles. Pick the best action per unit now.
+
+## GAME RULES
+{GAME_INFO}
+
+## TACTICAL GUIDE (reference only)
+{TACTICAL_GUIDE}
+
+Output the TeamAction schema only. Avoid narration outside the schema.
+"""
 
 
 # --- Agent definition ---
 player = Agent(
     "openrouter:qwen/qwen3-coder:exacto",
     model_settings=ModelSettings(
-        temperature=0.6,
-        top_p=0.95,
+        temperature=0.7,
+        top_p=0.8,
         max_tokens=32_000,
         extra_body={
             "top_k": 20,
-            "min_p": 0
+            "min_p": 0,
+            "repetition_penalty": 1.05,
         }
     ),
     retries=3,
     output_retries=3,
     output_type=TeamAction,
-    instructions=(
-        "You are an AI field commander leading your team in a grid-based air combat simulation. "
-        "Always analyze the full board state before acting. Prioritize survival of your units while "
-        "maximizing damage to the enemy. Think carefully about positioning, threat ranges, and focus fire.\n\n"
-        "CRITICAL RULES:\n"
-        "- Every turn incurs an operational cost regardless of actions taken (living penalty), so prolonged games are costly.\n"
-        "- INSTANT WIN: Destroy the enemy AWACS.\n"
-        "- INSTANT LOSS: Lose your AWACS.\n\n"
-        "Balance aggression with AWACS protection. When possible, prioritize offensive strikes on the enemy AWACS, "
-        "but never leave your own AWACS vulnerable. Speed matters—end the game decisively."
-    )
+    instructions=EXECUTER_SYSTEM_PROMPT,
 )
+
+
+@player.instructions
+def execution_instructions(ctx: RunContext[GameDeps]) -> str:
+    deps = ctx.deps or GameDeps()
+
+    strategy_section = "## CURRENT STRATEGY\n"
+    if deps.current_phase_strategy:
+        strategy_section += (
+            f"Current phase:\n{json.dumps(deps.current_phase_strategy, indent=2, ensure_ascii=False)}\n"
+        )
+
+    roles_section = "## ROLES\n"
+    if deps.entity_roles:
+        roles_section += "\n".join(
+            f"- Unit {unit_id}: {role}" for unit_id, role in deps.entity_roles.items()
+        ) + "\n"
+    else:
+        roles_section += "- No explicit roles provided.\n"
+
+
+    return "\n".join(
+        [
+            EXECUTER_SYSTEM_PROMPT,
+            strategy_section,
+            roles_section,
+        ]
+    )

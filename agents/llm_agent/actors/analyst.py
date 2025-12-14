@@ -1,6 +1,7 @@
 import json
 from typing import List, Literal, Optional
 
+from dotenv import load_dotenv
 from pydantic_ai import Agent, ModelSettings, RunContext
 from pydantic import BaseModel, Field
 
@@ -9,8 +10,9 @@ from agents.llm_agent.prompts.tactics import TACTICAL_GUIDE
 from agents.llm_agent.prompts.analyst import (
     ANALYST_SYSTEM_PROMPT,
     ANALYST_USER_PROMPT_TEMPLATE,
-    HISTORY_SECTION_TEMPLATE,
 )
+
+load_dotenv()
 
 
 class Position(BaseModel):
@@ -82,12 +84,13 @@ class GameAnalysis(BaseModel):
 analyst_agent = Agent(
     "openrouter:qwen/qwen3-coder:exacto",
     model_settings=ModelSettings(
-        temperature=0.6,
-        top_p=0.95,
+        temperature=0.7,
+        top_p=0.8,
         max_tokens=32_000,
         extra_body={
             "top_k": 20,
-            "min_p": 0
+            "min_p": 0,
+            "repetition_penalty": 1.05,
         }
     ),
     deps_type=GameDeps,
@@ -95,25 +98,9 @@ analyst_agent = Agent(
     instructions=ANALYST_SYSTEM_PROMPT,
 )
 
-@analyst_agent.instructions
-def full_prompt(ctx: RunContext[GameDeps]) -> str:
-    history_section = ""
-    if ctx.deps.step_info_list:
-        history_section = HISTORY_SECTION_TEMPLATE.format(
-            history_json=json.dumps(ctx.deps.step_info_list, default=str, indent=2)
-        )
-
-    game_info = {
-        "current_turn": ctx.deps.current_turn_number,
-        "multi_phase_strategy": ctx.deps.multi_phase_strategy,
-        "current_phase_strategy": ctx.deps.current_phase_strategy,
-        "entity_roles": ctx.deps.entity_roles,
-        "callback_conditions": ctx.deps.callback_conditions,
-    }
-
-    return ANALYST_USER_PROMPT_TEMPLATE.format(
-        game_state_json=json.dumps(ctx.deps.game_state, default=str, indent=2),
-        game_info=json.dumps(game_info, default=str, indent=2),
-        tactical_guide=TACTICAL_GUIDE,
-        history_section=history_section.strip(),
-    )
+# @analyst_agent.instructions
+# def full_prompt(ctx: RunContext[GameDeps]) -> str:
+#
+#     return ANALYST_USER_PROMPT_TEMPLATE.format(
+#         game_state_json=json.dumps(ctx.deps.current_state_dict, default=str, indent=2, ensure_ascii=False)
+#     )

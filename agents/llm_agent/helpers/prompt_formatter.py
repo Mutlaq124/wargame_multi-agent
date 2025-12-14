@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from env.core.actions import Action
-from env.core.types import ActionType, EntityKind, MoveDir
+from env.core.types import ActionType, EntityKind, MoveDir, Team
 from env.entities.base import Entity
 from env.mechanics.combat import hit_probability
 from agents.team_intel import TeamIntel, VisibleEnemy
@@ -42,6 +42,27 @@ def _default_enemy_profiles() -> Dict[EntityKind, WeaponProfile]:
 
 
 @dataclass
+class TeamOrientation:
+    """How this team defines forward/backward relative to the grid."""
+
+    spawn_side: str  # e.g., "LEFT" or "RIGHT"
+    forward: MoveDir
+    backward: MoveDir
+    note: str = "Forward = toward enemy base; Backward/Retreat = toward own base."
+
+
+def _default_team_orientations() -> Dict[str, TeamOrientation]:
+    """
+    Defaults assume BLUE spawns left (forward=RIGHT) and RED spawns right (forward=LEFT).
+    Configurable via PromptConfig.team_orientation_map to handle variant scenarios.
+    """
+    return {
+        Team.BLUE.name: TeamOrientation(spawn_side="LEFT", forward=MoveDir.RIGHT, backward=MoveDir.LEFT),
+        Team.RED.name: TeamOrientation(spawn_side="RIGHT", forward=MoveDir.LEFT, backward=MoveDir.RIGHT),
+    }
+
+
+@dataclass
 class PromptConfig:
     """
     Tunable knobs for prompt shaping and threat estimation.
@@ -53,6 +74,9 @@ class PromptConfig:
       can_hit_range + hit_probability())
     - fallback_enemy_weapon_profile: used when an enemy kind has no explicit
       profile entry
+    - team_orientation_map: how each team defines forward/backward (for prompt disambiguation)
+    - include_orientation_metadata: include forward/backward definitions in metadata
+    - include_direction_resolution: include a brief forward/backward hint for horizontal MOVE actions
     """
 
     nearby_ally_radius: float = 5.0
@@ -66,6 +90,9 @@ class PromptConfig:
     fallback_enemy_weapon_profile: WeaponProfile = field(
         default_factory=lambda: WeaponProfile(max_range=3.0, base_hit_prob=0.7, min_hit_prob=0.1)
     )
+    team_orientation_map: Dict[str, TeamOrientation] = field(default_factory=_default_team_orientations)
+    include_orientation_metadata: bool = True
+    include_direction_resolution: bool = True
 
 
 class PromptFormatter:
@@ -99,7 +126,7 @@ class PromptFormatter:
         situation["missing_enemies"] = missing_enemies
 
         payload: Dict[str, Any] = {
-            "metadata": self._build_metadata(intel, turn_number, team_name),
+            "metadata": self._build_metadata(intel, turn_number, team_name, cfg),
             "situation": situation,
             "units": [],
         }
@@ -159,10 +186,17 @@ class PromptFormatter:
     # ------------------------------------------------------------------ #
     # Metadata + situation
     # ------------------------------------------------------------------ #
-    def _build_metadata(self, intel: TeamIntel, turn_number: int, team_name: Optional[str]) -> Dict[str, Any]:
-        return {
+    def _build_metadata(
+        self,
+        intel: TeamIntel,
+        turn_number: int,
+        team_name: Optional[str],
+        cfg: PromptConfig,
+    ) -> Dict[str, Any]:
+        team = team_name or (intel.friendlies[0].team.name if intel.friendlies else "UNKNOWN")
+        payload: Dict[str, Any] = {
             "turn": turn_number,
-            "team": team_name or (intel.friendlies[0].team.name if intel.friendlies else "UNKNOWN"),
+            "team": team,
             "grid_size": {
                 "width": intel.grid.width,
                 "height": intel.grid.height,
@@ -185,6 +219,27 @@ class PromptFormatter:
                 "example": "If you are at (10, 5) and move RIGHT, you go to (11, 5). If you move UP, you go to (10, 6).",
             },
         }
+
+        if cfg.include_orientation_metadata:
+            orientation = self._get_orientation(team, cfg)
+            payload["team_orientation"] = {
+                "team": team,
+                "spawn_side": orientation.spawn_side,
+                "forward_direction": orientation.forward.name,
+                "backward_direction": orientation.backward.name,
+                "note": orientation.note,
+                "orientation_by_team": {
+                    t: {
+                        "spawn_side": o.spawn_side,
+                        "forward_direction": o.forward.name,
+                        "backward_direction": o.backward.name,
+                        "note": o.note,
+                    }
+                    for t, o in cfg.team_orientation_map.items()
+                },
+            }
+
+        return payload
 
     def _build_situation(
         self,
@@ -476,6 +531,10 @@ class PromptFormatter:
                 blockage = self._describe_move_blockage(entity, destination, intel, move_conflicts)
                 if blockage:
                     entry["blockage"] = blockage
+                if cfg.include_direction_resolution:
+                    orientation_hint = self._orientation_hint(entity, direction, cfg)
+                    if orientation_hint:
+                        entry["orientation_hint"] = orientation_hint
             elif action.type == ActionType.SHOOT:
                 target_id = action.params.get("target_id")
                 entry["target_id"] = target_id
@@ -715,3 +774,30 @@ class PromptFormatter:
         details["severity"] = severity or "RISK"
         details["reason"] = "; ".join(reasons)
         return details
+
+    def _get_orientation(self, team_name: str, cfg: PromptConfig) -> TeamOrientation:
+        return cfg.team_orientation_map.get(
+            team_name,
+            TeamOrientation(spawn_side="UNKNOWN", forward=MoveDir.RIGHT, backward=MoveDir.LEFT),
+        )
+
+    def _orientation_hint(
+        self,
+        entity: Entity,
+        direction: Any,
+        cfg: PromptConfig,
+    ) -> Optional[str]:
+        """
+        For horizontal moves, add a concise note when the direction aligns with the team's forward or backward orientation.
+        """
+        team_name = entity.team.name if hasattr(entity.team, "name") else str(entity.team)
+        orientation = self._get_orientation(team_name, cfg)
+        dir_obj = direction if isinstance(direction, MoveDir) else MoveDir.__members__.get(str(direction).upper())
+
+        if not isinstance(dir_obj, MoveDir):
+            return None
+        if dir_obj == orientation.forward:
+            return f"{dir_obj.name} means FORWARD for {team_name} team"
+        if dir_obj == orientation.backward:
+            return f"{dir_obj.name} means BACKWARD for {team_name} team"
+        return None

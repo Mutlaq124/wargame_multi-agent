@@ -111,6 +111,7 @@ Return ONLY valid JSON matching this exact structure:
 7. Be concise—focus on actionable intelligence.
 8. Use game state data (hit probabilities, distances) when available—do not invent numbers.
 9. If an action is impossible due to blocking (now or next turn), note it as BLOCKED and why in the implication.
+10. If a move's direction conflicts with the stated intent (e.g., retreat but moving toward the enemy), call it out explicitly as DIRECTION_MISMATCH.
 
 ## DISTANCE & ENGAGEMENT RULES
 - Units outside weapon range are safe from fire.
@@ -119,28 +120,46 @@ Return ONLY valid JSON matching this exact structure:
 - Safety margin = how far outside enemy range (0 = exactly at range edge).
 """
 
+#10. Coordinate system is absolute for BOTH teams: +x=RIGHT, -x=LEFT, +y=UP, -y=DOWN (origin bottom-left). Do NOT flip axes by team.
+#11. Forward/advance = move toward enemy base/center; backward/retreat = move toward own base/center. Defaults: RED spawn_side=RIGHT so forward=LEFT, backward=RIGHT; BLUE spawn_side=LEFT so forward=RIGHT, backward=LEFT. Use team_orientation metadata to confirm; if orientation is unknown, fall back to these defaults.
+#12. For every MOVE implication, restate direction in absolute terms and relative intent: e.g., "absolute: LEFT (dx=-1,dy=0); relative: retreat" or "absolute: RIGHT; relative: advance".
+#13. If a move's absolute direction conflicts with the stated intent (e.g., retreat but moving toward the enemy), call it out explicitly as DIRECTION_MISMATCH.
+
+
+# ANALYST_USER_PROMPT_TEMPLATE = """
+# Analyze the following game state and provide tactical intelligence.
+#
+# ## CURRENT GAME STATE
+# {game_state_json}
+#
+# ## GAME CONTEXT
+# {game_info}
+#
+# ## TACTICAL GUIDE
+# {tactical_guide}
+#
+# {history_section}
+#
+# Provide your analysis in the specified JSON format.
+# """
 
 ANALYST_USER_PROMPT_TEMPLATE = """
 Analyze the following game state and provide tactical intelligence.
 
+## GAME INFO
+{game_info}
+
 ## CURRENT GAME STATE
 {game_state_json}
 
-## GAME CONTEXT
-{game_info}
-
-## TACTICAL GUIDE
-{tactical_guide}
-
-{history_section}
 
 Provide your analysis in the specified JSON format.
 """
 
 
-HISTORY_SECTION_TEMPLATE = """
-## GAME HISTORY
-{history_json}
-
-Consider recent patterns and cumulative intelligence in your analysis.
-"""
+# HISTORY_SECTION_TEMPLATE = """
+# ## GAME HISTORY
+# {history_json}
+#
+# Consider recent patterns and cumulative intelligence in your analysis.
+# """
