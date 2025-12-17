@@ -14,6 +14,7 @@ from agents.llm_agent.helpers.compact_state_formatter import CompactStateFormatt
 from agents.llm_agent.actors.game_deps import GameDeps
 from agents.llm_agent.actors.strategist_compact import strategist_compact_agent, StrategyOutput
 from agents.llm_agent.actors.analyst_compact import analyst_compact_agent, AnalystCompactOutput
+from agents.llm_agent.actors.executer_compact import executer_compact_agent, TeamTurnPlan
 
 if TYPE_CHECKING:
     from env.environment import StepInfo
@@ -108,14 +109,8 @@ class LLMCompactAgent(BaseAgent):
             strategy_plan, strategy_error, _ = self._restrategize()
             analyst_output, analyst_error = self._run_analyst()
 
-        # 4) Executor: for now, still emit safe fallbacks; later this will become LLM-driven.
-        exec_result = self._run_executor(
-            world=world,
-            intel=intel,
-            allowed_actions=allowed_actions,
-            strategy=strategy_plan,
-            analyst_notes=analyst_output.model_dump() if analyst_output else {},
-        )
+        # 4) Executor: call compact executor; still fall back to safe actions if mapping fails.
+        exec_result = self._run_executor(allowed_actions)
         actions.update(exec_result.get("actions", {}))
 
 
@@ -127,6 +122,8 @@ class LLMCompactAgent(BaseAgent):
             "visible_history": self.game_deps.visible_history,
             "strategy_plan": strategy_plan,
             "strategy_error": strategy_error,
+            "executor_plan": exec_result.get("plan"),
+            "executor_error": exec_result.get("error"),
             "analyst_notes": analyst_output.model_dump() if analyst_output else None,
             "analyst_error": analyst_error,
         }
@@ -174,12 +171,11 @@ class LLMCompactAgent(BaseAgent):
             return str(exc)
 
     def _restrategize(
-        self
-    ) -> Optional[str]:
+        self,
+    ) -> tuple[Optional[StrategyOutput], Optional[str], bool]:
         """
         Run the strategist to re-plan.
         """
-        # TODO: Fix later!
         try:
             user_prompt = (
                 "Analyse the game state carefully and come up with winning strategy for the team.\n"
@@ -190,28 +186,36 @@ class LLMCompactAgent(BaseAgent):
             )
             self.game_deps.strategy_plan = result.output
             self.game_deps.just_replanned = True
-            return None
+            return result.output, None, True
         except Exception as exc:
-            return str(exc)
+            return None, str(exc), False
 
     def _run_executor(
         self,
-        world: WorldState,
-        intel: TeamIntel,
         allowed_actions: Dict[int, List[Action]],
-        strategy: Optional[Dict[str, Any]],
-        analyst_notes: Dict[str, Any],
     ) -> Dict[str, Any]:
         """
-        Placeholder for executor agent. Currently returns safe fallback actions.
+        Run the compact executor to propose actions; default to safe fallbacks for now.
         """
-        fallback_actions: Dict[int, Action] = {}
-        for entity_id, allowed in allowed_actions.items():
-            fallback_actions[entity_id] = self._pick_fallback_action(allowed)
-        return {
-            "actions": fallback_actions,
-            "notes": "Executor stub – will later turn strategy+analysis into concrete actions.",
+        fallback_actions: Dict[int, Action] = {
+            entity_id: self._pick_fallback_action(allowed) for entity_id, allowed in allowed_actions.items()
         }
+
+        try:
+            result: AgentRunResult[TeamTurnPlan] = executer_compact_agent.run_sync(
+                user_prompt="Propose the actions for this turn.", deps=self.game_deps
+            )
+            return {
+                "actions": fallback_actions,  # placeholder until we map to env actions
+                "plan": result.output,
+                "error": None,
+            }
+        except Exception as exc:
+            return {
+                "actions": fallback_actions,
+                "plan": None,
+                "error": str(exc),
+            }
 
     def _update_enemy_memory(self, intel: TeamIntel, turn: int) -> Set[int]:
         visible_ids: Set[int] = set()
