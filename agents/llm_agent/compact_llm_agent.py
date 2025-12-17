@@ -96,17 +96,19 @@ class LLMCompactAgent(BaseAgent):
         self.game_deps.current_turn_number = world.turn
         self.game_deps.current_state = state_text
         self.game_deps.current_state_dict = state_dict
+        # Reset replan flag each turn; it will be set when strategist runs.
+        self.game_deps.just_replanned = False
 
         # Pseudo-flow for multi-agent pipeline (Strategist -> Analyst -> Executor).
-        # 1) Strategist: produce/refresh plan with callbacks.
-        strategy_plan, strategy_error, replan_performed = self._ensure_strategy()
-        self.game_deps.strategy_plan, self.game_deps.just_replanned = strategy_plan, replan_performed
+        # 1) Strategist: produce initial plan on first turn.
+        strategy_error = self._maybe_get_initial_strategy()
+        strategy_plan = self._strategy_plan
 
         # 2) Analyst: assess current state + history, decide whether to re-strategize, produce notes.
         analyst_output, analyst_error = self._run_analyst()
 
         # 3) If analyst wants a replan and we have not just replanned, call strategist again.
-        if analyst_output and analyst_output.needs_replan and not replan_performed:
+        if analyst_output and analyst_output.needs_replan and not self.game_deps.just_replanned:
             strategy_plan, strategy_error, _ = self._ensure_strategy(force_replan=True)
             analyst_output, analyst_error = self._run_analyst()
 
@@ -137,39 +139,6 @@ class LLMCompactAgent(BaseAgent):
         print("\n" + "=" * 80 + "\n")
         return actions, metadata
 
-    def _ensure_strategy(
-        self,
-        force_replan: bool = False,
-    ) -> tuple[Optional[StrategyOutput], Optional[str], bool]:
-        """
-        Wrapper around strategist call to align with the (strategist -> analyst -> executor) flow.
-
-        Returns:
-            strategy_plan: cached or newly generated strategy.
-            strategy_error: error string if strategist failed.
-            replan_performed: True if we invoked the strategist in this call.
-        """
-        if self._strategy_plan is not None and not force_replan:
-            return self._strategy_plan, None, False
-
-        if self.game_deps.current_turn_number > 1 and not force_replan:
-            return None, None, False
-
-        try:
-            if not force_replan:
-                user_prompt = f"""
-Analyse the game state carefully and come up with winning strategy for the team.
-{self.game_deps.current_state}
-"""
-                result:AgentRunResult[StrategyOutput] = strategist_compact_agent.run_sync(user_prompt=user_prompt, deps=self.game_deps)
-            else:
-                # We should also provide the previous strategy as context when forcing a replan.
-                # result: AgentRunResult[StrategyOutput] = strategist_compact_agent.run_sync(user_prompt=state_text, deps=self.game_deps)
-                raise NotImplementedError("Forced replan with previous strategy context not yet implemented.")
-            self._strategy_plan = result.output
-            return self._strategy_plan, None, force_replan
-        except Exception as exc:
-            return None, f"strategy call failed: {exc}", True
 
     def _run_analyst(self) -> tuple[Optional[AnalystCompactOutput], Optional[str]]:
         """
@@ -179,22 +148,68 @@ Analyse the game state carefully and come up with winning strategy for the team.
             result: AgentRunResult[AnalystCompactOutput] = analyst_compact_agent.run_sync(
                 user_prompt="Provide the analyst view for this turn.", deps=self.game_deps
             )
-            output = result.output
-            self.game_deps.analyst_history.append(output)
-            if output.key_facts:
+            self.game_deps.analyst_history.append(result.output)
+            if result.output.key_facts:
                 turn_facts = self.game_deps.analyst_key_facts.setdefault(
                     self.game_deps.current_turn_number, []
                 )
-                for fact in output.key_facts:
+                for fact in result.output.key_facts:
                     if fact and fact not in turn_facts:
                         turn_facts.append(fact)
-            self.game_deps.analyst_last_analysis = output.analysis
-            return output, None
+            self.game_deps.analyst_last_analysis = result.output.analysis
+            return result.output, None
         except Exception as exc:
             return (
                 None,
                 str(exc),
             )
+
+    def _maybe_get_initial_strategy(self) -> Optional[str]:
+        """
+        Fetch the initial strategy on the first turn if not already cached.
+        """
+        if self._strategy_plan is not None or self.game_deps.current_turn_number != 0:
+            return None
+
+        try:
+            user_prompt = (
+                "Analyse the game state carefully and come up with winning strategy for the team.\n"
+                f"{self.game_deps.current_state}"
+            )
+            result: AgentRunResult[StrategyOutput] = strategist_compact_agent.run_sync(
+                user_prompt=user_prompt, deps=self.game_deps
+            )
+            self._strategy_plan = result.output
+            self.game_deps.strategy_plan = self._strategy_plan
+            self.game_deps.just_replanned = True
+            return None
+        except Exception as exc:
+            return str(exc)
+
+    def _ensure_strategy(
+        self,
+        force_replan: bool = False,
+    ) -> tuple[Optional[StrategyOutput], Optional[str], bool]:
+        """
+        Run the strategist when forced or when no plan is cached.
+        """
+        if self._strategy_plan is not None and not force_replan:
+            return self._strategy_plan, None, False
+
+        try:
+            user_prompt = (
+                "Analyse the game state carefully and come up with winning strategy for the team.\n"
+                f"{self.game_deps.current_state}"
+            )
+            result: AgentRunResult[StrategyOutput] = strategist_compact_agent.run_sync(
+                user_prompt=user_prompt, deps=self.game_deps
+            )
+            self._strategy_plan = result.output
+            self.game_deps.strategy_plan = self._strategy_plan
+            self.game_deps.just_replanned = True
+            return self._strategy_plan, None, True
+        except Exception as exc:
+            return None, str(exc), False
 
     def _run_executor(
         self,

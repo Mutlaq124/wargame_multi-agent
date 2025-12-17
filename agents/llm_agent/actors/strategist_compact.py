@@ -97,14 +97,14 @@ Return a tool call to 'final_result' using StrategyOutput schema only. No prose 
 """
 
 
-strategist_compact_agent: Agent[GameDeps, StrategyOutput] = Agent(
+strategist_compact_agent = Agent[GameDeps, StrategyOutput](
     "openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    deps_type=GameDeps,
+    output_type=StrategyOutput,            # ✅ use output_type (not result_type)
     model_settings=OpenRouterModelSettings(
         max_tokens=1024 * 32,
         openrouter_reasoning={"effort": "low"},
     ),
-    deps_type=GameDeps,
-    result_type=StrategyOutput,
     instructions=STRATEGIST_COMPACT_PROMPT,
-    output_retries=3,
+    output_retries=3,                      # ✅ (replaces result_retries)
 )
