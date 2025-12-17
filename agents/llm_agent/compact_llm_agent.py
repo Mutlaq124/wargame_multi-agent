@@ -105,7 +105,7 @@ class LLMCompactAgent(BaseAgent):
 
         # 3) If analyst wants a replan and we have not just replanned, call strategist again.
         if analyst_output and analyst_output.needs_replan and not self.game_deps.just_replanned:
-            strategy_plan, strategy_error, _ = self._ensure_strategy(force_replan=True)
+            strategy_plan, strategy_error, _ = self._restrategize()
             analyst_output, analyst_error = self._run_analyst()
 
         # 4) Executor: for now, still emit safe fallbacks; later this will become LLM-driven.
@@ -173,16 +173,13 @@ class LLMCompactAgent(BaseAgent):
         except Exception as exc:
             return str(exc)
 
-    def _ensure_strategy(
-        self,
-        force_replan: bool = False,
-    ) -> tuple[Optional[StrategyOutput], Optional[str], bool]:
+    def _restrategize(
+        self
+    ) -> Optional[str]:
         """
-        Run the strategist when forced or when no plan is cached.
+        Run the strategist to re-plan.
         """
-        if self.game_deps.strategy_plan is not None and not force_replan:
-            return self.game_deps.strategy_plan, None, False
-
+        # TODO: Fix later!
         try:
             user_prompt = (
                 "Analyse the game state carefully and come up with winning strategy for the team.\n"
@@ -193,9 +190,9 @@ class LLMCompactAgent(BaseAgent):
             )
             self.game_deps.strategy_plan = result.output
             self.game_deps.just_replanned = True
-            return self.game_deps.strategy_plan, None, True
+            return None
         except Exception as exc:
-            return None, str(exc), False
+            return str(exc)
 
     def _run_executor(
         self,
