@@ -104,10 +104,10 @@ executer_compact_agent = Agent[GameDeps, TeamTurnPlan](
     "openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=TeamTurnPlan,
-    model_settings=OpenRouterModelSettings(
-        max_tokens=1024 * 16,
-        openrouter_reasoning={"effort": "low"},
-    ),
+    # model_settings=OpenRouterModelSettings(
+    #     max_tokens=1024 * 16,
+    #     openrouter_reasoning={"effort": "low"},
+    # ),
     instructions=EXECUTER_COMPACT_PROMPT,
     output_retries=3,
 )
