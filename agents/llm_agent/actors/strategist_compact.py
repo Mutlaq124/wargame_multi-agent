@@ -23,12 +23,13 @@ class StrategyOutput(BaseModel):
     unit_strategies: List[UnitStrategy] = Field(description="Per-unit roles and postures for all alive friendlies.")
     call_me_back_if: List[str] = Field(description="Observable re-strategize triggers (concise conditions).")
 
-    def to_text(self, include_analysis: bool = True) -> str:
+    def to_text(self, include_analysis: bool = True, include_callbacks: bool = True) -> str:
         """
         Render a human-friendly string summary of the strategy output.
 
         Args:
             include_analysis: Whether to include the analysis section at the top.
+            include_callbacks: Whether to include the call_me_back_if section.
         """
         lines: List[str] = []
         if include_analysis:
@@ -45,10 +46,11 @@ class StrategyOutput(BaseModel):
             lines.append(f"- #{us.entity_id}: {us.role.strip()}")
         lines.append("")
 
-        lines.append("CALL ME BACK IF")
-        for cond in self.call_me_back_if:
-            lines.append(f"- {cond.strip()}")
-        lines.append("")
+        if include_callbacks:
+            lines.append("CALL ME BACK IF")
+            for cond in self.call_me_back_if:
+                lines.append(f"- {cond.strip()}")
+            lines.append("")
 
         return "\n".join(lines).strip()
 
