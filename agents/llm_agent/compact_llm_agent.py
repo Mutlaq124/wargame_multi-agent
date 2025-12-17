@@ -1,6 +1,8 @@
 import random
 from typing import Dict, Any, Optional, TYPE_CHECKING, List, Set
 
+from pydantic_ai import AgentRunResult
+
 from env.core.actions import Action
 from env.core.types import ActionType, MoveDir, Team
 from env.world import WorldState
@@ -10,7 +12,7 @@ from agents.team_intel import TeamIntel
 from agents.registry import register_agent
 from agents.llm_agent.helpers.compact_state_formatter import CompactStateFormatter
 from agents.llm_agent.actors.game_deps import GameDeps
-from agents.llm_agent.actors.strategist_compact import strategist_compact_agent
+from agents.llm_agent.actors.strategist_compact import strategist_compact_agent, StrategyOutput
 
 if TYPE_CHECKING:
     from env.environment import StepInfo
@@ -88,7 +90,41 @@ class LLMCompactAgent(BaseAgent):
             casualties=self._casualties,
         )
 
-        strategy_plan, strategy_error = self._maybe_get_strategy(world, state_dict, state_text)
+        # Pseudo-flow for multi-agent pipeline (Strategist -> Analyst -> Executor).
+        # 1) Strategist: produce/refresh plan with callbacks.
+        strategy_plan, strategy_error, replan_performed = self._ensure_strategy(world, state_dict, state_text)
+
+        # 2) Analyst: assess current state + history, decide whether to re-strategize, produce notes.
+        analyst_notes = self._run_analyst(
+            world=world,
+            intel=intel,
+            state_dict=state_dict,
+            state_text=state_text,
+            strategy=strategy_plan,
+            replan_already_done=replan_performed,
+        )
+
+        # 3) If analyst wants a replan and we have not just replanned, call strategist again.
+        if analyst_notes.get("needs_replan") and not replan_performed:
+            strategy_plan, strategy_error, _ = self._ensure_strategy(world, state_dict, state_text, force=True)
+            analyst_notes = self._run_analyst(
+                world=world,
+                intel=intel,
+                state_dict=state_dict,
+                state_text=state_text,
+                strategy=strategy_plan,
+                replan_already_done=True,  # avoid infinite replan loop
+            )
+
+        # 4) Executor: for now, still emit safe fallbacks; later this will become LLM-driven.
+        exec_result = self._run_executor(
+            world=world,
+            intel=intel,
+            allowed_actions=allowed_actions,
+            strategy=strategy_plan,
+            analyst_notes=analyst_notes,
+        )
+        actions.update(exec_result.get("actions", {}))
 
         metadata = {
             "compact_state": state_dict,
@@ -98,6 +134,7 @@ class LLMCompactAgent(BaseAgent):
             "visible_history": self._step_logs,
             "strategy_plan": strategy_plan,
             "strategy_error": strategy_error,
+            "analyst_notes": analyst_notes,
         }
 
         print(state_text)
@@ -305,11 +342,72 @@ class LLMCompactAgent(BaseAgent):
         try:
             self.game_deps.current_turn_number = world.turn
             self.game_deps.current_state_dict = state_dict
-            result = strategist_compact_agent.run_sync(user_prompt=state_text, deps=self.game_deps)
+            result:AgentRunResult[StrategyOutput] = strategist_compact_agent.run_sync(user_prompt=state_text, deps=self.game_deps)
             self._strategy_plan = result.data if hasattr(result, "data") else result
             return self._strategy_plan, None
         except Exception as exc:
             return None, f"strategy call failed: {exc}"
+
+    def _ensure_strategy(
+        self,
+        world: WorldState,
+        state_dict: Dict[str, Any],
+        state_text: str,
+        force: bool = False,
+    ) -> tuple[Optional[Dict[str, Any]], Optional[str], bool]:
+        """
+        Wrapper around strategist call to align with the (strategist -> analyst -> executor) flow.
+
+        Returns:
+            strategy_plan: cached or newly generated strategy.
+            strategy_error: error string if strategist failed.
+            replan_performed: True if we invoked the strategist in this call.
+        """
+        if self._strategy_plan is not None and not force:
+            return self._strategy_plan, None, False
+
+        if world.turn > 1 and not force:
+            return None, None, False
+
+        plan, error = self._maybe_get_strategy(world, state_dict, state_text)
+        return plan, error, plan is not None
+
+    def _run_analyst(
+        self,
+        world: WorldState,
+        intel: TeamIntel,
+        state_dict: Dict[str, Any],
+        state_text: str,
+        strategy: Optional[Dict[str, Any]],
+        replan_already_done: bool,
+    ) -> Dict[str, Any]:
+        """
+        Placeholder for analyst agent. For now, returns a stub with an opt-out of replan if already done.
+        """
+        return {
+            "needs_replan": False if replan_already_done else False,
+            "notes": "Analyst stub – will later summarize state/history and decide on re-strategize.",
+            "turn": world.turn,
+        }
+
+    def _run_executor(
+        self,
+        world: WorldState,
+        intel: TeamIntel,
+        allowed_actions: Dict[int, List[Action]],
+        strategy: Optional[Dict[str, Any]],
+        analyst_notes: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """
+        Placeholder for executor agent. Currently returns safe fallback actions.
+        """
+        fallback_actions: Dict[int, Action] = {}
+        for entity_id, allowed in allowed_actions.items():
+            fallback_actions[entity_id] = self._pick_fallback_action(allowed)
+        return {
+            "actions": fallback_actions,
+            "notes": "Executor stub – will later turn strategy+analysis into concrete actions.",
+        }
 
     @staticmethod
     def _infer_direction(old_pos: tuple[int, int], new_pos: tuple[int, int]) -> Optional[str]:
