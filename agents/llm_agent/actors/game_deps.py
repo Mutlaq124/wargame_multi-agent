@@ -15,6 +15,7 @@ class GameDeps:
     current_turn_number: int = 0
     strategy_plan: Optional[StrategyOutput] = None
     just_replanned: bool = False
+    last_strategized_turn: Optional[int] = None
 
     current_state: Optional[str] = None
     current_state_dict: Optional[dict[str, Any]] = None

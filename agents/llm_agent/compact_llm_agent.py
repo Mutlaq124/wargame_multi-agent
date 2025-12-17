@@ -102,12 +102,25 @@ class LLMCompactAgent(BaseAgent):
         strategy_plan = self.game_deps.strategy_plan
 
         # 2) Analyst: assess current state + history, decide whether to re-strategize, produce notes.
-        analyst_output, analyst_error = self._run_analyst()
+        analyst_output, analyst_error = self._run_analyst(store=False)
+        if analyst_output and not analyst_output.needs_replan:
+            self._store_analyst_output(analyst_output)
 
         # 3) If analyst wants a replan and we have not just replanned, call strategist again.
         if analyst_output and analyst_output.needs_replan and not self.game_deps.just_replanned:
-            strategy_plan, strategy_error, _ = self._restrategize()
-            analyst_output, analyst_error = self._run_analyst()
+            strategy_plan, strategy_error, _ = self._restrategize(
+                replan_reason=analyst_output.replan_reason,
+                latest_analyst=analyst_output,
+            )
+            analyst_output, analyst_error = self._run_analyst(store=True)
+
+        # Ensure the analyst output is recorded if it hasn't been stored yet (e.g., replan skipped).
+        if (
+            analyst_output
+            and analyst_error is None
+            and self.game_deps.current_turn_number not in self.game_deps.analyst_history
+        ):
+            self._store_analyst_output(analyst_output)
 
         # 4) Executor: call compact executor and map its actions.
         exec_result = self._run_executor(allowed_actions)
@@ -133,7 +146,7 @@ class LLMCompactAgent(BaseAgent):
         return actions, metadata
 
 
-    def _run_analyst(self) -> tuple[Optional[AnalystCompactOutput], Optional[str]]:
+    def _run_analyst(self, store: bool = True) -> tuple[Optional[AnalystCompactOutput], Optional[str]]:
         """
         Run the compact analyst agent to summarize and decide on re-strategizing.
         """
@@ -141,13 +154,20 @@ class LLMCompactAgent(BaseAgent):
             result: AgentRunResult[AnalystCompactOutput] = analyst_compact_agent.run_sync(
                 user_prompt="Provide the analyst view for this turn.", deps=self.game_deps
             )
-            self.game_deps.analyst_history[self.game_deps.current_turn_number] = result.output
+            if store:
+                self._store_analyst_output(result.output)
             return result.output, None
         except Exception as exc:
             return (
                 None,
                 str(exc),
             )
+
+    def _store_analyst_output(self, output: AnalystCompactOutput) -> None:
+        """
+        Persist analyst output for the current turn.
+        """
+        self.game_deps.analyst_history[self.game_deps.current_turn_number] = output
 
     def _maybe_get_initial_strategy(self) -> Optional[str]:
         """
@@ -157,35 +177,37 @@ class LLMCompactAgent(BaseAgent):
             return None
 
         try:
-            user_prompt = (
-                "Analyse the game state carefully and come up with winning strategy for the team.\n"
-                f"{self.game_deps.current_state}"
-            )
+            user_prompt = self._build_strategy_user_prompt(is_replan=False, replan_reason=None)
             result: AgentRunResult[StrategyOutput] = strategist_compact_agent.run_sync(
                 user_prompt=user_prompt, deps=self.game_deps
             )
             self.game_deps.strategy_plan = result.output
             self.game_deps.just_replanned = True
+            self.game_deps.last_strategized_turn = self.game_deps.current_turn_number
             return None
         except Exception as exc:
             return str(exc)
 
     def _restrategize(
         self,
+        replan_reason: str = "",
+        latest_analyst: Optional[AnalystCompactOutput] = None,
     ) -> tuple[Optional[StrategyOutput], Optional[str], bool]:
         """
         Run the strategist to re-plan.
         """
         try:
-            user_prompt = (
-                "Analyse the game state carefully and come up with winning strategy for the team.\n"
-                f"{self.game_deps.current_state}"
+            user_prompt = self._build_strategy_user_prompt(
+                is_replan=True,
+                replan_reason=replan_reason,
+                latest_analyst=latest_analyst,
             )
             result: AgentRunResult[StrategyOutput] = strategist_compact_agent.run_sync(
                 user_prompt=user_prompt, deps=self.game_deps
             )
             self.game_deps.strategy_plan = result.output
             self.game_deps.just_replanned = True
+            self.game_deps.last_strategized_turn = self.game_deps.current_turn_number
             return result.output, None, True
         except Exception as exc:
             return None, str(exc), False
@@ -209,6 +231,97 @@ class LLMCompactAgent(BaseAgent):
                 "plan": None,
                 "error": str(exc),
             }
+
+    def _build_strategy_user_prompt(
+        self,
+        is_replan: bool,
+        replan_reason: Optional[str],
+        latest_analyst: Optional[AnalystCompactOutput] = None,
+    ) -> str:
+        """
+        Build the strategist user prompt for initial or re-plan calls.
+        """
+        deps = self.game_deps
+        current_state = deps.current_state or "No current state available."
+        last_strategy_turn = (
+            f"{deps.last_strategized_turn}"
+            if deps.last_strategized_turn is not None
+            else "No previous strategy recorded."
+        )
+        last_strategy_text = (
+            deps.strategy_plan.to_text(include_analysis=True, include_callbacks=True)
+            if deps.strategy_plan
+            else "No previous strategy recorded."
+        )
+        callback_text = ""
+        if deps.strategy_plan:
+            callback_text = "\n".join(f"- {c}" for c in deps.strategy_plan.call_me_back_if) or "None provided."
+        else:
+            callback_text = "None provided."
+
+        since_last_notes = self._summarize_key_facts_since_last_strategy()
+        last_analysis = self._latest_analysis(latest_analyst=latest_analyst)
+
+        purpose = "RE-STRATEGIZING requested by analyst." if is_replan else "Initial strategy request."
+        reason = replan_reason.strip() if replan_reason else "Not specified."
+
+        return (
+            f"Purpose: {purpose}\n"
+            f"- Last strategized turn: {last_strategy_turn}\n"
+            f"- Replan trigger reason: {reason}\n"
+            "\n"
+            "Last strategy (for context):\n"
+            f"{last_strategy_text}\n"
+            "\n"
+            "Callback conditions you gave last time:\n"
+            f"{callback_text}\n"
+            "\n"
+            "Since last strategy (analyst key facts):\n"
+            f"{since_last_notes}\n"
+            "\n"
+            "Latest analyst analysis:\n"
+            f"{last_analysis}\n"
+            "\n"
+            "Current state:\n"
+            f"{current_state}\n"
+        )
+
+    def _summarize_key_facts_since_last_strategy(self) -> str:
+        """
+        Collect analyst key facts from turns after the last strategy was produced.
+        """
+        history = self.game_deps.analyst_history or {}
+        if not history:
+            return "- No analyst key facts recorded."
+
+        start_turn = (self.game_deps.last_strategized_turn or -1) + 1
+        turns = [t for t in history.keys() if t >= start_turn and t < self.game_deps.current_turn_number]
+        if not turns:
+            return "- No new key facts since last strategy."
+
+        lines: List[str] = []
+        for turn in sorted(turns):
+            entry = history[turn]
+            if not entry.key_facts:
+                continue
+            lines.append(f"- Turn {turn}:")
+            for fact in entry.key_facts:
+                lines.append(f"  - {fact}")
+        return "\n".join(lines) if lines else "- No new key facts since last strategy."
+
+    def _latest_analysis(self, latest_analyst: Optional[AnalystCompactOutput]) -> str:
+        """
+        Get the most recent analysis (prefer provided latest_analyst, otherwise from history).
+        """
+        if latest_analyst:
+            return latest_analyst.analysis
+
+        history = self.game_deps.analyst_history or {}
+        if not history:
+            return "None recorded."
+
+        last_turn = max(history.keys())
+        return f"Turn {last_turn}:\n{history[last_turn].analysis}"
 
     def _map_team_plan_to_actions(
         self,
