@@ -61,7 +61,7 @@ You are the Strategic Director for a 2D combat grid game.
 
 ---
 
-# DIRECTOR TASK
+# YOUR TASK
 Analyze the current game rules and tactical state carefully. Identify the key advantages, disadvantages, 
 and potential winning conditions. Then, develop a short-term strategic plan that covers:
 
@@ -96,6 +96,7 @@ Don't overcomplicate stuff, it is a simple game.
 
 ## RESPONSE FORMAT
 Return a tool call to 'final_result' using StrategyOutput schema only. No prose outside the tool call.
+DO NOT:  Calling 'final_result' with a placeholder text like "arguments_final_result"
 """
 
 

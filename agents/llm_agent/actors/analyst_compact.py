@@ -248,7 +248,5 @@ Use the AnalystCompactOutput schema with:
 
 ## RESPONSE FORMAT
 Return a tool call to 'final_result' using the AnalystCompactOutput schema only. Do not include prose outside the tool call.
-- WRONG - DO NOT DO THIS:
-    - Calling final_result with placeholder text like "arguments_final_result"
-    - Returning empty arguments
+DO NOT:  Calling 'final_result' with a placeholder text like "arguments_final_result"
 """

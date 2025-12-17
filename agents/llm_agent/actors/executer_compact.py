@@ -83,6 +83,8 @@ EXECUTER_COMPACT_PROMPT = f"""
 # ROLE
 You are the Execution Commander. Convert the strategist's plan and analyst highlights into concrete, legal actions for this turn only.
 
+---
+
 # TASK
 - Read the current strategy and unit roles, plus the analyst's latest notes.
 - Pick one action per friendly unit using only legal actions implied by the current state.
@@ -90,12 +92,12 @@ You are the Execution Commander. Convert the strategist's plan and analyst highl
 - If uncertain or no good move exists, WAIT is acceptable.
 - Do not restate full game rules; focus on decisions.
 
+---
+
 # GAME INFO
 {GAME_INFO}
 
-# OUTPUT FORMAT
-Use the TeamTurnPlan schema (analysis + entity_actions with reasoning and action). Return via tool call only.
-"""
+---"""
 
 
 executer_compact_agent = Agent[GameDeps, TeamTurnPlan](
@@ -123,14 +125,21 @@ def full_prompt(ctx: RunContext[GameDeps]) -> str:
 # STRATEGY (current)
 {strategy_text}
 
+---
+
 # ANALYSES (latest)
 Analysis: {analyst['analysis']}
 Key points for executor:
 {highlights}
 
+---
+
 # CURRENT GAME STATE
 {deps.current_state}
 
+---
+
 # RESPONSE FORMAT
 Return a tool call to 'final_result' with TeamTurnPlan only.
+DO NOT:  Calling 'final_result' with a placeholder text like "arguments_final_result"
 """
