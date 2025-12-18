@@ -172,7 +172,7 @@ class LLMCompactAgent(BaseAgent):
         """
         try:
             result: AgentRunResult[AnalystCompactOutput] = analyst_compact_agent.run_sync(
-                user_prompt="Provide the analyst view for this turn. Return a proper tool call; never use placeholder arguments.",
+                user_prompt="Think first, then provide the analyst view for this turn. Return a proper tool call; never use placeholder arguments.",
                 deps=self.game_deps,
             )
             if store:
@@ -252,7 +252,7 @@ class LLMCompactAgent(BaseAgent):
         if not is_replan:
             return (
                 "Analyse the game state carefully and come up with winning strategy for the team.\n"
-                "Return a tool call to 'final_result' with concrete fields; do not use placeholders like 'arguments_final_result'.\n"
+                "Optionally include a <thinking>...</thinking> block, then call 'final_result' with concrete fields (no placeholders like 'arguments_final_result').\n"
                 f"{current_state}\n"
             )
 
@@ -299,7 +299,7 @@ class LLMCompactAgent(BaseAgent):
             f"{current_state}\n"
             "\n"
             "# RESPONSE FORMAT\n"
-            "Return a tool call to 'final_result' with concrete fields; never use placeholder arguments like 'arguments_final_result'.\n"
+            "Optionally include a <thinking>...</thinking> block, then call 'final_result' with concrete fields; never use placeholder arguments like 'arguments_final_result'.\n"
         )
 
     def _summarize_key_facts_since_last_strategy(self) -> str:

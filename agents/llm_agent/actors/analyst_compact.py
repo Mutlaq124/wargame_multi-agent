@@ -167,8 +167,8 @@ analyst_compact_agent = Agent[GameDeps, AnalystCompactOutput](
     deps_type=GameDeps,
     output_type=AnalystCompactOutput,
     model_settings=OpenRouterModelSettings(
-        max_tokens=1024 * 24,
-        openrouter_reasoning={"effort": "low"},
+        max_tokens=1024 * 32,
+        openrouter_reasoning={"effort": "medium"},
     ),
     output_retries=3,
 )
@@ -245,6 +245,6 @@ Use the AnalystCompactOutput schema with:
 - replan_reason: short reason if needs_replan is True.
 
 ## RESPONSE FORMAT
-Return a tool call to 'final_result' using the AnalystCompactOutput schema only. Do not include prose outside the tool call.
-DO NOT:  Calling 'final_result' with a placeholder text like "arguments_final_result"
+Optionally include a <thinking>...</thinking> block, then return a tool call to 'final_result' using the AnalystCompactOutput schema only. No other prose.
+DO NOT: Call 'final_result' with a placeholder text like "arguments_final_result".
 """

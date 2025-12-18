@@ -97,7 +97,12 @@ You are the Execution Commander. Convert the strategist's plan and analyst highl
 # GAME INFO
 {GAME_INFO}
 
----"""
+---
+
+# RESPONSE FORMAT
+Optionally include a <thinking>...</thinking> block, then return a tool call to 'final_result' with TeamTurnPlan only. No other prose.
+DO NOT: Call 'final_result' with a placeholder text like "arguments_final_result".
+"""
 
 
 executer_compact_agent = Agent[GameDeps, TeamTurnPlan](
@@ -140,6 +145,6 @@ Key points for executor:
 ---
 
 # RESPONSE FORMAT
-Return a tool call to 'final_result' with TeamTurnPlan only.
-DO NOT:  Calling 'final_result' with a placeholder text like "arguments_final_result"
+Optionally include a <thinking>...</thinking> block, then return a tool call to 'final_result' with TeamTurnPlan only. No other prose.
+DO NOT: Call 'final_result' with a placeholder text like "arguments_final_result".
 """
