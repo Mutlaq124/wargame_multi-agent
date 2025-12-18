@@ -137,10 +137,15 @@ class GreedyAgent(BaseAgent):
         """Chase the nearest visible enemy or continue patrolling."""
         nearest = intel.nearest_visible_enemy(entity.pos)
         if nearest is not None:
-            directions = intel.move_toward(entity.pos, nearest[0].position, ignore_ids={entity.id})
+            enemy, _ = nearest
+            directions = intel.move_toward(entity.pos, enemy.position, ignore_ids={entity.id})
             action = self._pick_move_action(directions, allowed)
             if action:
                 return action
+            fallback = self._best_distance_move(entity.pos, enemy.position, allowed)
+            if fallback:
+                return fallback
+            return self._first_allowed_wait(allowed)
 
         return self._patrol_move(entity, intel, allowed)
 
@@ -213,6 +218,34 @@ class GreedyAgent(BaseAgent):
             if action.type == ActionType.WAIT:
                 return action
         return None
+
+    @staticmethod
+    def _best_distance_move(
+        current_pos: tuple[int, int],
+        target_pos: tuple[int, int],
+        allowed: Iterable[Action],
+    ) -> Optional[Action]:
+        """
+        Pick a move that strictly reduces Manhattan distance to the target.
+        """
+        best_action: Optional[Action] = None
+        best_dist: Optional[int] = None
+        cur_dist = abs(current_pos[0] - target_pos[0]) + abs(current_pos[1] - target_pos[1])
+
+        for action in allowed:
+            if action.type != ActionType.MOVE:
+                continue
+            dir_param = action.params.get("dir")
+            if not isinstance(dir_param, MoveDir):
+                continue
+            dx, dy = dir_param.delta
+            new_pos = (current_pos[0] + dx, current_pos[1] + dy)
+            new_dist = abs(new_pos[0] - target_pos[0]) + abs(new_pos[1] - target_pos[1])
+            if new_dist < cur_dist and (best_dist is None or new_dist < best_dist):
+                best_action = action
+                best_dist = new_dist
+
+        return best_action
 
     # ------------------------------------------------------------------
     # State helpers
