@@ -102,12 +102,12 @@ You are the Executer Agent. Convert the "strategist"'s plan and "analyst" highli
 
 
 executer_compact_agent = Agent[GameDeps, TeamTurnPlan](
-    "openrouter:x-ai/grok-3-mini-beta",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    "openrouter:x-ai/grok-3-mini",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=TeamTurnPlan,
     model_settings=OpenRouterModelSettings(
         max_tokens=1024 * 16,
-        openrouter_reasoning={"effort": "medium"},
+        openrouter_reasoning={"effort": "medium", "enabled":True},
     ),
     instructions=EXECUTER_COMPACT_PROMPT,
     output_retries=3,

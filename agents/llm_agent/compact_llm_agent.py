@@ -252,6 +252,7 @@ class LLMCompactAgent(BaseAgent):
         if not is_replan:
             return (
                 "Analyse the game state carefully and come up with winning strategy for the team.\n"
+                "My suggestion is that bait enemy into sam zone, ambush them, kill them, then scout utilizing awacs as well using the up and bottom edges of the map, for invisibility"
                 f"{current_state}\n"
             )
 

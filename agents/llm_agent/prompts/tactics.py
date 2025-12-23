@@ -10,10 +10,10 @@ Destroy enemy AWACS while protecting yours.
 ### CORE PRINCIPLES
 
 #### 1. AWACS PROTECTION (TOP PRIORITY)
-- Keep AWACS safe (>= a threshold value is mainly enough) with clear escape routes
+- Keep AWACS safe (>= 'a threshold' value typically 5 is mainly enough) with clear escape routes
 - Maintain unblocked retreat paths at all times
-- As long as AWACS is safe (distance + open routes) it can move freely to provide vision for the team.
-- AWACS is also useful for discovery/spotting enemy units for offensive moves as long as it is safe.
+- As long as AWACS is safe (threshold distance with open routes) it can move freely to provide vision for the team.
+- Use AWACS for discovery/spotting enemy units as well.
 
 #### 2. TARGET PRIORITY
 1. Enemy AWACS (if accessible - game-winning)
@@ -40,6 +40,12 @@ Destroy enemy AWACS while protecting yours.
 - Only waste them if there is a trade for a valuable enemy entity if possible
 - You can use decoys to scout ahead, bait enemy, or clear paths for aircraft.
 - Enemy can't distinguish decoys from aircraft.
+
+#### ENGAGEMENT TIPS
+- Avoid 1v1 engagements unless you have clear advantage (e.g. enemy SAM is reloading, or enemy is not armed) or no other choice (you are already in the engagement zone, and attack is the best defense)
+- Use coordinated multi-unit strikes to increase hit probability.
+- Even if mult-unit strike isn't possible, use decoy & aircraft attack combination, meaning make enemy target our decoy while we are targeting them.
+- Use your SAM to create favorable engagement trades, e.g. bait enemy into SAM kill zone then ambush them, rather than direct confrontation.
 
 #### 6. WINNING PATTERNS
 - **SAM Ambush:** Hide SAM → Scout first, then run back make the enemy chase you, e.g. bait enemy into kill zone → Toggle ON + Shoot → Toggle OFF

@@ -98,12 +98,12 @@ Don't overcomplicate things, it is a simple game.
 #DO NOT: Call 'final_result' with a placeholder text like "arguments_final_result".
 
 strategist_compact_agent = Agent[GameDeps, StrategyOutput](
-    "openrouter:x-ai/grok-3-mini-beta", #"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    "openrouter:x-ai/grok-3-mini", #"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=StrategyOutput,            # ✅ use output_type (not result_type)
     model_settings=OpenRouterModelSettings(
         max_tokens=1024 * 32,
-        openrouter_reasoning={"effort": "medium"},
+        openrouter_reasoning={"effort": "medium", "enabled":True},
     ),
     instructions=STRATEGIST_COMPACT_PROMPT,
     output_retries=3,                      # ✅ (replaces result_retries)
