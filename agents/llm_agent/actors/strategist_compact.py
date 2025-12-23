@@ -70,9 +70,9 @@ Analyze the current game rules and tactical guides carefully. Identify the key s
 
 2. Individual unit strategies for each alive entity (e.g., AWACS, Aircraft, SAM, Decoy) that define their current roles, priorities, and coordination patterns.
 
-3. Clear re-strategize triggers: Define specific conditions that would invalidate the current plan and require a new strategy (e.g., loss of critical units, mission objective completed, enemy formation changes). Re-strategizing is costly—only trigger when the situation fundamentally changes.
+3. Clear re-strategize triggers: Define well-defined specific conditions that would invalidate (unexpected conditions, or expected next-phase trigger) the current plan and require a new strategy. Re-strategizing is costly—only trigger when the situation fundamentally changes.
 
-Act as a strategşc director, not a field commander — focus on high-level, enduring strategy rather than turn-by-turn or micro-management decisions. 
+Act as a strategic director, not a field commander — focus on high-level, enduring strategy rather than turn-by-turn or micro-management decisions. 
 Don't overcomplicate things, it is a simple game.
 
 ---
@@ -98,7 +98,7 @@ Don't overcomplicate things, it is a simple game.
 #DO NOT: Call 'final_result' with a placeholder text like "arguments_final_result".
 
 strategist_compact_agent = Agent[GameDeps, StrategyOutput](
-    "openrouter:openai/gpt-5", #"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    "openrouter:x-ai/grok-3-mini-beta", #"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=StrategyOutput,            # ✅ use output_type (not result_type)
     model_settings=OpenRouterModelSettings(

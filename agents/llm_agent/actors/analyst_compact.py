@@ -16,14 +16,14 @@ load_dotenv()
 
 class AnalystCompactOutput(BaseModel):
     analysis: str = Field(
-        description="Detailed analysis and narration of the board state for field execution. Cite specific board facts and explain your reasoning for each observation. Do not recommend actions."
+        description="Detailed analysis and narration of the board state for field execution. Cite specific board facts and explain your reasoning for each observation. Do not recommend direct actions."
     )
     key_points_for_executor: List[str] = Field(
         description="Optional bullet highlights or risks the executor should notice this turn.",
         default_factory=list,
     )
     key_facts: List[str] = Field(
-        description="Facts or events the analyst wants to remember for future turns.",
+        description="Key facts or events the analyst wants to remember for future turns. (1-3 concise bullet points)",
         default_factory=list,
     )
     needs_replan: bool = Field(
@@ -192,7 +192,7 @@ def _format_step_logs(history: dict[int, dict], max_turns: int, current_turn: in
 
 
 analyst_compact_agent = Agent[GameDeps, AnalystCompactOutput](
-    "openrouter:openai/gpt-5",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    "openrouter:x-ai/grok-3-mini-beta",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=AnalystCompactOutput,
     model_settings=OpenRouterModelSettings(
@@ -204,15 +204,15 @@ analyst_compact_agent = Agent[GameDeps, AnalystCompactOutput](
 
 
 ANALYST_TASK = """
-Your job is to read, carefully and objectively analyse the current game status along with history of events, actions 
-and the current game strategy (created by the director), and convert it to a well explained clear, concise analysis 
-telling what is going on the game board verbally for the 'field executer'.
+Your job is to read, carefully and objectively analyse the current game status along with history of events, logs, 
+and the current game strategy (created by the strategist agent), and convert it to a well explained clear, concise analysis 
+telling what is going on the game board verbally for the 'executer agent' who is responsible to take concrete actions.
 
-Field executer will read your analysis after each turn to take actions. You can highlight key-points 
-inside your analysis to the 'field executer' to make things easier for him.
+Field executer will read your analysis after each turn to before taking actions. You can highlight key-points 
+inside your analysis to the 'executer agent' to make winning easier for him.
 
 - After each turn along with your analysis you can optionally record some key events/facts for future-self (they are only seen by you), like killed entities, fired missiles, anything you seem could be relevant for your future-self to better understand the history.
-- You will given the current strategy along with some re-strategize conditions by the 'strategy directory' specifying you when it is the time to re-plan.
+- You will given the current strategy along with some re-strategize conditions by the 'strategy directory' specifying you when it is the time to re-plan. Other than that, you are free to decide when to re-plan if you think the current strategy is invalidated or obsolete.
 - Thus you are responsible to take a 're-strategize' decision based on your analysis. It might mean current strategy phase is over either because it was successful or it was a failure and we need a new plan for the next phase.
 - Keep it clear and concise.
 """

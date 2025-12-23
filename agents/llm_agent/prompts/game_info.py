@@ -5,10 +5,8 @@ GAME_INFO = """
 - **Victory Condition:** Destroy the enemy's AWACS unit
 - **Defeat Condition:** Lose your AWACS unit
 - **Resource Management:** 
-  - Each turn incurs operational costs
   - Losing your units is disadvantageous
   - Destroying enemy units is advantageous
-  - Prolonged stalemates are costly; progress toward objectives is necessary
 - **Map Layout:** Typically ~13×20 grid; exact dimensions, and starting positions vary by scenario
 - **Initial Setup:** Starting positions and unit placements are predetermined by scenario (not player-controlled)
 
@@ -18,7 +16,6 @@ GAME_INFO = """
   - Enemy units are invisible until detected by any friendly unit's radar
   - Detection is shared across the entire team. This means:
     - If ANY friendly unit detects an enemy, ALL friendly units can see it
-    - There is no benefit to having multiple units detect the same enemy
     - Radar positioning should focus on COVERAGE (seeing more area) not REDUNDANCY"
   - Any unit can target any enemy that any teammate has detected and is within weapon range
   - Position information comes ONLY from radar detection, not from observing enemy actions (e.g., seeing missiles fired)
@@ -27,7 +24,7 @@ GAME_INFO = """
 - **Radar Detection:** Each unit type has a circular detection range (measured in grid cells from unit's position)
 
 ### COMBAT MECHANICS
-- **Limited Ammunition:** Armed units carry finite missiles
+- **Ammunition:** Armed units carry finite missiles
 - **Range-Based Hit Probability:** 
   - Hit chance depends solely on straight-line distance between attacker and target
   - Closer proximity increases hit chance (applies to both teams' weapons)
@@ -53,7 +50,7 @@ GAME_INFO = """
 - Can MOVE or WAIT
 
 **SAM (Surface-to-Air Missile)**
-- Stationary armed defense unit that always occupies its cell (even when stealthed)
+- Stationary armed defense unit that always occupies its cell (even when stealth)
 - Can TOGGLE between states:
   - Active (ON): Detectable, can shoot
   - Stealth (OFF): Immediately invisible to enemy radar, cannot shoot or be targeted

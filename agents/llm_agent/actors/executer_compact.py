@@ -81,32 +81,28 @@ def _latest_analyst(deps: GameDeps) -> Dict[str, str]:
 
 EXECUTER_COMPACT_PROMPT = f"""
 # ROLE
-You are the Execution Commander. Convert the strategist's plan and analyst highlights into concrete, legal actions for this turn only.
+You are the Executer Agent. Convert the "strategist"'s plan and "analyst" highlights into concrete, legal actions for this turn only.
 
 ---
 
 # TASK
 - Read the current strategy and unit roles, plus the analyst's latest notes.
 - Pick one action per friendly unit using only legal actions implied by the current state.
-- Keep it simple: no multi-turn plans, no speculative moves outside allowed actions.
 - If uncertain or no good move exists, WAIT is acceptable.
-- Do not restate full game rules; focus on decisions.
 
 ---
 
 # GAME INFO
 {GAME_INFO}
 
----
-
-# RESPONSE FORMAT
-Respond with a tool call to 'final_result' with TeamTurnPlan.
 """
+## RESPONSE FORMAT
+#Respond with a tool call to 'final_result' with TeamTurnPlan.
 #DO NOT: Call 'final_result' with a placeholder text like "arguments_final_result".
 
 
 executer_compact_agent = Agent[GameDeps, TeamTurnPlan](
-    "openrouter:openai/gpt-5",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    "openrouter:x-ai/grok-3-mini-beta",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=TeamTurnPlan,
     model_settings=OpenRouterModelSettings(
@@ -127,12 +123,12 @@ def full_prompt(ctx: RunContext[GameDeps]) -> str:
     highlights = "\n".join(f"- {h}" for h in analyst["highlights"]) if analyst["highlights"] else "- None."
 
     return f"""
-# STRATEGY (current)
+# STRATEGIST TELLS:
 {strategy_text}
 
 ---
 
-# ANALYSES (latest)
+# ANALYST TELLS:
 Analysis: {analyst['analysis']}
 Key points for executor:
 {highlights}

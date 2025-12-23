@@ -282,15 +282,8 @@ class LLMCompactAgent(BaseAgent):
             "# LAST STRATEGY\n"
             f"{last_strategy_text}\n"
             "\n"
-            "# CALLBACK CONDITIONS\n"
-            f"{callback_text}\n"
-            "\n"
             "# WHAT HAPPENED SINCE LAST STRATEGY\n"
             f"{since_last_notes}\n"
-            "\n"
-            "# OBSERVED EVENTS SINCE LAST STRATEGY\n"
-            f"{recent_events}\n"
-            "\n"
             "# LATEST ANALYSIS\n"
             f"{last_analysis}\n"
             "\n"
@@ -584,19 +577,6 @@ class LLMCompactAgent(BaseAgent):
                     "team": (target_memory or {}).get("team"),
                     "type": (target_memory or {}).get("type") or "UNKNOWN",
                 }
-            if (
-                attacker_friend
-                and result.success
-                and result.target_id is not None
-                and (not target_info.get("team") or not target_info.get("type"))
-            ):
-                # Friendly shots are validated against visibility, so it's safe to
-                # resolve target metadata even if the target died post-combat.
-                target_ent = world.get_entity(result.target_id)
-                if target_ent:
-                    target_info["team"] = target_ent.team.name if hasattr(target_ent, "team") else None
-                    target_info["type"] = target_ent.kind.name if hasattr(target_ent, "kind") else None
-
             combat_entries.append(
                 {
                     "attacker": attacker_info,
