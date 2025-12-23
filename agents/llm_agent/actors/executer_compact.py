@@ -106,7 +106,7 @@ Respond with a tool call to 'final_result' with TeamTurnPlan.
 
 
 executer_compact_agent = Agent[GameDeps, TeamTurnPlan](
-    "openrouter:openai/gpt-5-mini",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    "openrouter:openai/gpt-5",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=TeamTurnPlan,
     model_settings=OpenRouterModelSettings(

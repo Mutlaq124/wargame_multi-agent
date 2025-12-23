@@ -13,23 +13,13 @@ from agents.llm_agent.prompts.game_info import GAME_INFO
 load_dotenv()
 
 
-ANALYST_TASK = """
-Your job is to read, carefully and objectively analyse the current game status along  with history of events, actions and the current game strategy (created by the director), and convert it to a well explained clear, concise analysis telling what is going on the game board verbally for the 'field executer'.
-Field executer will read your analysis after each turn to take actions. You can highlight/suggest some key-points inside your analysis to the 'field executer' to make things easier for him.
-
-- After each turn along with your analysis you can optionally record some key events/facts for future-self (they are only seen by you), like killed entities, fired missiles, anything you seem could be relevant for your future-self to better understand the history.
-- You will given the current strategy along with some re-strategize conditions by the 'strategy directory' specifying you when it is the time to re-plan.
-- Thus you are responsible to take a 're-strategize' decision based on your analysis. It might mean current strategy phase is over either because it was successful or it was a failure and we need a new plan for the next phase.
-- Keep it clear and concise.
-"""
-
 
 class AnalystCompactOutput(BaseModel):
     analysis: str = Field(
-        description="Detailed analysis and narration of the board state for field execution. Cite specific board facts and explain your reasoning for each observation."
+        description="Detailed analysis and narration of the board state for field execution. Cite specific board facts and explain your reasoning for each observation. Do not recommend actions."
     )
     key_points_for_executor: List[str] = Field(
-        description="Optional bullet highlights or reminders for the executor to pay attention to this turn.",
+        description="Optional bullet highlights or risks the executor should notice this turn.",
         default_factory=list,
     )
     key_facts: List[str] = Field(
@@ -54,19 +44,82 @@ def _strip_turn_prefix(text: str, turn: int) -> str:
     return cleaned.strip(":- ").strip() or text.strip()
 
 
-def _format_key_facts(analyst_history: Dict[int, "AnalystCompactOutput"]) -> str:
-    if not analyst_history:
-        return "- None recorded yet."
-    lines: List[str] = []
+def _collect_step_logs(
+    history: dict[int, dict],
+    max_turns: int,
+    team_name: Optional[str],
+) -> Dict[int, tuple[list[str], list[str]]]:
+    if not history:
+        return {}
+    logs: Dict[int, tuple[list[str], list[str]]] = {}
+    turns = sorted(history.keys())[-max_turns:]
+    for turn in turns:
+        turn_log = history[turn] or {}
+        our_lines: List[str] = []
+        enemy_lines: List[str] = []
+
+        for move in turn_log.get("movement", []) or []:
+            if move.get("team") == team_name:
+                our_lines.append(_describe_movement(move))
+            else:
+                enemy_lines.append(_describe_movement(move))
+
+        for combat in turn_log.get("combat", []) or []:
+            attacker_team = combat.get("attacker", {}).get("team")
+            if attacker_team == team_name:
+                our_lines.append(_describe_combat(combat))
+            else:
+                enemy_lines.append(_describe_combat(combat))
+
+        if our_lines or enemy_lines:
+            logs[turn] = (our_lines, enemy_lines)
+    return logs
+
+
+def _format_history(
+    analyst_history: Dict[int, "AnalystCompactOutput"],
+    visible_history: Dict[int, Dict[str, Any]],
+    max_turns: int,
+    team_name: Optional[str],
+) -> str:
+    step_logs = _collect_step_logs(visible_history, max_turns, team_name)
+    key_facts: Dict[int, list[str]] = {}
     for turn in sorted(analyst_history.keys()):
-        key_facts = [f for f in (analyst_history[turn].key_facts or []) if str(f).strip()]
-        if not key_facts:
-            continue
-        lines.append(f"- Turn {turn}:")
-        for fact in key_facts:
-            cleaned = _strip_turn_prefix(str(fact), turn)
-            lines.append(f"  - {cleaned}")
-    return "\n".join(lines) if lines else "- None recorded yet."
+        facts = [f for f in (analyst_history[turn].key_facts or []) if str(f).strip()]
+        if facts:
+            key_facts[turn] = [str(f) for f in facts]
+
+    all_turns = sorted(set(step_logs.keys()) | set(key_facts.keys()))
+    if not all_turns:
+        return "- No history yet."
+
+    lines: List[str] = []
+    for turn in all_turns:
+        lines.append(f"### Turn {turn}")
+
+        if turn in key_facts:
+            lines.append("  **Key Notes by You (Taken at Turn Start):**")
+            for fact in key_facts[turn]:
+                cleaned = _strip_turn_prefix(str(fact), turn)
+                lines.append(f"    - {cleaned}")
+
+        if turn in step_logs:
+            our_lines, enemy_lines = step_logs[turn]
+            lines.append("  **Observable Logs (At Turn End):**")
+            lines.append("    Ally actions:")
+            if our_lines:
+                lines.extend([f"      - {l}" for l in our_lines])
+            else:
+                lines.append("      - None observed.")
+            lines.append("    Enemy actions (observed):")
+            if enemy_lines:
+                lines.extend([f"      - {l}" for l in enemy_lines])
+            else:
+                lines.append("      - None observed.")
+
+        lines.append("")
+
+    return "\n".join(lines).strip()
 
 
 def _describe_movement(entry: Dict[str, Any]) -> str:
@@ -116,56 +169,30 @@ def _describe_combat(entry: Dict[str, Any]) -> str:
 
 
 def _format_step_logs(history: dict[int, dict], max_turns: int, current_turn: int, team_name: Optional[str]) -> str:
-    if not history:
-        return "- No visible logs captured yet."
+    del current_turn
+    logs = _collect_step_logs(history, max_turns, team_name)
+    if not logs:
+        return ""
     lines: List[str] = []
-    turns = sorted(history.keys())[-max_turns:]
-    for turn in turns:
-        delta = current_turn - turn
-        if delta == 1:
-            header = f"**Last turn (Turn {turn}):**"
-        elif delta > 1:
-            header = f"**{delta} turns ago (Turn {turn}):**"
-        else:
-            header = f"**Turn {turn}:**"
-        turn_log = history[turn] or {}
-        our_lines: List[str] = []
-        enemy_lines: List[str] = []
-
-        for move in turn_log.get("movement", []) or []:
-            if move.get("team") == team_name:
-                our_lines.append(_describe_movement(move))
-            else:
-                enemy_lines.append(_describe_movement(move))
-
-        for combat in turn_log.get("combat", []) or []:
-            attacker_team = combat.get("attacker", {}).get("team")
-            if attacker_team == team_name:
-                our_lines.append(_describe_combat(combat))
-            else:
-                enemy_lines.append(_describe_combat(combat))
-
-        lines.append(f"{header}")
-        lines.append("OUR ACTIONS")
+    for turn in sorted(logs.keys()):
+        our_lines, enemy_lines = logs[turn]
+        lines.append(f"Turn {turn}:")
+        lines.append("  Ally actions:")
         if our_lines:
-            lines.extend([f"  - {l}" for l in our_lines])
+            lines.extend([f"    - {l}" for l in our_lines])
         else:
-            lines.append("  - None observed.")
-
-        lines.append("")  # spacing between our and enemy sections
-        lines.append("ENEMY ACTIONS (Observed)")
+            lines.append("    - None observed.")
+        lines.append("  Enemy actions:")
         if enemy_lines:
-            lines.extend([f"  - {l}" for l in enemy_lines])
+            lines.extend([f"    - {l}" for l in enemy_lines])
         else:
-            lines.append("  - None observed.")
-
-        lines.append("")  # blank line between turns for clarity
-
+            lines.append("    - None observed.")
+        lines.append("")
     return "\n".join(lines).strip()
 
 
 analyst_compact_agent = Agent[GameDeps, AnalystCompactOutput](
-    "openrouter:openai/gpt-5-mini",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    "openrouter:openai/gpt-5",#"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=AnalystCompactOutput,
     model_settings=OpenRouterModelSettings(
@@ -176,22 +203,36 @@ analyst_compact_agent = Agent[GameDeps, AnalystCompactOutput](
 )
 
 
+ANALYST_TASK = """
+Your job is to read, carefully and objectively analyse the current game status along with history of events, actions 
+and the current game strategy (created by the director), and convert it to a well explained clear, concise analysis 
+telling what is going on the game board verbally for the 'field executer'.
+
+Field executer will read your analysis after each turn to take actions. You can highlight key-points 
+inside your analysis to the 'field executer' to make things easier for him.
+
+- After each turn along with your analysis you can optionally record some key events/facts for future-self (they are only seen by you), like killed entities, fired missiles, anything you seem could be relevant for your future-self to better understand the history.
+- You will given the current strategy along with some re-strategize conditions by the 'strategy directory' specifying you when it is the time to re-plan.
+- Thus you are responsible to take a 're-strategize' decision based on your analysis. It might mean current strategy phase is over either because it was successful or it was a failure and we need a new plan for the next phase.
+- Keep it clear and concise.
+"""
+
+
 @analyst_compact_agent.instructions
 def full_prompt(ctx: RunContext[GameDeps]) -> str:
     deps = ctx.deps
     team_label = deps.team_name
 
     strategy_text = (
-        deps.strategy_plan.to_text(include_analysis=True)
+        deps.strategy_plan.to_text(include_analysis=False)
         if getattr(deps, "strategy_plan", None)
         else "No strategy provided yet."
     )
     history = getattr(deps, "analyst_history", {}) or {}
-    key_facts = _format_key_facts(history)
-    step_logs = _format_step_logs(
-        getattr(deps, "visible_history", {}),
+    history_text = _format_history(
+        history,
+        getattr(deps, "visible_history", {}) or {},
         getattr(deps, "max_history_turns", 3),
-        getattr(deps, "current_turn_number", 0),
         getattr(deps, "team_name", None),
     )
     prev_turns = [t for t in history.keys() if t < getattr(deps, "current_turn_number", 0)]
@@ -201,12 +242,12 @@ def full_prompt(ctx: RunContext[GameDeps]) -> str:
     current_state = deps.current_state or "No current state available."
 
     return f"""
-# ROLE
-You are the analyst supporting the strategist and executer agents for {team_label}.
+# YOUR ROLE
+You are the analyst supporting the strategist and executer agents for {team_label} Team to win a 2D grid combat game.
 
 ---
 
-# TASK
+# YOUR TASK
 {ANALYST_TASK}
 
 ---
@@ -216,17 +257,13 @@ You are the analyst supporting the strategist and executer agents for {team_labe
 
 ---
 
-# STRATEGY
+# STRATEGIST TELLS YOU
 {strategy_text}
 
 ---
 
-# HISTORY
-## Key Notes/Facts derived by analyst itself
-{key_facts}
-
-## Last {getattr(deps, "max_history_turns", 5)} Turns Observable Step Logs
-{step_logs}
+# OBSERVABLE AVAILABLE HISTORY TO YOU
+{history_text}
 
 ## Previous Turn Analysis{prev_heading_suffix}
 {previous_analysis}
@@ -240,8 +277,8 @@ You are the analyst supporting the strategist and executer agents for {team_labe
 
 # OUTPUT
 Use the AnalystCompactOutput schema with:
-- analysis: clear narrative for executor with embedded highlights where helpful.
-- key_points_for_executor: bullet reminders if any.
+- analysis: clear narrative for executor with embedded highlights where helpful. Do not recommend actions.
+- key_points_for_executor: bullet observations or risks; no action recommendations.
 - key_facts: facts for future-self (concise).
 - needs_replan: True only if conditions match strategist callbacks or the plan is invalidated.
 - replan_reason: short reason if needs_replan is True.

@@ -297,8 +297,6 @@ class LLMCompactAgent(BaseAgent):
             "# CURRENT STATE\n"
             f"{current_state}\n"
             "\n"
-            "# RESPONSE FORMAT\n"
-            "Optionally include a <thinking>...</thinking> block, then call 'final_result' with concrete fields; never use placeholder arguments like 'arguments_final_result'.\n"
         )
 
     def _summarize_key_facts_since_last_strategy(self) -> str:
@@ -586,6 +584,18 @@ class LLMCompactAgent(BaseAgent):
                     "team": (target_memory or {}).get("team"),
                     "type": (target_memory or {}).get("type") or "UNKNOWN",
                 }
+            if (
+                attacker_friend
+                and result.success
+                and result.target_id is not None
+                and (not target_info.get("team") or not target_info.get("type"))
+            ):
+                # Friendly shots are validated against visibility, so it's safe to
+                # resolve target metadata even if the target died post-combat.
+                target_ent = world.get_entity(result.target_id)
+                if target_ent:
+                    target_info["team"] = target_ent.team.name if hasattr(target_ent, "team") else None
+                    target_info["type"] = target_ent.kind.name if hasattr(target_ent, "kind") else None
 
             combat_entries.append(
                 {

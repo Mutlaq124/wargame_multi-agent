@@ -13,13 +13,14 @@ load_dotenv()
 
 class UnitStrategy(BaseModel):
     entity_id: int = Field(description="Friendly unit id.")
-    role: str = Field(description="One-sentence role/priority for this unit aligned to the plan cite the specific context justifying this role.")
-
+    #role: str = Field(description="One-sentence role/priority for this unit aligned to the plan cite the specific context justifying this role.")
+    role: str = Field(description="High-level short-term standing role and order for this entity to execute the current strategy.")
 
 class StrategyOutput(BaseModel):
-    analysis: str = Field(
-        description="Detailed analysis of current state. For each point, cite the specific context facts that led to your conclusion and explain your reasoning."
-    )
+    # analysis: str = Field(
+    #     description="Detailed analysis of current state. For each point, cite the specific context facts that led to your conclusion and explain your reasoning."
+    # )
+    analysis: str = Field(description="Step-by-step analysis of current state, threats, opportunities")
     strategy: str = Field(description="High-level short-term gameplan to win as a team.")
     unit_strategies: List[UnitStrategy] = Field(description="Per-unit roles and postures for all alive friendlies.")
     call_me_back_if: List[str] = Field(description="Observable re-strategize triggers (concise conditions).")
@@ -71,8 +72,8 @@ Analyze the current game rules and tactical guides carefully. Identify the key s
 
 3. Clear re-strategize triggers: Define specific conditions that would invalidate the current plan and require a new strategy (e.g., loss of critical units, mission objective completed, enemy formation changes). Re-strategizing is costly—only trigger when the situation fundamentally changes.
 
-Act as a tactical director, not a field commander — focus on high-level, enduring strategy rather than turn-by-turn or micro-management decisions. 
-Don't overcomplicate stuff, it is a simple game.
+Act as a strategşc director, not a field commander — focus on high-level, enduring strategy rather than turn-by-turn or micro-management decisions. 
+Don't overcomplicate things, it is a simple game.
 
 ---
 
@@ -91,16 +92,13 @@ Don't overcomplicate stuff, it is a simple game.
 - strategy: team-level short-term gameplan (no micro orders).
 - unit_strategies: per-unit role + posture for each alive friendly.
 - call_me_back_if: observable, concise triggers to re-strategize.
-
----
-
-## RESPONSE FORMAT
-Return a tool call to 'final_result' using the StrategyOutput schema.
 """
+# ## RESPONSE FORMAT
+# Return a tool call to 'final_result' using the StrategyOutput schema.
 #DO NOT: Call 'final_result' with a placeholder text like "arguments_final_result".
 
 strategist_compact_agent = Agent[GameDeps, StrategyOutput](
-    "openrouter:openai/gpt-5-mini", #"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
+    "openrouter:openai/gpt-5", #"openrouter:deepseek/deepseek-v3.1-terminus:exacto",
     deps_type=GameDeps,
     output_type=StrategyOutput,            # ✅ use output_type (not result_type)
     model_settings=OpenRouterModelSettings(
