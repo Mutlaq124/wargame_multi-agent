@@ -27,7 +27,7 @@ uv run python main.py
 ```
 
 ### Arhcitecture Design
-![Multi-Agentic Architecture for Wargame](images/agentic-agent-v2.drawio.png)
+![Multi-Agentic Architecture for Wargame](images/Wargame_agentic_workflow.png)
 
 The server starts at `http://127.0.0.1:8000` and auto-opens the browser.  
 Logs go to stdout and `storage/logs/backend.log`.
