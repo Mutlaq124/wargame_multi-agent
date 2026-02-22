@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 31
+================================================================================
+
+{
+  "turn": 31,
+  "priorities": [
+    "Maintain air superiority and press advantage",
+    "Eliminate high-value target 6"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence on enemy positions and movements"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible enemy in center, protect HVT 6"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 439
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

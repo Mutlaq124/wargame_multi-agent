@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 16
+================================================================================
+
+{
+  "turn": 16,
+  "priorities": ["Maintain air superiority", "Locate enemy forces"],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence, avoid combat due to low missile count"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Actively search for and engage enemy targets"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets and maintain missile reserves"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 531
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

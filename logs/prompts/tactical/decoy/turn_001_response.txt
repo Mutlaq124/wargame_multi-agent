@@ -1,0 +1,17 @@
+================================================================================
+TACTICAL RESPONSE - DECOY - TURN 1
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 12,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "Aggressive mode, moving LEFT to approach the closest enemy (id: 3) which is to the West, and draw fire."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

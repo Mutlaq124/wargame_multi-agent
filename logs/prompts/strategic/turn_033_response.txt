@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 33
+================================================================================
+
+{
+  "turn": 33,
+  "priorities": [
+    "Maintain air superiority and eliminate threats",
+    "Exploit enemy concentration on left"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions, avoid direct engagement"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage and destroy visible enemy aircraft in left sector"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 462
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

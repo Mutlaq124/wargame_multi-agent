@@ -340,9 +340,12 @@ class CombatResolver:
         # Use world RNG or our own
         rng = self._rng if self._rng is not None else world.rng
         
-        # Roll for hit
+        # Deterministic hit system with 25% threshold
+        # If probability < 25%, always miss
+        # If probability >= 25%, always hit
+        # Still generate a "roll" for display purposes
         roll = rng.random()
-        hit = roll <= prob
+        hit = prob >= 0.25
         
         # Consume missile
         attacker.missiles -= 1
@@ -362,8 +365,8 @@ class CombatResolver:
         enemy_team_view = world.get_team_view(target.team)
         enemy_team_view.record_enemy_fired(attacker.id)
         
-        # Generate log
-        hit_str = "HIT" if hit else "MISS"
+        # Generate log with threshold info
+        hit_str = "HIT" if hit else "MISS (p<25%)"
         log = (
             f"{attacker.label()} fires at {target.label()} "
             f"(d={distance:.1f}, p={prob:.2f}, roll={roll:.2f}) -> {hit_str}"

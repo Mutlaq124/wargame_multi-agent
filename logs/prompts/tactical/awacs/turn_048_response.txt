@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 48
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 1,
+      "idx": 2,
+      "why": "RECON mode: Retreat from HIGH threat AWACS (id:6) at dist 2 to maintain safety and avoid engagement."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AWACS
+- Response Length: 208
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

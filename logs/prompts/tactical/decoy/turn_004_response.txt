@@ -1,0 +1,17 @@
+================================================================================
+TACTICAL RESPONSE - DECOY - TURN 4
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 12,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "Aggressive mode, moving left to approach the critical threat at W and draw fire, as per DECOY tactics."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

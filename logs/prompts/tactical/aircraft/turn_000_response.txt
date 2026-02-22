@@ -1,0 +1,23 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 0
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 10,
+      "idx": 4,
+      "action_type": "MOVE",
+      "why": "RECON mode, moving right to cautiously approach and detect enemies without engaging, avoiding occupied positions."
+    },
+    {
+      "id": 11,
+      "idx": 1,
+      "action_type": "MOVE",
+      "why": "RECON mode, moving up to cautiously approach and detect enemies without engaging, avoiding occupied positions."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

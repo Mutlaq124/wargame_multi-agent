@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - SAM - TURN 44
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 4,
+      "idx": 1,
+      "why": "DEFENSIVE mode, no critical threats to shoot. Toggle radar ON to improve situational awareness."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: SAM
+- Response Length: 203
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

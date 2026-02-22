@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 41
+================================================================================
+
+{
+  "turn": 41,
+  "priorities": [
+    "Maintain air superiority and offensive posture",
+    "Eliminate high value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Provide intel, support SAM operations, avoid direct engagement"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible threats, protect HVT 6, exploit air superiority"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 469
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

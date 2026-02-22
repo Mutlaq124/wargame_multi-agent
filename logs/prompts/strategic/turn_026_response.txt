@@ -1,0 +1,32 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 26
+================================================================================
+
+{
+  "turn": 26,
+  "priorities": [
+    "Maintain air superiority and gather intel",
+    "Prepare for potential enemy re-engagement"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Search for enemy forces and maintain situational awareness"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from potential threats"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 443
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

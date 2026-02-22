@@ -1,0 +1,26 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 13
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 3,
+      "idx": 5,
+      "why": "AGGRESSIVE mode: Shoot enemy 9 (AIRCRAFT) with hit_prob 0.1, as it is above the threshold of 0.1."
+    }
+  ],
+  "claimed_targets": [
+    9
+  ]
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 214
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

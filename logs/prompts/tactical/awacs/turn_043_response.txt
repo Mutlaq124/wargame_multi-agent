@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 43
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 1,
+      "idx": 0,
+      "why": "AWACS in RECON mode. Nearest enemy is an AWACS at 2 tiles, which is a HIGH threat. As an AWACS, I should not engage in combat. I am not in immediate danger (can_they_hit_me: false). Waiting is the safest option to avoid combat and maintain reconnaissance."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AWACS
+- Response Length: 363
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 23
+================================================================================
+
+{
+  "turn": 23,
+  "priorities": [
+    "Maintain air superiority and gather intel",
+    "Prepare for future engagements"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence, avoid engagement due to low missile count"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Search for and engage any visible enemy forces"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets and prepare for potential threats"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 581
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

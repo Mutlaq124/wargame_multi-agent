@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 8
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 1,
+      "idx": 1,
+      "why": "AWACS in SUPPORT mode. Enemy AIRCRAFT (id:9) is 11 tiles away but can_they_hit_me is true. Prioritize survival and RETREAT."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AWACS
+- Response Length: 231
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

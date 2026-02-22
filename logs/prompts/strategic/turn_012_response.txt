@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 12
+================================================================================
+
+{
+  "turn": 12,
+  "priorities": [
+    "Exploit air superiority, eliminate visible threats",
+    "Maintain air superiority and protect assets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence, avoid combat due to low missile count"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible enemy in center sector, press air superiority"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied forces from potential counter-attack"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 609
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 14
+================================================================================
+
+{
+  "turn": 14,
+  "priorities": ["Maintain air superiority", "Eliminate visible threats"],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Provide intel, avoid combat due to low missile count"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible enemy in center sector"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from potential counter-attack"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 526
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

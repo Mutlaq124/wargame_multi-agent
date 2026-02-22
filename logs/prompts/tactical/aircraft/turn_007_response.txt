@@ -1,0 +1,23 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 7
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 10,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "No missiles, cannot shoot. Moving LEFT to APPROACH enemy id 5, which is a HIGH threat."
+    },
+    {
+      "id": 11,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "Low on missiles (1). No HVT. Moving LEFT to APPROACH enemy id 6, which is a HIGH threat."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

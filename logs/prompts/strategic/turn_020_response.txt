@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 20
+================================================================================
+
+{
+  "turn": 20,
+  "priorities": [
+    "Maintain air superiority and gather intelligence",
+    "Identify and eliminate enemy forces"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence on enemy positions and movements"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Actively search for and engage any visible enemy units"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from potential enemy incursions"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 589
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

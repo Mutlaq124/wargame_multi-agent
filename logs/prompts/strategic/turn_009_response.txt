@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 9
+================================================================================
+
+{
+  "turn": 9,
+  "priorities": ["Maintain air superiority", "Eliminate visible threats"],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence, avoid combat due to low missile count"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage enemy aircraft in center sector, press advantage"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from concentrated enemy threats"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 549
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

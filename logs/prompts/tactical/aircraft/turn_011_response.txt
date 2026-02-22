@@ -1,0 +1,32 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 11
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 2,
+      "idx": 5,
+      "why": "AGGRESSIVE mode: Shooting CRITICAL threat (id:9) with hit_prob 0.41. This also satisfies the survival override for CRITICAL threats."
+    },
+    {
+      "id": 3,
+      "idx": 5,
+      "why": "AGGRESSIVE mode: Shooting HIGH threat (id:8) with hit_prob 0.17, which is above the 0.1 threshold for AGGRESSIVE mode."
+    }
+  ],
+  "claimed_targets": [
+    9,
+    8
+  ]
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 434
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 2
+================================================================================

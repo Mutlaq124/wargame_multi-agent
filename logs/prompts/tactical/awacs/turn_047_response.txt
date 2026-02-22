@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 47
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 1,
+      "idx": 2,
+      "why": "Unit 1 is an AWACS in RECON mode. It has an enemy AWACS at dist 2, which is a HIGH threat. Since it cannot shoot, it should RETREAT to avoid engagement and maintain distance from the enemy AWACS."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AWACS
+- Response Length: 303
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

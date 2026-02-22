@@ -71,6 +71,11 @@ class GameRunner:
     # ------------------------------------------------------------------#
     # Core API
     # ------------------------------------------------------------------#
+    def get_current_frame(self) -> Frame:
+        """Return the current world state as a display-only Frame (no step)."""
+        world = self._clone_world_with_observations(self._state["world"])
+        return Frame(world=world, done=self._done)
+
     def step(
         self,
         injections: Optional[Dict[str, Any]] = None,
@@ -104,11 +109,14 @@ class GameRunner:
         merged_actions = {**blue_actions, **red_actions}
         self._state, _rewards, self._done, self._last_info = self.env.step(merged_actions)
 
+        # Clone the world AFTER actions execute (for synchronized display)
+        world_after = self._clone_world_with_observations(self._state["world"])
+
         if self._done:
-            self._final_world = self._clone_world_with_observations(self._state["world"])
+            self._final_world = world_after.clone()
 
         return Frame(
-            world=world_before,
+            world=world_after,  # Show world AFTER actions (synchronized)
             actions=merged_actions,
             action_metadata={"blue": blue_meta, "red": red_meta},
             step_info=self._last_info,

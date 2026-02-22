@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 29
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 2,
+      "idx": 2,
+      "why": "No enemies visible. AGGRESSIVE mode, so prefer MOVE_WEST bias to search for targets."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 192
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

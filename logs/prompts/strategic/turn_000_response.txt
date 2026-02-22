@@ -1,0 +1,46 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 0
+================================================================================
+
+{
+  "turn": 0,
+  "situation_analysis": "We have air superiority with a numerical advantage against three scattered enemy aircraft concentrated in the center. Our AWACS and Decoy are vulnerable with low missile coverage.",
+  "enemy_formation": "SCATTERED",
+  "momentum_suggestion": "SITUATION_NEUTRAL",
+  "priorities": [
+    "Establish early radar coverage and identify enemy positions",
+    "Protect AWACS and Decoy from early engagement",
+    "Prepare for an aggressive push once enemy positions are confirmed"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Establish wide radar coverage while maintaining safe distance."
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "RECON",
+      "priority": "Move forward cautiously to detect enemy aircraft without engaging."
+    },
+    {
+      "role": "DECOY",
+      "mode": "RECON",
+      "priority": "Advance to draw out enemy fire and confirm locations."
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Maintain stealth and prepare to defend the AWACS if threatened."
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 1131
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 2000
+================================================================================

@@ -1,0 +1,26 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 3
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 10,
+      "idx": 5,
+      "action_type": "SHOOT",
+      "why": "Aggressive mode, shooting HIGH threat AIRCRAFT #3 with 17% hit probability."
+    },
+    {
+      "id": 11,
+      "idx": 6,
+      "action_type": "SHOOT",
+      "why": "Aggressive mode, shooting HIGH threat AIRCRAFT #4 with 25% hit probability."
+    }
+  ],
+  "claimed_targets": [
+    3,
+    4
+  ]
+}
+
+================================================================================

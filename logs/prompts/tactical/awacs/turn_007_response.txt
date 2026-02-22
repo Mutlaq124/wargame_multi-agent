@@ -1,0 +1,17 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 7
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 9,
+      "idx": 0,
+      "action_type": "WAIT",
+      "why": "AWACS is unarmed and all enemies are at a LOW threat distance (>10). No immediate danger, so waiting is safe and conserves movement for when it's needed."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

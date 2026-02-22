@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 29
+================================================================================
+
+{
+  "turn": 29,
+  "priorities": [
+    "Maintain air superiority and press advantage",
+    "Eliminate high-value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel while preserving critical asset"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage any visible threats in center sector"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 428
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

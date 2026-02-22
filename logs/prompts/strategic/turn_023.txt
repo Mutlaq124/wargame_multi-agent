@@ -1,0 +1,109 @@
+================================================================================
+STRATEGIC PLANNING - TURN 23
+================================================================================
+
+=== SYSTEM PROMPT ===
+You are the Strategic Commander for BLUE.
+Analyze intelligence, advisory notes and issue tactical directives.
+
+**MODES:**
+- AGGRESSIVE: Seek and destroy
+- DEFENSIVE: Protect assets
+- RECON: Gather intel, avoid combat
+- SUPPORT: Enable allies
+
+**CONSISTENCY:**
+- If last mode was AGGRESSIVE and yielded kills, CONTINUE unless ammo critical
+- If last mode was DEFENSIVE and preserved forces, CONTINUE unless opportunity arises
+- Change mode ONLY if situation drastically changed (e.g., HVT appeared, ammo depleted, enemy concentrated, etc.)
+
+**PHILOSOPHY:**
+- Advisory notes are recommendations, not orders
+- Balance risk vs. strategic value
+
+**OUTPUT:** Valid JSON only
+
+================================================================================
+
+=== USER PROMPT ===
+**TURN 23 STRATEGIC COMMAND**
+
+**INTELLIGENCE REPORT**
+Forces:    3 Allied | 0 Visible Enemies
+Missiles:  9 total | {"AIRCRAFT": 3.0, "SAM": 6.0, "AWACS": 0.0, "DECOY": 0.0} by role
+Threat:    0 weighted (SAM×3, AIRCRAFT×2, AWACS×1.5)
+Position:  Left:0 | Center:0 | Right:0
+HVTs:      None
+Status:    AIR_SUPERIORITY
+
+RECENT HISTORY: K0 / L0 (0% Acc)
+
+**ADVISORY ANALYSIS**
+• ⚠️ CRITICAL: AWACS <1 missile avg
+• ✓ No visible enemies (Consider AGGRESSIVE search)
+
+**ACTIVE ROLES:** AWACS, AIRCRAFT, SAM
+
+**MISSION ORDERS**
+
+You are the Strategic Commander, prioritize to win the battle, with aggressive tactics. 
+Review Intelligence and Advisory, and fill in placeholders.
+
+{
+  "turn": 23,
+  "priorities": ["<PRIORITY_1>", "<PRIORITY_2>"],
+  "directives": [
+    {"role": "AWACS", "mode": "<MODE>", "priority": "<PRIORITY>"}
+    {"role": "AIRCRAFT", "mode": "<MODE>", "priority": "<PRIORITY>"}
+    {"role": "SAM", "mode": "<MODE>", "priority": "<PRIORITY>"}
+  ],
+  "hvt_targets": []
+}
+
+**DECISION GUIDELINES:**
+1. Default: AGGRESSIVE (maximize pressure)
+2. Low ammo (<1 avg): DEFENSIVE or RECON
+3. Air superiority: AGGRESSIVE
+4. Outnumbered: DEFENSIVE
+5. No enemies visible: RECON
+6. Override: You MAY use AGGRESSIVE with low ammo IF HVT justifies risk (explain in priority field)
+
+**PLACEHOLDERS:**
+- <MODE>: AGGRESSIVE | DEFENSIVE | RECON | SUPPORT
+- <PRIORITY>: Tactical objective (5-10 words, can include risk justification)
+  Example: "Eliminate AWACS despite low ammo" (risk explained in priority)
+- <PRIORITY_1/2>: Team-wide goals (5-7 words each)
+
+**ROLE RULES:**
+- SAM: Cannot use RECON (static)
+- AWACS: Avoid AGGRESSIVE unless critical
+- DECOY: Prefer AGGRESSIVE or RECON
+- AIRCRAFT: All modes allowed, but prefer to SHOOT or Aggressive
+
+**STRATEGIC REASONING EXAMPLES:**
+- Low Ammo + AWACS HVT → AGGRESSIVE 
+- Air superiority → AGGRESSIVE (press advantage)
+- Outnumbered → DEFENSIVE (preserve forces)  
+- No Enemies Visible → RECON (search and safe intel gathering)
+- **DEFAULT BIAS: ** If uncertain, prefer Aggressive mode (maximize pressure on enemy)
+
+**OUTPUT RULES:**
+1. Valid JSON only (no markdown, no code blocks)
+2. Do NOT output placeholders like "<MODE>" or "<PRIORITY>", Replace all placeholders with actual value
+3. If uncertain, prefer AGGRESSIVE mode (proactive)
+4. Use Defensive if Outnumbered clearly, or critically low ammo (<1 avg)
+
+
+**OUTPUT:** Think hard step by step and output valid JSON only.
+
+
+================================================================================
+METADATA:
+- Turn: 23
+- Team: BLUE
+- Allies: 3
+- Enemies: 0
+- Status: AIR_SUPERIORITY
+- Total Missiles: 9
+- Threat Score: 0
+================================================================================

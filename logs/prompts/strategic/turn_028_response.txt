@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 28
+================================================================================
+
+{
+  "turn": 28,
+  "priorities": [
+    "Exploit air superiority, eliminate HVT",
+    "Maintain pressure on enemy center"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on HVT 6, avoid direct engagement"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage any visible threats, prioritize HVT 6"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 430
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

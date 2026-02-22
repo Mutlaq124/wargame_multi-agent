@@ -1,0 +1,45 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 2
+================================================================================
+
+{
+  "turn": 2,
+  "situation_analysis": "Enemy forces are scattered across the center, posing a moderate threat. Our AWACS and DECOY have limited missile defense, requiring careful positioning.",
+  "enemy_formation": "SCATTERED",
+  "momentum_suggestion": "SITUATION_NEUTRAL",
+  "priorities": [
+    "Locate and engage enemy aircraft in the center sector.",
+    "Protect our AWACS and SAMs from flank attacks."
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Maintain central position for maximum radar coverage, staying clear of potential enemy engagement zones."
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Advance towards the center to engage detected enemy aircraft, prioritizing targets that pose a threat to our AWACS or SAMs."
+    },
+    {
+      "role": "DECOY",
+      "mode": "RECON",
+      "priority": "Move forward to scout for additional enemy positions and draw potential enemy fire, screening our main force."
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Hold current positions, activating radar to cover the central sector and prepare for engagement if enemy aircraft approach."
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 1247
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 2000
+================================================================================

@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 12
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 3,
+      "idx": 0,
+      "why": "No valid shot against HIGH threat (id:9) with hit_prob 0.0. Waiting to re-evaluate next turn."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 201
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

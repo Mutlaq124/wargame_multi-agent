@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 38
+================================================================================
+
+{
+  "turn": 38,
+  "priorities": [
+    "Exploit air superiority, eliminate HVT",
+    "Maintain pressure on enemy left sector"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel, support SAM with target data"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Target HVT 6, exploit air superiority"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 424
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

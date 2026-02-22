@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - SAM - TURN 17
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 4,
+      "idx": 1,
+      "why": "No enemies detected, toggling radar ON to search for threats."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: SAM
+- Response Length: 169
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

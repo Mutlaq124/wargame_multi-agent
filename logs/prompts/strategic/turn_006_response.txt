@@ -1,0 +1,46 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 6
+================================================================================
+
+{
+  "turn": 6,
+  "situation_analysis": "We have air superiority and strong momentum, but our aircraft and AWACS are critically low on missiles. The enemy is concentrated in the center, with one aircraft still missing.",
+  "enemy_formation": "CONCENTRATED_CENTER",
+  "momentum_suggestion": "MAINTAIN_AGGRESSIVE",
+  "priorities": [
+    "Eliminate remaining enemy aircraft",
+    "Conserve aircraft missiles",
+    "Protect AWACS"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Maintain radar coverage for SAMs and avoid engagement."
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "DEFENSIVE",
+      "priority": "Avoid direct engagement due to low ammo; support SAMs by drawing fire if necessary."
+    },
+    {
+      "role": "DECOY",
+      "mode": "AGGRESSIVE",
+      "priority": "Advance to bait enemy fire and draw attention away from our armed units."
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage high-threat enemy aircraft within range, prioritizing targets detected by AWACS."
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 1107
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 2000
+================================================================================

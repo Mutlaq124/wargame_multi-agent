@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 17
+================================================================================
+
+{
+  "turn": 17,
+  "priorities": [
+    "Maintain air superiority",
+    "Locate and eliminate enemy forces"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Provide wide-area surveillance and intel gathering"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Actively search for and engage any visible threats"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from potential air threats"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 552
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

@@ -1,0 +1,210 @@
+================================================================================
+TACTICAL EXECUTION - AWACS - TURN 9
+================================================================================
+
+=== SYSTEM PROMPT ===
+You are a AWACS tactical operator for BLUE.
+
+**THREAT LEVELS (per enemy):**
+- CRITICAL: Combat unit within 3 tiles (can shoot THIS turn)
+- HIGH: Combat unit 4-6 tiles (can engage next turn)
+- MEDIUM: Combat unit 7-10 tiles OR close AWACS/DECOY
+- LOW: Enemy >10 tiles (strategic positioning)
+
+**TYPE-SPECIFIC THREATS:**
+- AIRCRAFT/SAM: Use distance-based threat (CRITICAL if ≤3 tiles)  
+- AWACS: Max threat = HIGH (radar advantage, not combat)
+- DECOY: Max threat = MEDIUM (distraction risk, no weapons)
+
+**SAFETY CHECK:**
+- If can_they_hit_me: true → I am in their weapon range (SHOOT or RETREAT)
+- If can_they_hit_me: false → I am safe from their fire 
+
+**MOVEMENT EFFECTS:**
+- APPROACH: Closer to enemy (use in AGGRESSIVE mode)
+- RETREAT: Farther from enemy (use in DEFENSIVE mode)
+- FLANK: Perpendicular movement (use in RECON mode)
+- EXPLORE: No enemies visible (search/patrol)
+
+**HIT PROBABILITY THRESHOLDS (role-specific in constraints):**
+- AIRCRAFT: Shoot at hit_prob >0.1 (AGGRESSIVE), >0.15 (DEFENSIVE)  # ✅ CLARIFIED
+- SAM: Shoot at hit_prob >0.25 (area denial role)
+- Always shoot CRITICAL threats if hit_prob >0.1 (survival override)
+
+**MODE GUIDELINES:**
+- AGGRESSIVE: Prefer APPROACH + shoot HIGH/CRITICAL threats with hit_prob >0.3
+- DEFENSIVE: Prefer RETREAT, shoot only CRITICAL threats
+- RECON: Prefer FLANK/EXPLORE, avoid combat unless CRITICAL threat
+- SUPPORT: Maintain position, radar ON when needed
+
+**DECISION PRIORITY:**
+1. **Survival:** Eliminate CRITICAL threats (dist ≤3) even with low hit_prob (>0.1)
+2. **Strategic Value:** Shoot HVTs if hit_prob >0.15 (worth the missile)
+3. **Mission:** Follow mode directive (AGGRESSIVE/DEFENSIVE/RECON)
+4. **Efficiency:** Prefer high hit_prob shots when multiple targets available
+5. **Coordination:** Don't shoot claimed targets or move to occupied positions
+
+**CRITICAL OUTPUT RULE:**
+You MUST provide exactly ONE decision for EVERY unit in the units array.
+
+**OUTPUT:** Valid JSON only.
+
+================================================================================
+
+=== USER PROMPT ===
+**AWACS TACTICAL - Mode: RECON**
+Objective: Gather intelligence, avoid combat due to low missile count
+
+**CONSTRAINTS:**
+- NO moving to occupied positions: []
+- NO shooting claimed targets (check Claimed Targets list)
+- Choose idx from opts array
+
+**IMPORTANT: Each option in 'opts' has:**
+- `idx`: Index to use in your decision (0, 1, 2, etc.)
+- `act`: Action type (SHOOT, MOVE, WAIT, TOGGLE)
+- `description`: Human-readable explanation of what this action does
+- Additional fields depending on action type (tgt, hit_prob, dir, effect, etc.)
+
+- **CRITICAL: You MUST output exactly ONE decision for EACH unit in the units array** (if 3 units, output 3 decisions)
+- Each unit can only act once per turn (no duplicate unit IDs in decisions)
+- Only use enemy ids present in opts (DO NOT invent targets)
+
+**AWACS TACTICS:**
+- **Survival:** RETREAT if ANY can_they_hit_me=true | Stay >5 tiles from ALL enemies
+- **Radar:** ON if ALL safe + nearest >10 tiles | OFF if ANY threat OR nearest ≤10 tiles
+- **AGGRESSIVE Override:** Keep radar ON at 8-10 tiles if priority="Enable radar" (mission-critical risk)
+
+**Units:**
+[
+ {
+  "id": 1,
+  "missiles": 0,
+  "enemies": [
+   {
+    "id": 9,
+    "type": "AIRCRAFT",
+    "dist": 11,
+    "rel_pos": [
+     7,
+     -4
+    ],
+    "threat": "LOW",
+    "hit_prob": 0.16,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
+    "id": 7,
+    "type": "AIRCRAFT",
+    "dist": 13,
+    "rel_pos": [
+     10,
+     -3
+    ],
+    "threat": "LOW",
+    "hit_prob": 0.0,
+    "can_they_hit_me": false,
+    "is_hvt": false
+   }
+  ],
+  "opts": [
+   {
+    "idx": 0,
+    "act": "WAIT",
+    "description": "WAIT (do nothing this turn)"
+   },
+   {
+    "idx": 1,
+    "act": "MOVE",
+    "dir": "UP",
+    "effect": "RETREAT",
+    "description": "MOVE UP (RETREAT nearest enemy)"
+   },
+   {
+    "idx": 2,
+    "act": "MOVE",
+    "dir": "DOWN",
+    "effect": "APPROACH",
+    "description": "MOVE DOWN (APPROACH nearest enemy)"
+   },
+   {
+    "idx": 3,
+    "act": "MOVE",
+    "dir": "LEFT",
+    "effect": "RETREAT",
+    "description": "MOVE LEFT (RETREAT nearest enemy)"
+   },
+   {
+    "idx": 4,
+    "act": "MOVE",
+    "dir": "RIGHT",
+    "effect": "APPROACH",
+    "description": "MOVE RIGHT (APPROACH nearest enemy)"
+   }
+  ]
+ }
+]
+
+**Claimed Targets:** []
+
+
+**SEARCH LOGIC:** When no enemies visible, use 'bias' field in move actions (mode-specific patrol pattern).
+
+**CRITICAL SHOOTING RULES:**
+1. **ALWAYS shoot CRITICAL threats** (dist ≤3) if hit_prob >0.05 (survival overrides mode)
+2. **ALWAYS shoot HVTs** if hit_prob >0.1 (strategic priority overrides mode)
+3. **In AGGRESSIVE mode:** Shoot ANY enemy with hit_prob >0.1
+4. **In DEFENSIVE mode:** Shoot only CRITICAL threats
+5. **In RECON mode:** Shoot HVTs or CRITICAL threats only
+6. **If missiles <2:** Only shoot HVTs or CRITICAL threats (conserve ammo)
+
+**DECISION PROCESS (in order):**
+1. Check for CRITICAL threats (dist ≤3) → If hit_prob >0.05, SHOOT
+2. Check for HVTs with hit_prob >0.1 → SHOOT
+3. Check mode (AGGRESSIVE/DEFENSIVE/RECON) → Follow mode-specific rules but can be overturned 
+4. If no valid shots, consider MOVE actions (check 'bias' field for search direction)
+
+**MOVEMENT LOGIC:**
+- If "effect: SEARCH" → Follow 'bias' field (e.g., "MOVE_EAST", "PATROL_EDGES")
+- If "effect: APPROACH" → Move closer to nearest enemy (increase pressure)
+- If "effect: RETREAT" → Move away from enemy (preserve life)
+- If "effect: FLANK" → Move perpendicular to enemy (tactical positioning)
+- "bias" field shows desired direction (e.g., "MOVE_EAST means move EAST)
+
+**TARGET PRIORITY:**
+AWACS > AIRCRAFT > SAM > DECOY (prefer eliminating high-value targets first)
+
+**OUTPUT FORMAT (example):**
+{
+  "decisions": [
+    {"id": 4, "idx": 0, "why": "Shoot CRITICAL threat (id:12) with hit_prob 0.35"},
+    {"id": 5, "idx": 2, "why": "APPROACH to close distance to HVT"}
+  ],
+  "claimed_targets": [12]
+}
+
+**CRITICAL: Your decisions array MUST contain exactly 1 decisions (one per unit in the units array above).**
+
+
+================================================================================
+METADATA:
+- Role: AWACS
+- Turn: 9
+- Units: [1]
+- Unit Count: 1
+- Directive Mode: RECON
+- Directive Priority: Gather intelligence, avoid combat due to low missile count
+- Units with Data: 1
+- Claimed Targets: []
+- Occupied Positions: [(1, 10)]
+
+UNIT DETAILS:
+
+  Unit 1:
+    - Missiles: 0
+    - Options: 5 actions
+    - Enemies Visible: 2
+    - Nearest Enemy: ID 9 (AIRCRAFT) at 11 tiles, Threat: LOW
+
+================================================================================

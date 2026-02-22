@@ -1,0 +1,29 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 26
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 2,
+      "idx": 0,
+      "why": "No valid shots available. Waiting as no beneficial moves to approach HVT with 0 hit_prob."
+    },
+    {
+      "id": 3,
+      "idx": 2,
+      "why": "Missiles <2, so prioritizing RETREAT. Moving DOWN to RETREAT from nearest enemy."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 337
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 2
+================================================================================

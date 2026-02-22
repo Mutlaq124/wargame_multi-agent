@@ -1,0 +1,26 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 14
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 3,
+      "idx": 5,
+      "why": "AGGRESSIVE mode: Shoot enemy 7 (AIRCRAFT) with 0.17 hit_prob, which is > 0.1"
+    }
+  ],
+  "claimed_targets": [
+    7
+  ]
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 193
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

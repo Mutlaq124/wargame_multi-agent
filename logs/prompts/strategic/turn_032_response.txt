@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 32
+================================================================================
+
+{
+  "turn": 32,
+  "priorities": [
+    "Maintain air superiority and eliminate HVT",
+    "Pressure enemy center concentration"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions while preserving assets"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage any visible threats in the center sector"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 448
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

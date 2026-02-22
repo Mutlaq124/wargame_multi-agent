@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 24
+================================================================================
+
+{
+  "turn": 24,
+  "priorities": [
+    "Maintain air superiority and find enemy",
+    "Prepare for aggressive engagement"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence on enemy positions while preserving assets"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Actively search for and engage any visible enemy targets"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied forces and prepare for potential air threats"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 596
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

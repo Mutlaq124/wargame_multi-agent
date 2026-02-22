@@ -1,0 +1,26 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 21
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 3,
+      "idx": 5,
+      "why": "Unit 3 is in AGGRESSIVE mode. Enemy 10 is an HVT with a hit_prob of 0.17, which is greater than the 0.1 threshold for HVTs. Therefore, shoot the HVT."
+    }
+  ],
+  "claimed_targets": [
+    10
+  ]
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 267
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

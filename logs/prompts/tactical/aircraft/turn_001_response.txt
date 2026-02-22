@@ -1,0 +1,23 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 1
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 10,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "No immediate shooting opportunities (hit_prob=0). Moving LEFT to APPROACH enemies 2 and 5, which are at HIGH threat (dist 5)."
+    },
+    {
+      "id": 11,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "No immediate shooting opportunities (hit_prob=0). Moving LEFT to APPROACH enemy 3, which is at MEDIUM threat (dist 7)."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

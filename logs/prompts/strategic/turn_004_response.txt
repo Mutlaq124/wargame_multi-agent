@@ -1,0 +1,45 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 4
+================================================================================
+
+{
+  "turn": 4,
+  "situation_analysis": "The battlefield is balanced with no recent engagements. Enemy forces are scattered, with a concentration in the center sector, posing a potential threat.",
+  "enemy_formation": "SCATTERED",
+  "momentum_suggestion": "SITUATION_NEUTRAL",
+  "priorities": [
+    "Maintain radar coverage while protecting AWACS",
+    "Identify and engage enemy aircraft in the center sector"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "DEFENSIVE",
+      "priority": "Maintain maximum radar coverage while staying clear of enemy engagement range."
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Advance cautiously towards the center sector to engage detected enemy aircraft."
+    },
+    {
+      "role": "DECOY",
+      "mode": "AGGRESSIVE",
+      "priority": "Move forward into the central area to draw enemy fire and reveal positions."
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Hold current positions, remain stealthed if possible, and prepare to engage any enemy aircraft that close within range."
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 1148
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 2000
+================================================================================

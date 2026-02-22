@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 8
+================================================================================
+
+{
+  "turn": 8,
+  "priorities": [
+    "Maintain air superiority and exploit advantage",
+    "Neutralize enemy concentration in center"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Provide radar coverage and intel for offensive push"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible enemies in center, press advantage"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from potential counter-attack"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 585
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

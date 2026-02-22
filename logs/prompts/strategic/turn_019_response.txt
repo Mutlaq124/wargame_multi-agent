@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 19
+================================================================================
+
+{
+  "turn": 19,
+  "priorities": [
+    "Maintain air superiority and seek enemy units",
+    "Conserve SAM missiles for future threats"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Scan for enemy presence while conserving limited AWACS missiles"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Actively search and engage any visible enemy aircraft to maintain air superiority"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets and conserve SAM missiles until enemy threats are identified"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 658
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

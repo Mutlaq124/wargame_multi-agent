@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 46
+================================================================================
+
+{
+  "turn": 46,
+  "priorities": [
+    "Maintain air superiority and press advantage",
+    "Eliminate high value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence on enemy positions and movements"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage any visible threats to maintain air superiority"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 447
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

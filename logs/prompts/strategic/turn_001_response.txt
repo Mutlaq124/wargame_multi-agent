@@ -1,0 +1,46 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 1
+================================================================================
+
+{
+  "turn": 1,
+  "situation_analysis": "We have air superiority and a numerical advantage against a concentrated enemy force in the center. Our AWACS and Decoy are vulnerable to missile depletion.",
+  "enemy_formation": "CONCENTRATED_CENTER",
+  "momentum_suggestion": "SITUATION_NEUTRAL",
+  "priorities": [
+    "Establish forward radar coverage",
+    "Protect AWACS",
+    "Engage enemy aircraft with numerical superiority"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Maintain safe distance, provide radar coverage"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Advance and engage enemy aircraft, focusing fire"
+    },
+    {
+      "role": "DECOY",
+      "mode": "AGGRESSIVE",
+      "priority": "Advance as bait, draw enemy fire away from armed units"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Hold ground, prepare to engage any enemy aircraft that advance"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 1018
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 2000
+================================================================================

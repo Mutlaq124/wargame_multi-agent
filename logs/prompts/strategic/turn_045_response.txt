@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 45
+================================================================================
+
+{
+  "turn": 45,
+  "priorities": [
+    "Maintain air superiority and eliminate threats",
+    "Exploit enemy concentration on left"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy movements, avoid direct engagement"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage and eliminate visible enemy threats, capitalize on left concentration"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 482
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

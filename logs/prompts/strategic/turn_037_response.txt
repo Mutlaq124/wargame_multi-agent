@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 37
+================================================================================
+
+{
+  "turn": 37,
+  "priorities": [
+    "Maintain air superiority and eliminate HVT",
+    "Pressure enemy concentration on left"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on HVT and enemy positions"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage HVT and visible threats in left sector"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 431
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

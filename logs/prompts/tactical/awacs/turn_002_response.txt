@@ -1,0 +1,17 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 2
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 9,
+      "idx": 0,
+      "action_type": "WAIT",
+      "why": "AWACS is in a relatively safe position with no critical threats. The closest enemy is at a distance of 10, which is a medium threat. Waiting maintains the central position for radar coverage without moving closer to any threats."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

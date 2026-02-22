@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 11
+================================================================================
+
+{
+  "turn": 11,
+  "priorities": [
+    "Maintain air superiority and offensive pressure",
+    "Eliminate visible enemy threats"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Provide intelligence and support to offensive operations"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage and eliminate visible enemy aircraft and SAMs"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from potential counter-attacks"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 587
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 17
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 3,
+      "idx": 4,
+      "why": "No enemies visible, AGGRESSIVE mode, searching with MOVE_EAST bias."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 175
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

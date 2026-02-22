@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 15
+================================================================================
+
+{
+  "turn": 15,
+  "priorities": [
+    "Maintain air superiority and offensive pressure",
+    "Locate and engage enemy forces"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Scan for enemy presence while conserving missiles"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Actively search for and engage any enemy targets"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from potential air threats"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 569
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

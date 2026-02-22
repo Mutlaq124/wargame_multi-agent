@@ -1,0 +1,23 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 6
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 10,
+      "idx": 4,
+      "action_type": "MOVE",
+      "why": "Aircraft 10 has no missiles and is under HIGH threat from two enemies. Moving RIGHT retreats from the nearest enemy to conserve the unit."
+    },
+    {
+      "id": 11,
+      "idx": 2,
+      "action_type": "MOVE",
+      "why": "Aircraft 11 has low missiles (1) and is under HIGH threat. Moving DOWN retreats from the nearest enemy to conserve the unit, aligning with defensive mode and low ammo constraints."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

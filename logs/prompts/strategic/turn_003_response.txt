@@ -1,0 +1,40 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 3
+================================================================================
+
+{
+  "turn": 3,
+  "situation_analysis": "Allied forces maintain air superiority after eliminating an enemy aircraft, with one enemy aircraft remaining. Our AWACS and Decoy units have critically low missile counts, requiring careful management.",
+  "enemy_formation": "AGGRESSIVE_PUSH",
+  "momentum_suggestion": "SITUATION_NEUTRAL",
+  "priorities": [
+    "Eliminate the remaining enemy aircraft",
+    "Protect AWACS and conserve missiles"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "High"
+    },
+    {
+      "role": "DECOY",
+      "mode": "RECON",
+      "priority": "Medium"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "High"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 744
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 2000
+================================================================================

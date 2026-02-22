@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 21
+================================================================================
+
+{
+  "turn": 21,
+  "priorities": [
+    "Exploit air superiority, eliminate threats",
+    "Maintain offensive pressure on enemy"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel, avoid combat, support offensive"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible enemy, capitalize on air superiority"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets, defend against counter-attack"
+    }
+  ],
+  "hvt_targets": [10]
+}
+
+================================================================================
+METADATA:
+- Response Length: 575
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

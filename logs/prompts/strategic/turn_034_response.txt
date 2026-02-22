@@ -1,0 +1,32 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 34
+================================================================================
+
+{
+  "turn": 34,
+  "priorities": [
+    "Maintain air superiority and eliminate threats",
+    "Protect high-value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions, avoid direct engagement"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage and eliminate any detected enemy aircraft"
+    }
+  ],
+  "hvt_targets": [6]
+}
+
+================================================================================
+METADATA:
+- Response Length: 437
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

@@ -1,0 +1,29 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 8
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 2,
+      "idx": 4,
+      "why": "No valid shot, APPROACH nearest enemy (id:9) in AGGRESSIVE mode"
+    },
+    {
+      "id": 3,
+      "idx": 4,
+      "why": "No valid shot, APPROACH nearest enemy (id:9) in AGGRESSIVE mode"
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 294
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 2
+================================================================================

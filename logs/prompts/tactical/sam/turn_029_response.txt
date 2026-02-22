@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - SAM - TURN 29
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 4,
+      "idx": 1,
+      "why": "No immediate threats, toggling radar ON to improve situational awareness."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: SAM
+- Response Length: 181
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

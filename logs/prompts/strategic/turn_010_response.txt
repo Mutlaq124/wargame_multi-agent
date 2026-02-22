@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 10
+================================================================================
+
+{
+  "turn": 10,
+  "priorities": [
+    "Maintain air superiority and press advantage",
+    "Neutralize enemy concentration in center"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions, avoid direct engagement"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage and eliminate visible enemies in the center"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets from potential air threats"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 585
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

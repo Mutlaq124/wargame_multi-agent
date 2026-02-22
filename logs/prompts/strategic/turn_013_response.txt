@@ -1,0 +1,37 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 13
+================================================================================
+
+{
+  "turn": 13,
+  "priorities": [
+    "Maintain air superiority and press advantage",
+    "Eliminate visible enemy threats"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "SUPPORT",
+      "priority": "Provide intel and support to offensive operations"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage and destroy visible enemy aircraft in center"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied forces from potential counter-attack"
+    }
+  ],
+  "hvt_targets": []
+}
+
+================================================================================
+METADATA:
+- Response Length: 575
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

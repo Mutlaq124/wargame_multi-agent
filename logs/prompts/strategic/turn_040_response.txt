@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 40
+================================================================================
+
+{
+  "turn": 40,
+  "priorities": [
+    "Maintain air superiority and press advantage",
+    "Eliminate high value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence on enemy positions"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Defend left sector and engage visible threats"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 424
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

@@ -1,0 +1,32 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 30
+================================================================================
+
+{
+  "turn": 30,
+  "priorities": [
+    "Exploit air superiority, eliminate threats",
+    "Maintain center sector dominance"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions, avoid direct engagement"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage any visible threats in the center sector"
+    }
+  ],
+  "hvt_targets": [6]
+}
+
+================================================================================
+METADATA:
+- Response Length: 438
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

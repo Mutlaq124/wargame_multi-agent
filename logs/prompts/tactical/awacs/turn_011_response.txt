@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 11
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 1,
+      "idx": 2,
+      "why": "Unit 1 is an AWACS in SUPPORT mode. An enemy AIRCRAFT (id: 9) is within 11 tiles and can hit me. To ensure survival, the AWACS should RETREAT. Option 2 is a MOVE LEFT action with effect RETREAT."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AWACS
+- Response Length: 302
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

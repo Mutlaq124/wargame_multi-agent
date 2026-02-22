@@ -1,0 +1,32 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 42
+================================================================================
+
+{
+  "turn": 42,
+  "priorities": [
+    "Exploit air superiority for offensive push",
+    "Neutralize HVT 6 in left sector"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Maintain situational awareness and HVT tracking"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible enemy in left sector, protect assets"
+    }
+  ],
+  "hvt_targets": [6]
+}
+
+================================================================================
+METADATA:
+- Response Length: 432
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 41
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 1,
+      "idx": 2,
+      "why": "AWACS in SUPPORT mode. Nearest enemy is AWACS at dist 1, threat HIGH. Retreat from enemy to maintain distance and avoid direct engagement. Current position is within 5 tiles of an enemy, so retreat is preferred."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AWACS
+- Response Length: 319
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

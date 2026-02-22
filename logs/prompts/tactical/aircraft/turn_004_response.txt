@@ -1,0 +1,26 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 4
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 10,
+      "idx": 5,
+      "action_type": "SHOOT",
+      "why": "AGGRESSIVE mode: Shooting AIRCRAFT #2 with 25% hit probability, which is >0.1. This is the highest hit probability shot available."
+    },
+    {
+      "id": 11,
+      "idx": 5,
+      "action_type": "SHOOT",
+      "why": "AGGRESSIVE mode: Shooting AIRCRAFT #4 with 25% hit probability, which is >0.1. This is the highest hit probability shot available."
+    }
+  ],
+  "claimed_targets": [
+    2,
+    4
+  ]
+}
+
+================================================================================

@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 44
+================================================================================
+
+{
+  "turn": 44,
+  "priorities": [
+    "Exploit air superiority for enemy elimination",
+    "Maintain SAM coverage against threats"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on remaining enemy forces"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets with remaining missiles"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 433
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

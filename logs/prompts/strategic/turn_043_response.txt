@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 43
+================================================================================
+
+{
+  "turn": 43,
+  "priorities": [
+    "Capitalize on air superiority to eliminate threats",
+    "Maintain air superiority and protect high value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions in left sector"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible enemy in left sector to reduce threat"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 472
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

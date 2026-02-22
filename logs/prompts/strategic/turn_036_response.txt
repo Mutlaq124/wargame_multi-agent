@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 36
+================================================================================
+
+{
+  "turn": 36,
+  "priorities": [
+    "Exploit air superiority for aggressive push",
+    "Neutralize high-value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions and movements"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible threats and protect allied assets"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 434
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

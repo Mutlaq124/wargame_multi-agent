@@ -1,0 +1,180 @@
+================================================================================
+TACTICAL EXECUTION - SAM - TURN 41
+================================================================================
+
+=== SYSTEM PROMPT ===
+You are a SAM tactical operator for BLUE.
+
+**THREAT LEVELS (per enemy):**
+- CRITICAL: Combat unit within 3 tiles (can shoot THIS turn)
+- HIGH: Combat unit 4-6 tiles (can engage next turn)
+- MEDIUM: Combat unit 7-10 tiles OR close AWACS/DECOY
+- LOW: Enemy >10 tiles (strategic positioning)
+
+**TYPE-SPECIFIC THREATS:**
+- AIRCRAFT/SAM: Use distance-based threat (CRITICAL if ≤3 tiles)  
+- AWACS: Max threat = HIGH (radar advantage, not combat)
+- DECOY: Max threat = MEDIUM (distraction risk, no weapons)
+
+**SAFETY CHECK:**
+- If can_they_hit_me: true → I am in their weapon range (SHOOT or RETREAT)
+- If can_they_hit_me: false → I am safe from their fire 
+
+**MOVEMENT EFFECTS:**
+- APPROACH: Closer to enemy (use in AGGRESSIVE mode)
+- RETREAT: Farther from enemy (use in DEFENSIVE mode)
+- FLANK: Perpendicular movement (use in RECON mode)
+- EXPLORE: No enemies visible (search/patrol)
+
+**HIT PROBABILITY THRESHOLDS (role-specific in constraints):**
+- AIRCRAFT: Shoot at hit_prob >0.1 (AGGRESSIVE), >0.15 (DEFENSIVE)  # ✅ CLARIFIED
+- SAM: Shoot at hit_prob >0.25 (area denial role)
+- Always shoot CRITICAL threats if hit_prob >0.1 (survival override)
+
+**MODE GUIDELINES:**
+- AGGRESSIVE: Prefer APPROACH + shoot HIGH/CRITICAL threats with hit_prob >0.3
+- DEFENSIVE: Prefer RETREAT, shoot only CRITICAL threats
+- RECON: Prefer FLANK/EXPLORE, avoid combat unless CRITICAL threat
+- SUPPORT: Maintain position, radar ON when needed
+
+**DECISION PRIORITY:**
+1. **Survival:** Eliminate CRITICAL threats (dist ≤3) even with low hit_prob (>0.1)
+2. **Strategic Value:** Shoot HVTs if hit_prob >0.15 (worth the missile)
+3. **Mission:** Follow mode directive (AGGRESSIVE/DEFENSIVE/RECON)
+4. **Efficiency:** Prefer high hit_prob shots when multiple targets available
+5. **Coordination:** Don't shoot claimed targets or move to occupied positions
+
+**CRITICAL OUTPUT RULE:**
+You MUST provide exactly ONE decision for EVERY unit in the units array.
+
+**OUTPUT:** Valid JSON only.
+
+================================================================================
+
+=== USER PROMPT ===
+**SAM TACTICAL - Mode: AGGRESSIVE**
+Objective: Engage visible threats, protect HVT 6, exploit air superiority
+
+**CONSTRAINTS:**
+- NO moving to occupied positions: [(1, 12)]
+- NO shooting claimed targets (check Claimed Targets list)
+- Choose idx from opts array
+
+**IMPORTANT: Each option in 'opts' has:**
+- `idx`: Index to use in your decision (0, 1, 2, etc.)
+- `act`: Action type (SHOOT, MOVE, WAIT, TOGGLE)
+- `description`: Human-readable explanation of what this action does
+- Additional fields depending on action type (tgt, hit_prob, dir, effect, etc.)
+
+- **CRITICAL: You MUST output exactly ONE decision for EACH unit in the units array** (if 3 units, output 3 decisions)
+- Each unit can only act once per turn (no duplicate unit IDs in decisions)
+- Only use enemy ids present in opts (DO NOT invent targets)
+
+**SAM TACTICS:**
+- **Target Priority:** AIRCRAFT > AWACS > SAM > DECOY
+- **AGGRESSIVE mode:** Shoot all threats with hit_prob >0.25 (area denial)
+- **DEFENSIVE mode:** Shoot only CRITICAL threats (dist ≤3) if hit_prob >0.2
+- **RECON mode:** Maintain position, shoot only Critical threats
+
+**EXAMPLES:**
+- CRITICAL AIRCRAFT at 2 tiles, hit_prob 0.3 → SHOOT (immediate threat)
+- HIGH SAM at 6 tiles, hit_prob 0.5 → SHOOT (area denial)
+
+**Units:**
+[
+ {
+  "id": 4,
+  "missiles": 6,
+  "enemies": [
+   {
+    "id": 6,
+    "type": "AWACS",
+    "dist": 7,
+    "rel_pos": [
+     -2,
+     5
+    ],
+    "threat": "MEDIUM",
+    "hit_prob": 0.0,
+    "can_they_hit_me": false,
+    "is_hvt": true
+   }
+  ],
+  "opts": [
+   {
+    "idx": 0,
+    "act": "WAIT",
+    "description": "WAIT (do nothing this turn)"
+   },
+   {
+    "idx": 1,
+    "act": "TOGGLE",
+    "current": "OFF",
+    "description": "TOGGLE radar (currently OFF)"
+   }
+  ]
+ }
+]
+
+**Claimed Targets:** []
+
+
+**SEARCH LOGIC:** When no enemies visible, use 'bias' field in move actions (mode-specific patrol pattern).
+
+**CRITICAL SHOOTING RULES:**
+1. **ALWAYS shoot CRITICAL threats** (dist ≤3) if hit_prob >0.05 (survival overrides mode)
+2. **ALWAYS shoot HVTs** if hit_prob >0.1 (strategic priority overrides mode)
+3. **In AGGRESSIVE mode:** Shoot ANY enemy with hit_prob >0.1
+4. **In DEFENSIVE mode:** Shoot only CRITICAL threats
+5. **In RECON mode:** Shoot HVTs or CRITICAL threats only
+6. **If missiles <2:** Only shoot HVTs or CRITICAL threats (conserve ammo)
+
+**DECISION PROCESS (in order):**
+1. Check for CRITICAL threats (dist ≤3) → If hit_prob >0.05, SHOOT
+2. Check for HVTs with hit_prob >0.1 → SHOOT
+3. Check mode (AGGRESSIVE/DEFENSIVE/RECON) → Follow mode-specific rules but can be overturned 
+4. If no valid shots, consider MOVE actions (check 'bias' field for search direction)
+
+**MOVEMENT LOGIC:**
+- If "effect: SEARCH" → Follow 'bias' field (e.g., "MOVE_EAST", "PATROL_EDGES")
+- If "effect: APPROACH" → Move closer to nearest enemy (increase pressure)
+- If "effect: RETREAT" → Move away from enemy (preserve life)
+- If "effect: FLANK" → Move perpendicular to enemy (tactical positioning)
+- "bias" field shows desired direction (e.g., "MOVE_EAST means move EAST)
+
+**TARGET PRIORITY:**
+AWACS > AIRCRAFT > SAM > DECOY (prefer eliminating high-value targets first)
+
+**OUTPUT FORMAT (example):**
+{
+  "decisions": [
+    {"id": 4, "idx": 0, "why": "Shoot CRITICAL threat (id:12) with hit_prob 0.35"},
+    {"id": 5, "idx": 2, "why": "APPROACH to close distance to HVT"}
+  ],
+  "claimed_targets": [12]
+}
+
+**CRITICAL: Your decisions array MUST contain exactly 1 decisions (one per unit in the units array above).**
+
+
+================================================================================
+METADATA:
+- Role: SAM
+- Turn: 41
+- Units: [4]
+- Unit Count: 1
+- Directive Mode: AGGRESSIVE
+- Directive Priority: Engage visible threats, protect HVT 6, exploit air superiority
+- Units with Data: 1
+- Claimed Targets: []
+- Occupied Positions: [(1, 12)]
+
+UNIT DETAILS:
+
+  Unit 4:
+    - Missiles: 6
+    - Options: 2 actions
+    - Enemies Visible: 1
+    - Nearest Enemy: ID 6 (AWACS) at 7 tiles, Threat: MEDIUM
+
+================================================================================

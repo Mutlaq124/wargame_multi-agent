@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - SAM - TURN 46
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 4,
+      "idx": 1,
+      "why": "No immediate threats. Toggling radar ON to gain situational awareness in AGGRESSIVE mode."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: SAM
+- Response Length: 197
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

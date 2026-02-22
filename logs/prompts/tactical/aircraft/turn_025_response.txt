@@ -1,0 +1,26 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 25
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 3,
+      "idx": 5,
+      "why": "Unit 3 (AIRCRAFT) is in AGGRESSIVE mode. Enemy 10 (SAM) is a CRITICAL threat and an HVT with a hit_prob of 0.45. Shooting is the priority."
+    }
+  ],
+  "claimed_targets": [
+    10
+  ]
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 256
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

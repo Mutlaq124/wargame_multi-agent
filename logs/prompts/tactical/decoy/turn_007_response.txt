@@ -1,0 +1,17 @@
+================================================================================
+TACTICAL RESPONSE - DECOY - TURN 7
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 12,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "As a DECOY in AGGRESSIVE mode, I need to draw fire. Moving left (APPROACH) brings me closer to the critical threat and other high threats, fulfilling my role to screen for allies."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

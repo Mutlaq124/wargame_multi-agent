@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - SAM - TURN 12
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 4,
+      "idx": 1,
+      "why": "No immediate threats and radar is OFF. Toggling radar ON to gain situational awareness in DEFENSIVE mode."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: SAM
+- Response Length: 213
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

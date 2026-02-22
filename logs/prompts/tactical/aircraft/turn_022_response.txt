@@ -1,0 +1,24 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 22
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 3,
+      "idx": 4,
+      "why": "No enemies visible, AGGRESSIVE mode, searching with MOVE_WEST bias, choosing MOVE RIGHT as it is the only option that is not UP/DOWN/LEFT"
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
+METADATA:
+- Role: AIRCRAFT
+- Response Length: 245
+- Model: google/gemini-2.5-flash
+- Temperature: 0.3
+- Max Tokens: 3000
+- Expected Units: 1
+================================================================================

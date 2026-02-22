@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Ops Deck</title>
@@ -18,31 +19,42 @@
       --blue: #79a6ff;
       --yellow: #ffe38f;
     }
-    * { box-sizing: border-box; }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: radial-gradient(circle at 20% 20%, rgba(124,210,255,0.08), transparent 45%),
-                  radial-gradient(circle at 80% 0%, rgba(255,179,107,0.08), transparent 40%),
-                  linear-gradient(180deg, #0b0f18, #0a0d14 40%, #080b12);
+      background: radial-gradient(circle at 20% 20%, rgba(124, 210, 255, 0.08), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(255, 179, 107, 0.08), transparent 40%),
+        linear-gradient(180deg, #0b0f18, #0a0d14 40%, #080b12);
       color: var(--text);
       font: 14px/1.4 "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
+
     header {
       padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
       border-bottom: 1px solid var(--border);
-      background: rgba(13,17,28,0.85);
+      background: rgba(13, 17, 28, 0.85);
       backdrop-filter: blur(6px);
       position: sticky;
       top: 0;
       z-index: 10;
     }
-    header h1 { margin: 0; font-size: 18px; letter-spacing: 0.4px; }
+
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.4px;
+    }
+
     #app {
       display: grid;
       grid-template-columns: minmax(580px, 1fr) 360px;
@@ -52,17 +64,26 @@
       min-height: 0;
       align-items: start;
     }
+
     @media (max-width: 1100px) {
-      #app { grid-template-columns: 1fr; }
-      #control-panel { width: 100%; max-width: 100%; }
+      #app {
+        grid-template-columns: 1fr;
+      }
+
+      #control-panel {
+        width: 100%;
+        max-width: 100%;
+      }
     }
+
     .surface {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
     }
+
     #canvas-wrapper {
       position: relative;
       min-height: 560px;
@@ -71,6 +92,7 @@
       flex-direction: column;
       gap: 10px;
     }
+
     #main-canvas {
       width: 100%;
       height: min(78vh, 820px);
@@ -78,10 +100,11 @@
       max-height: calc(100vh - 170px);
       border-radius: 12px;
       border: 1px solid var(--border);
-      background: radial-gradient(circle at 40% 20%, rgba(124,210,255,0.05), transparent 45%),
-                  linear-gradient(180deg, #0f1420, #0b101a 55%, #0b0f17);
+      background: radial-gradient(circle at 40% 20%, rgba(124, 210, 255, 0.05), transparent 45%),
+        linear-gradient(180deg, #0f1420, #0b101a 55%, #0b0f17);
       display: block;
     }
+
     .panel {
       display: flex;
       flex-direction: column;
@@ -91,8 +114,19 @@
       width: 360px;
       max-width: 380px;
     }
-    .toolbar, .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    .toolbar .spacer { flex: 1; }
+
+    .toolbar,
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .toolbar .spacer {
+      flex: 1;
+    }
+
     .pill {
       padding: 6px 12px;
       border-radius: 999px;
@@ -104,23 +138,39 @@
       gap: 6px;
       font-weight: 600;
     }
+
     .pill.dot::before {
       content: "●";
       display: inline-block;
       font-size: 10px;
     }
-    .pill.good { color: var(--green); border-color: rgba(126,224,163,0.5); }
-    .pill.bad { color: var(--red); border-color: rgba(255,123,123,0.5); }
-    .pill.warn { color: var(--yellow); border-color: rgba(255,227,143,0.45); }
+
+    .pill.good {
+      color: var(--green);
+      border-color: rgba(126, 224, 163, 0.5);
+    }
+
+    .pill.bad {
+      color: var(--red);
+      border-color: rgba(255, 123, 123, 0.5);
+    }
+
+    .pill.warn {
+      color: var(--yellow);
+      border-color: rgba(255, 227, 143, 0.45);
+    }
+
     .pill.clickable {
       cursor: pointer;
       transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
     }
+
     .pill.clickable:hover {
       border-color: var(--accent);
       color: var(--text);
-      box-shadow: 0 0 0 1px rgba(124,210,255,0.25);
+      box-shadow: 0 0 0 1px rgba(124, 210, 255, 0.25);
     }
+
     .btn {
       appearance: none;
       background: #1b2235;
@@ -132,23 +182,74 @@
       font-weight: 700;
       transition: border-color 0.15s, transform 0.08s, background 0.2s;
     }
+
     .btn:disabled {
       opacity: 0.55;
       cursor: not-allowed;
       border-color: var(--border);
       transform: none;
     }
-    .btn:hover { border-color: var(--accent); }
-    .btn:active { transform: translateY(1px); }
-    .btn.primary { background: linear-gradient(180deg,#2b3954,#1f2a41); border-color: #39486b; }
-    .btn.success { background: linear-gradient(180deg,#1f3a2a,#1a2f22); border-color: #2f5c3f; color: var(--green); }
-    .btn.ghost { background: transparent; color: var(--muted); }
-    .btn.danger { border-color: rgba(255,123,123,0.6); color: var(--red); }
-    .btn-group { display: inline-flex; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-    .btn-group button { border: none; border-right: 1px solid var(--border); background: #1b2235; }
-    .btn-group button:last-child { border-right: none; }
-    .card-title { color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
-    .stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+
+    .btn:hover {
+      border-color: var(--accent);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn.primary {
+      background: linear-gradient(180deg, #2b3954, #1f2a41);
+      border-color: #39486b;
+    }
+
+    .btn.success {
+      background: linear-gradient(180deg, #1f3a2a, #1a2f22);
+      border-color: #2f5c3f;
+      color: var(--green);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .btn.danger {
+      border-color: rgba(255, 123, 123, 0.6);
+      color: var(--red);
+    }
+
+    .btn-group {
+      display: inline-flex;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .btn-group button {
+      border: none;
+      border-right: 1px solid var(--border);
+      background: #1b2235;
+    }
+
+    .btn-group button:last-child {
+      border-right: none;
+    }
+
+    .card-title {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .stack {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
     .tile {
       background: #111829;
       border: 1px solid var(--border);
@@ -156,8 +257,17 @@
       padding: 10px;
       min-height: 74px;
     }
-    .tile strong { display: block; color: var(--muted); font-size: 12px; margin-bottom: 4px; }
-    input, select, textarea {
+
+    .tile strong {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    input,
+    select,
+    textarea {
       background: #0f1422;
       color: var(--text);
       border: 1px solid var(--border);
@@ -165,25 +275,45 @@
       padding: 8px 10px;
       font: inherit;
     }
-    textarea { width: 100%; min-height: 90px; resize: vertical; }
-    input[type="range"] { accent-color: var(--accent); }
+
+    textarea {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+    }
+
     .drop-zone {
       border: 1px dashed var(--border);
       border-radius: 14px;
       padding: 14px;
       color: var(--muted);
-      background: linear-gradient(180deg, rgba(20,26,40,0.85), rgba(13,18,32,0.9));
+      background: linear-gradient(180deg, rgba(20, 26, 40, 0.85), rgba(13, 18, 32, 0.9));
       cursor: pointer;
       transition: border-color 0.2s, color 0.2s, background 0.25s;
     }
-    .drop-zone.drag { border-color: var(--accent); color: var(--accent); background: rgba(124,210,255,0.07); }
-    .upload-empty { text-align: center; opacity: 0.9; }
+
+    .drop-zone.drag {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(124, 210, 255, 0.07);
+    }
+
+    .upload-empty {
+      text-align: center;
+      opacity: 0.9;
+    }
+
     .upload-loaded {
       display: none;
       align-items: center;
       gap: 10px;
       justify-content: space-between;
     }
+
     .upload-chip {
       display: flex;
       align-items: center;
@@ -191,6 +321,7 @@
       flex: 1;
       min-width: 0;
     }
+
     .type-dot {
       width: 14px;
       height: 14px;
@@ -198,14 +329,24 @@
       border: 2px solid var(--border);
       flex-shrink: 0;
     }
-    .type-dot.scenario { background: var(--accent); box-shadow: 0 0 0 4px rgba(124,210,255,0.12); }
-    .type-dot.recording { background: var(--accent-2); box-shadow: 0 0 0 4px rgba(255,179,107,0.12); }
+
+    .type-dot.scenario {
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(124, 210, 255, 0.12);
+    }
+
+    .type-dot.recording {
+      background: var(--accent-2);
+      box-shadow: 0 0 0 4px rgba(255, 179, 107, 0.12);
+    }
+
     .upload-meta {
       display: flex;
       flex-direction: column;
       gap: 4px;
       min-width: 0;
     }
+
     .upload-name {
       background: transparent;
       border: none;
@@ -219,10 +360,15 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .upload-detail { color: var(--muted); font-size: 13px; }
+
+    .upload-detail {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .icon-btn {
       border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
+      background: rgba(255, 255, 255, 0.04);
       color: var(--muted);
       width: 26px;
       height: 26px;
@@ -233,8 +379,15 @@
       justify-content: center;
       font-weight: 900;
     }
-    .icon-btn:hover { color: var(--text); border-color: var(--accent); }
-    #meta-json, #actions-json, #info-json {
+
+    .icon-btn:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    #meta-json,
+    #actions-json,
+    #info-json {
       background: #0f1422;
       border-radius: 10px;
       padding: 8px;
@@ -244,8 +397,21 @@
       overflow: auto;
       border: 1px solid var(--border);
     }
-    .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .flex-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
     .tag {
       display: inline-flex;
       align-items: center;
@@ -257,6 +423,7 @@
       color: var(--muted);
       font-weight: 700;
     }
+
     .modal {
       position: fixed;
       inset: 0;
@@ -265,13 +432,18 @@
       justify-content: center;
       z-index: 50;
     }
-    .modal.open { display: flex; }
+
+    .modal.open {
+      display: flex;
+    }
+
     .modal-backdrop {
       position: absolute;
       inset: 0;
       background: rgba(8, 10, 16, 0.8);
       backdrop-filter: blur(6px);
     }
+
     .modal-card {
       position: relative;
       width: min(900px, 92vw);
@@ -280,12 +452,13 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 16px;
-      box-shadow: 0 14px 40px rgba(0,0,0,0.55);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
       display: flex;
       flex-direction: column;
       gap: 10px;
       z-index: 1;
     }
+
     .modal-card textarea {
       min-height: 320px;
       max-height: 56vh;
@@ -294,13 +467,21 @@
       font-size: 12px;
       background: #0b1020;
     }
-    .modal-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     details.collapsible {
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 8px 10px;
       background: #0f1421;
     }
+
     details.collapsible summary {
       list-style: none;
       cursor: pointer;
@@ -311,8 +492,17 @@
       color: var(--muted);
       font-weight: 700;
     }
-    details.collapsible summary::-webkit-details-marker { display: none; }
-    .summary-actions { display: inline-flex; gap: 8px; align-items: center; }
+
+    details.collapsible summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-actions {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
     .pill-btn {
       border: 1px solid var(--border);
       background: #1b2235;
@@ -322,6 +512,7 @@
       font-size: 12px;
       cursor: pointer;
     }
+
     .detail-row {
       padding: 8px 10px;
       border: 1px solid var(--border);
@@ -329,29 +520,334 @@
       background: #0f1421;
       margin-bottom: 8px;
     }
-    .detail-row .label { display: block; margin-bottom: 4px; }
+
+    .detail-row .label {
+      display: block;
+      margin-bottom: 4px;
+    }
+
     .entity-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 8px;
       margin-top: 6px;
     }
+
     .entity-chip {
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 8px;
       background: #0f1421;
     }
-    .entity-chip .label { margin: 0 0 4px 0; }
+
+    .entity-chip .label {
+      margin: 0 0 4px 0;
+    }
+
     .entity-action {
       margin-top: 10px;
       border: 1px dashed var(--border);
       border-radius: 10px;
       padding: 10px;
-      background: rgba(124,210,255,0.04);
+      background: rgba(124, 210, 255, 0.04);
+    }
+
+    /* Welcome Modal Styles */
+    .welcome-content {
+      width: min(800px, 100vw);
+      max-width: 100%;
+      text-align: center;
+    }
+
+    .welcome-content h2 {
+      color: var(--accent);
+      font-size: clamp(18px, 3vw, 24px);
+      margin: 0 0 14px 0;
+    }
+
+    .welcome-content .welcome-subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 0;
+      line-height: 1.4;
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      text-align: left;
+      margin: 14px 0 10px;
+    }
+
+    .rule-card {
+      background: rgba(124, 210, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .rule-card h4 {
+      color: var(--accent);
+      margin: 0 0 6px 0;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .rule-card ul {
+      margin: 0;
+      padding-left: 16px;
+      color: var(--muted);
+      font-size: 11px;
+      list-style: disc;
+    }
+
+    .rule-card li {
+      margin: 3px 0;
+    }
+
+    .game-rules-box {
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(124, 210, 255, 0.05);
+      border-radius: 8px;
+      border-left: 3px solid #7cd2ff;
+      text-align: left;
+    }
+
+    .game-rules-box h3 {
+      margin: 0 0 6px 0;
+      font-size: 13px;
+      color: #7cd2ff;
+    }
+
+    .game-rules-box ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+      list-style: disc;
+    }
+
+    .game-rules-box li {
+      margin: 2px 0;
+    }
+
+    /* Human Action Panel */
+    .action-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #1a2235, #141b2f);
+      border: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 14px 18px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(124, 210, 255, 0.15);
+      z-index: 40;
+      display: none;
+      min-width: 320px;
+      max-width: 500px;
+    }
+
+    .action-panel.visible {
+      display: block;
+    }
+
+    .action-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .action-panel-title {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .action-entity-type {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    .pending-actions-section {
+      margin-top: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+    }
+
+    .pending-actions-title {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .pending-action {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 8px;
+      background: rgba(126, 224, 163, 0.1);
+      border-radius: 4px;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .pending-action .entity-id {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .pending-action .action-label {
+      color: var(--green);
+    }
+
+    .no-pending {
+      color: var(--muted);
+      font-size: 11px;
+      font-style: italic;
+    }
+
+    .action-panel-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .action-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #1b2235;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      border-color: var(--accent);
+      background: rgba(124, 210, 255, 0.1);
+    }
+
+    .action-btn.selected {
+      border-color: #7cd2ff;
+      background: rgba(124, 210, 255, 0.15);
+      color: #7cd2ff;
+    }
+
+    .action-btn.move {
+      border-left: 3px solid var(--blue);
+    }
+
+    .action-btn.shoot {
+      border-left: 3px solid var(--red);
+    }
+
+    .action-btn.toggle {
+      border-left: 3px solid var(--yellow);
+    }
+
+    .action-btn.wait {
+      border-left: 3px solid var(--muted);
+    }
+
+    /* Human Turn Indicator */
+    .turn-indicator {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #1a2f3a, #162735);
+      border: 2px solid #7cd2ff;
+      border-radius: 10px;
+      padding: 10px 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      z-index: 35;
+      display: none;
+      text-align: center;
+    }
+
+    .turn-indicator.visible {
+      display: block;
+    }
+
+    .turn-indicator-text {
+      color: var(--green);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .turn-indicator-hint {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    /* Pending Actions List */
+    .pending-actions {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .pending-action-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      background: rgba(126, 224, 163, 0.08);
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .pending-action-entity {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .pending-action-action {
+      color: var(--green);
+    }
+
+    .entity-selectable {
+      cursor: pointer;
+    }
+
+    .entity-highlight {
+      animation: pulse-highlight 1.5s infinite;
+    }
+
+    @keyframes pulse-highlight {
+
+      0%,
+      100% {
+        filter: drop-shadow(0 0 8px rgba(124, 210, 255, 0.6));
+      }
+
+      50% {
+        filter: drop-shadow(0 0 16px rgba(124, 210, 255, 0.9));
+      }
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Ops Deck</h1>
@@ -375,9 +871,10 @@
         <div class="row">
           <button id="play-toggle-btn" class="btn primary">▶ Play</button>
           <button id="step-btn" class="btn">⏭ Step</button>
-          <label class="label">Speed</label>
-          <input id="speed-slider" type="range" min="0.25" max="5" step="0.25" value="1" style="width:160px;">
-          <span id="speed-label" class="pill">1.0x</span>
+          <!-- Human Turn Controls -->
+          <button id="next-turn-btn" class="btn success" style="display:none; margin-left:16px;">➡️ Next Turn</button>
+          <span id="human-turn-status" class="pill" style="display:none; background: #22c55e; color: white;">Your Turn
+            (BLUE)</span>
         </div>
         <div class="row">
           <label class="label">View</label>
@@ -387,7 +884,7 @@
             <option value="red">Red</option>
           </select>
           <label class="row" style="gap:4px;">
-            <input id="toggle-actions" type="checkbox" checked>
+            <input id="toggle-actions" type="checkbox">
             <span class="label">Actions</span>
           </label>
           <label class="row" style="gap:4px;">
@@ -414,7 +911,7 @@
         </div>
       </div>
       <canvas id="main-canvas" width="900" height="520"></canvas>
-      <div class="row">
+      <div class="row" style="display: none;">
         <div class="pill" id="winner-pill">Victory: —</div>
         <div class="pill" id="tracking-pill">Tracking: —</div>
         <div class="pill" id="entity-pill">Entities: —</div>
@@ -439,9 +936,83 @@
             </div>
           </div>
           <input type="file" id="upload-file" accept=".json" style="display:none">
+          <div style="margin-top: 10px; text-align: center;">
+            <button class="btn primary" id="use-default-scenario-btn" style="width: 100%;">
+              Use Default Scenario (Human vs LLM Agent)
+            </button>
+          </div>
         </div>
       </div>
 
+
+
+      <!-- Your Actions Panel (visible during human turn) -->
+      <div class="surface" id="your-actions-panel" style="display: none;">
+        <div class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Your Actions</span>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span id="turn-counter-pill" class="pill" style="font-size: 10px;">Turn 0</span>
+            <span class="pill" style="font-size: 10px; background: #3b82f6;">BLUE</span>
+          </div>
+        </div>
+        <div id="force-summary" style="font-size: 10px; color: var(--muted); padding: 4px 8px; margin-bottom: 6px;">
+        </div>
+        <div id="entity-actions-list" style="font-size: 12px; max-height: 350px; overflow-y: auto;">
+          <!-- Entity action rows will be populated here -->
+        </div>
+        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border);">
+          <button id="submit-actions-btn" class="btn success" style="width: 100%; position: relative;">
+            <span id="submit-btn-text">Submit Actions & End Turn</span>
+            <span id="submit-btn-spinner" style="display:none; position:absolute; right:12px;">...</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="surface" id="strategic-status-panel">
+        <div class="card-title" style="font-weight: 700; font-size: 14px;">LLM Agent Reasoning</div>
+        <div id="strategic-content" style="font-size: 12px;">
+          <!-- Combat Log - MOVED TO TOP -->
+          <details class="collapsible" open style="margin-bottom: 6px;">
+            <summary><span class="label">Combat Log</span></summary>
+            <div id="combat-log-list" style="padding: 6px 0; color: var(--text); font-size: 11px;">--</div>
+            <div
+              style="padding: 4px 8px; margin-top: 4px; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; border-radius: 3px; font-size: 10px; color: #ef4444;">
+              Shots with probability <25% will always <strong>MISS</strong>
+            </div>
+          </details>
+          <!-- Situation -->
+          <div class="detail-row" style="margin-bottom: 6px; padding: 6px 8px;">
+            <span class="label" style="font-size: 12px; font-weight: 400; color: var(--text);">Situation
+              Assessment</span>
+            <div id="situation-display" style="color: var(--text); margin-top: 2px; font-size: 11px; line-height: 1.4;">
+              --</div>
+          </div>
+          <!-- Formation & Momentum pills -->
+          <div class="row" style="gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+            <div class="pill" id="enemy-formation-pill" style="font-size: 11px;" title="Inferred enemy formation">
+              Formation: --</div>
+            <div class="pill" id="momentum-pill" style="font-size: 11px;" title="Momentum indicator">Momentum: --</div>
+          </div>
+          <!-- Force Composition - Hidden -->
+          <details class="collapsible" style="margin-bottom: 6px; display: none;">
+            <summary><span class="label">Force Composition</span></summary>
+            <div id="force-composition" style="padding: 6px 0; color: var(--muted); font-size: 11px;">--</div>
+          </details>
+          <!-- Priorities & Directives -->
+          <details class="collapsible" open style="margin-bottom: 6px;">
+            <summary><span class="label">Priorities & Directives</span></summary>
+            <div id="priorities-list" style="padding: 6px 0; color: var(--muted); font-size: 11px;">--</div>
+          </details>
+          <!-- Unit Reasoning -->
+          <details class="collapsible" open style="margin-bottom: 6px;">
+            <summary><span class="label">Unit Tactical Reasoning</span></summary>
+            <div id="unit-decisions-list" style="padding: 6px 0; max-height: 200px; overflow-y: auto; font-size: 11px;">
+              --</div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Loop Controls - Moved below LLM Agent Reasoning -->
       <div class="surface">
         <div class="card-title">Loop Controls</div>
         <div class="row" style="gap:10px; align-items: center;">
@@ -450,38 +1021,7 @@
         </div>
       </div>
 
-      <div class="surface">
-        <div class="card-title">Frame Details</div>
-        <div class="stack">
-          <details class="collapsible">
-            <summary>
-              <span class="label">Actions</span>
-              <span class="summary-actions">
-                <button class="pill-btn" id="open-actions-modal" type="button">Open</button>
-              </span>
-            </summary>
-            <pre id="actions-json">{}</pre>
-          </details>
-          <details class="collapsible">
-            <summary>
-              <span class="label">Metadata</span>
-              <span class="summary-actions">
-                <button class="pill-btn" id="open-meta-modal" type="button">Open</button>
-              </span>
-            </summary>
-            <pre id="meta-json">{}</pre>
-          </details>
-          <details class="collapsible">
-            <summary>
-              <span class="label">Info</span>
-              <span class="summary-actions">
-                <button class="pill-btn" id="open-info-modal" type="button">Open</button>
-              </span>
-            </summary>
-            <pre id="info-json">{}</pre>
-          </details>
-        </div>
-      </div>
+      <!-- Frame Details removed: JSON panels (Actions/Metadata/Info) not needed in production UI -->
     </div>
   </div>
 
@@ -560,6 +1100,92 @@
     </div>
   </div>
 
+  <!-- Welcome Modal -->
+  <div class="modal open" id="welcome-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card welcome-content">
+      <h2>Welcome to 2D War Game </h2>
+      <p class="welcome-subtitle">Simulation combat game for AI agents </p>
+      <div class="modal-actions" style="justify-content: center; margin-bottom: 14px;">
+        <button class="btn success" id="welcome-start-btn"
+          style="padding: 10px 40px; font-size: 15px; font-weight: 700; letter-spacing: 0.5px;">
+          &#9658; Start Game
+        </button>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule-card">
+          <h4> Aircraft (Fighter)</h4>
+          <ul>
+            <li><strong>WAIT</strong> - Hold position</li>
+            <li><strong>MOVE</strong> - Up, Down, Left, Right</li>
+            <li><strong>SHOOT</strong> - Attack visible enemies</li>
+          </ul>
+        </div>
+        <div class="rule-card">
+          <h4> SAM (Surface-to-Air Missile)</h4>
+          <ul>
+            <li><strong>WAIT</strong> - Hold position</li>
+            <li><strong>TOGGLE</strong> - Radar On/Off</li>
+            <li><strong>SHOOT</strong> - When radar ON</li>
+          </ul>
+        </div>
+        <div class="rule-card">
+          <h4> AWACS (Warning &amp; Control)</h4>
+          <ul>
+            <li><strong>WAIT</strong> - Hold position</li>
+            <li><strong>MOVE</strong> - Up, Down, Left, Right</li>
+            <li>No weapons (recon only)</li>
+          </ul>
+        </div>
+        <div class="rule-card">
+          <h4> Decoy</h4>
+          <ul>
+            <li><strong>WAIT</strong> - Hold position</li>
+            <li><strong>MOVE</strong> - Up, Down, Left, Right</li>
+            <li>Looks like aircraft to enemies</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="game-rules-box">
+        <h3> Game Rules</h3>
+        <ul>
+          <li><strong>You control BLUE</strong> vs RED (LLM Agent opponent)</li>
+          <li>Load the scenario, then click <strong>&#9658; Launch Scenario</strong></li>
+          <li>One action per unit per turn -> select from the sidebar</li>
+          <li>Shots with &lt;25% probability will <strong>MISS</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Turn Indicator -->
+  <div class="turn-indicator" id="turn-indicator">
+    <div class="turn-indicator-text"> Your Turn (BLUE)</div>
+    <div class="turn-indicator-hint">Select Actions of units from the list</div>
+  </div>
+
+  <!-- Action Selection Panel -->
+  <div class="action-panel" id="action-panel">
+    <div class="action-panel-header">
+      <div>
+        <span class="action-panel-title" id="action-entity-name">Select Entity</span>
+        <span class="action-entity-type" id="action-entity-type"></span>
+      </div>
+      <button class="action-panel-close" id="action-panel-close">×</button>
+    </div>
+    <div class="action-buttons" id="actions-grid"></div>
+    <div class="pending-actions-section">
+      <div class="pending-actions-title">Pending Actions:</div>
+      <div class="pending-actions" id="pending-actions-list"></div>
+    </div>
+    <div style="margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end;">
+      <button class="btn" id="clear-actions-btn">Clear All</button>
+      <button class="btn success" id="end-turn-btn">✓ End Turn</button>
+    </div>
+  </div>
+
   <script>
     const canvas = document.getElementById("main-canvas");
     const ctx = canvas.getContext("2d");
@@ -576,7 +1202,7 @@
       playTimer: null,
       speed: 1,
       pendingInjection: null,
-      showActions: true,
+      showActions: false,
       showRadar: false,
       showIds: true,
       showDeadEntities: true,
@@ -588,7 +1214,244 @@
       victoryInfo: null,
       uploadInfo: null,
       startingRun: false,
+      // Human vs Agent state
+      isHumanTurn: false,
+      humanTeam: "BLUE",
+      selectedEntityId: null,
+      pendingHumanActions: {}, // { entityId: actionData }
+      availableActionsCache: {}, // { entityId: actionsArray }
     };
+
+    // ----------- Human Turn Management -----------
+    function isHumanVsAgentGame() {
+      if (!state.scenario || !state.scenario.agents) return false;
+      return state.scenario.agents.some(a => a.type === "human");
+    }
+
+    function getHumanTeam() {
+      if (!state.scenario || !state.scenario.agents) return "BLUE";
+      const humanAgent = state.scenario.agents.find(a => a.type === "human");
+      return humanAgent ? humanAgent.team : "BLUE";
+    }
+
+    function showTurnIndicator(show) {
+      const indicator = document.getElementById("turn-indicator");
+      if (indicator) {
+        indicator.classList.toggle("visible", show);
+      }
+    }
+
+    function showActionPanel(show) {
+      const panel = document.getElementById("action-panel");
+      if (panel) {
+        panel.classList.toggle("visible", show);
+      }
+    }
+
+    function updatePendingActionsList() {
+      const listEl = document.getElementById("pending-actions-list");
+      if (!listEl) return;
+
+      const entries = Object.entries(state.pendingHumanActions);
+      if (entries.length === 0) {
+        listEl.innerHTML = '<div style="color: var(--muted); font-size: 11px;">No actions selected yet</div>';
+        return;
+      }
+
+      listEl.innerHTML = entries.map(([entityId, actionData]) => {
+        const label = actionData.label || actionData.type || "Unknown";
+        return `<div class="pending-action-item">
+          <span class="pending-action-entity">#${entityId}</span>
+          <span class="pending-action-action">${label}</span>
+        </div>`;
+      }).join("");
+    }
+
+    async function fetchAllowedActions(entityId) {
+      try {
+        const data = await fetchJson(`/allowed-actions/${entityId}`);
+        state.availableActionsCache[entityId] = data;
+        return data;
+      } catch (err) {
+        console.error("Failed to fetch allowed actions:", err);
+        return null;
+      }
+    }
+
+    function renderActionButtons(entityData) {
+      const container = document.getElementById("action-buttons");
+      if (!container || !entityData) return;
+
+      const actions = entityData.actions || [];
+      const entityId = entityData.entity_id;
+      const currentAction = state.pendingHumanActions[entityId];
+
+      container.innerHTML = actions.map((action, idx) => {
+        const type = (action.type || "").toLowerCase();
+        let cssClass = "action-btn";
+        if (type === "move") cssClass += " move";
+        else if (type === "shoot") cssClass += " shoot";
+        else if (type === "toggle") cssClass += " toggle";
+        else if (type === "wait") cssClass += " wait";
+
+        const isSelected = currentAction &&
+          currentAction.type === action.type &&
+          JSON.stringify(currentAction.params) === JSON.stringify(action.params);
+        if (isSelected) cssClass += " selected";
+
+        return `<button class="${cssClass}" data-action-idx="${idx}">${action.label || action.type}</button>`;
+      }).join("");
+
+      // Add event listeners
+      container.querySelectorAll(".action-btn").forEach((btn, idx) => {
+        btn.addEventListener("click", () => {
+          const action = actions[idx];
+          state.pendingHumanActions[entityId] = action;
+          renderActionButtons(entityData); // Re-render to show selection
+          updatePendingActionsList();
+        });
+      });
+    }
+
+    async function openActionPanelForEntity(entityId) {
+      state.selectedEntityId = entityId;
+      const entityData = await fetchAllowedActions(entityId);
+      if (!entityData || !entityData.alive) {
+        alert("This entity cannot take actions.");
+        return;
+      }
+
+      const title = document.getElementById("action-panel-title");
+      if (title) {
+        title.textContent = `${entityData.entity_kind.toUpperCase()} #${entityId} - ${entityData.entity_name || ""}`;
+      }
+
+      renderActionButtons(entityData);
+      updatePendingActionsList();
+      showActionPanel(true);
+    }
+
+    async function endHumanTurn() {
+      if (!state.isHumanTurn) return;
+
+      // Build injection with human actions
+      const humanTeam = getHumanTeam().toLowerCase();
+      const injections = {
+        [humanTeam]: {
+          actions: state.pendingHumanActions
+        }
+      };
+
+      console.log("🔵 [TURN END] Human submitting actions:", {
+        team: humanTeam,
+        currentFrame: state.currentIndex,
+        actions: Object.keys(injections[humanTeam].actions).length,
+        actionDetails: injections
+      });
+
+      state.isHumanTurn = false;
+      showTurnIndicator(false);
+      showActionPanel(false);
+      state.pendingHumanActions = {};
+      state.availableActionsCache = {};
+      state.selectedEntityId = null;
+
+      // Show loading state on submit button
+      const submitBtn = document.getElementById("submit-actions-btn");
+      const btnText = document.getElementById("submit-btn-text");
+      const btnSpinner = document.getElementById("submit-btn-spinner");
+      if (submitBtn) submitBtn.disabled = true;
+      if (btnText) btnText.textContent = "AI Thinking...";
+      if (btnSpinner) btnSpinner.style.display = "inline";
+
+      try {
+        console.log("⚙️ [STEP] Executing stepLive with human actions...");
+        // Execute step with injected actions via stepLive
+        state.pendingInjection = injections;
+        await stepLive();
+        state.pendingInjection = null;
+        console.log("✅ [STEP] stepLive completed. New frame index:", state.currentIndex);
+
+        // Update strategic status from AI metadata
+        const stepFrame = state.frames[state.currentIndex];
+        if (stepFrame && stepFrame.action_metadata) {
+          const aiTeam = humanTeam === "blue" ? "red" : "blue";
+          const aiMeta = stepFrame.action_metadata?.[aiTeam] || null;
+          updateStrategicStatus(aiMeta, stepFrame.step_info);
+        }
+
+        // Check if game is over
+        const frame = state.frames[state.currentIndex];
+        if (!isFrameDone(frame) && isHumanVsAgentGame()) {
+          startHumanTurn();
+        }
+      } catch (err) {
+        console.error("Failed to execute turn:", err);
+        alert("Error: " + err.message);
+        state.isHumanTurn = true;
+        showTurnIndicator(true);
+      } finally {
+        // Reset submit button state
+        if (submitBtn) submitBtn.disabled = false;
+        if (btnText) btnText.textContent = "Submit Actions & End Turn";
+        if (btnSpinner) btnSpinner.style.display = "none";
+      }
+    }
+
+    async function startHumanTurn() {
+      if (!isHumanVsAgentGame()) return;
+
+      console.log(" [TURN START] Human turn beginning:", {
+        currentFrame: state.currentIndex,
+        humanTeam: getHumanTeam(),
+        totalFrames: state.frames.length
+      });
+
+      state.isHumanTurn = true;
+      state.humanTeam = getHumanTeam();
+      state.pendingHumanActions = {};
+      state.availableActionsCache = {};
+      state.selectedEntityId = null;
+
+      // Update turn counter
+      const turnPill = document.getElementById("turn-counter-pill");
+      const frame = state.frames[state.currentIndex];
+      if (turnPill && frame) {
+        turnPill.textContent = `Turn ${frame.turn || state.frames.length}`;
+      }
+
+      showTurnIndicator(true);
+      showYourActionsPanel(true);
+      setPlaying(false);
+      drawCurrent();
+
+      // Populate entity actions using allowed actions from current-world
+      await populateEntityActionsList();
+    }
+
+    function closeWelcomeModal() {
+      document.getElementById("welcome-modal").classList.remove("open");
+    }
+
+    async function loadDefaultScenario() {
+      try {
+        const scenario = await fetchJson("/default-scenario");
+        state.scenario = scenario;
+        state.scenarioName = "Default Scenario (Human vs AI)";
+        state.uploadInfo = {
+          kind: "scenario",
+          name: state.scenarioName,
+          detail: summarizeScenario(scenario),
+        };
+        updateStartButton();
+        updateExportButton();
+        updateUploadSummary();
+        updateForkButton();
+      } catch (err) {
+        console.error("Failed to load default scenario:", err);
+        alert("Failed to load default scenario: " + err.message);
+      }
+    }
 
     function isFrameDone(frame) {
       if (!frame) return false;
@@ -693,6 +1556,143 @@
 
     function renderJSON(el, data) {
       el.textContent = JSON.stringify(data ?? {}, null, 2);
+    }
+
+    // Update Strategic Status panel from AI metadata
+    function updateStrategicStatus(metadata, stepInfo = null) {
+      const situationEl = document.getElementById("situation-display");
+      const formationPill = document.getElementById("enemy-formation-pill");
+      const momentumPill = document.getElementById("momentum-pill");
+      const prioritiesEl = document.getElementById("priorities-list");
+      const decisionsEl = document.getElementById("unit-decisions-list");
+      const combatLogEl = document.getElementById("combat-log-list");
+      const forceCompEl = document.getElementById("force-composition");
+
+      if (!metadata) {
+        if (situationEl) situationEl.textContent = "--";
+        if (formationPill) formationPill.textContent = "Formation: --";
+        if (momentumPill) momentumPill.textContent = "Momentum: --";
+        if (prioritiesEl) prioritiesEl.textContent = "--";
+        if (decisionsEl) decisionsEl.textContent = "--";
+        if (combatLogEl) combatLogEl.textContent = "--";
+        if (forceCompEl) forceCompEl.textContent = "--";
+        if (casualtiesEl) casualtiesEl.textContent = "--";
+        return;
+      }
+
+      const strategic = metadata.strategic || {};
+
+      // Situation analysis
+      if (situationEl) {
+        situationEl.textContent = strategic.situation_analysis || metadata.reasoning || "--";
+      }
+
+      // Enemy formation
+      if (formationPill) {
+        const formation = strategic.enemy_formation || metadata.forces?.enemy_intent || "--";
+        formationPill.textContent = `Formation: ${formation}`;
+        formationPill.title = `Enemy Formation: ${formation}`;
+      }
+
+      // Momentum
+      if (momentumPill) {
+        const memory = metadata.memory || {};
+        const momentum = memory.momentum !== undefined ? memory.momentum : "--";
+        const suggestion = memory.momentum_suggestion || strategic.momentum_suggestion || "";
+        let variant = "";
+        if (typeof momentum === "number") {
+          if (momentum > 0.2) variant = "good";
+          else if (momentum < -0.2) variant = "bad";
+          else variant = "warn";
+        }
+        momentumPill.textContent = `Momentum: ${typeof momentum === "number" ? momentum.toFixed(2) : momentum}`;
+        momentumPill.title = `${suggestion}`;
+        momentumPill.classList.remove("good", "bad", "warn");
+        if (variant) momentumPill.classList.add(variant);
+      }
+
+      // Force Composition
+      if (forceCompEl) {
+        const forces = metadata.forces || {};
+        const allyCounts = forces.ally_counts || metadata.units_by_role || {};
+        const enemyCounts = forces.enemy_counts || {};
+        const enemyIntent = forces.enemy_intent || "";
+        let html = "";
+        if (Object.keys(allyCounts).length) {
+          html += `<div style="margin-bottom:4px;"><strong>Friendly:</strong> ${Object.entries(allyCounts).map(([k, v]) => `${k}: ${v}`).join(" | ")}</div>`;
+        }
+        if (Object.keys(enemyCounts).length) {
+          html += `<div style="margin-bottom:4px;"><strong>Enemy:</strong> ${Object.entries(enemyCounts).map(([k, v]) => `${k}: ${v}`).join(" | ")}</div>`;
+        }
+        if (enemyIntent) {
+          html += `<div style="color:var(--text);"><strong>Enemy intent:</strong> ${enemyIntent}</div>`;
+        }
+        if (metadata.missing_enemies_count > 0) {
+          html += `<div style="color:#eab308;"><strong>Missing hostiles:</strong> ${metadata.missing_enemies_count} unaccounted for</div>`;
+        }
+        forceCompEl.innerHTML = html || "--";
+      }
+
+      // Priorities & Directives
+      if (prioritiesEl) {
+        const priorities = strategic.priorities || [];
+        const directives = strategic.directives || [];
+        let html = "";
+        if (priorities.length) {
+          html += priorities.map((p, i) => `<div style="margin-bottom:3px; padding-left:8px; border-left:2px solid var(--accent);">${i + 1}. ${p}</div>`).join("");
+        }
+        if (directives.length) {
+          html += `<div style="margin-top:6px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.05);">`;
+          html += directives.map(d => {
+            const modeColor = d.mode === "AGGRESSIVE" ? "#ef4444" : d.mode === "DEFENSIVE" ? "#22c55e" : d.mode === "SUPPORT" ? "#3b82f6" : "var(--muted)";
+            return `<div style="margin-bottom:3px; display:flex; gap:6px; align-items:baseline;">
+              <span style="font-weight:600; min-width:60px;">${d.role}</span>
+              <span style="color:${modeColor}; font-size:10px; font-weight:600;">${d.mode}</span>
+              <span style="color:var(--muted); font-size:10px;">${d.priority}</span>
+            </div>`;
+          }).join("");
+          html += `</div>`;
+        }
+        prioritiesEl.innerHTML = html || "--";
+      }
+
+      // Unit Tactical Reasoning
+      if (decisionsEl) {
+        const reasoning = metadata.tactical_reasoning || {};
+        const entries = Object.entries(reasoning);
+        if (entries.length) {
+          decisionsEl.innerHTML = entries.map(([unitId, info]) => {
+            const role = info.role || "";
+            const action = info.action_type || "";
+            const why = info.reasoning || "";
+            const actionColor = action === "SHOOT" ? "#ef4444" : action === "MOVE" ? "#22c55e" : action === "TOGGLE" ? "#eab308" : "var(--muted)";
+            return `<div style="margin-bottom:5px; padding:4px 6px; background:rgba(255,255,255,0.03); border-radius:4px; border-left:2px solid ${actionColor};">
+              <div style="display:flex; gap:6px; align-items:center; margin-bottom:2px;">
+                <span style="color:var(--accent); font-weight:600;">#${unitId}</span>
+                <span style="color:var(--muted); font-size:10px;">${role}</span>
+                <span style="color:${actionColor}; font-weight:600; font-size:10px;">${action}</span>
+              </div>
+              <div style="font-size:10px; color:var(--text); line-height:1.3;">${why}</div>
+            </div>`;
+          }).join("");
+        } else {
+          decisionsEl.textContent = "--";
+        }
+      }
+
+
+      // Combat Log
+      if (combatLogEl) {
+        const results = stepInfo?.combat?.combat_results || [];
+        if (results.length) {
+          combatLogEl.innerHTML = results.map(r => {
+            const color = r.hit ? "#ef4444" : "var(--muted)";
+            return `<div style="margin-bottom:2px; font-size:11px; color:${color};">${r.log}</div>`;
+          }).join("");
+        } else {
+          combatLogEl.textContent = "No combat this turn";
+        }
+      }
     }
 
     function updateInjectionStatus(message = null, variant = null) {
@@ -1013,6 +2013,386 @@
       }
     );
 
+    // ----------- Human vs Agent Turn Management -----------
+
+    // Check if current scenario has a human agent
+    function isHumanVsAgentGame() {
+      const agents = state.scenario?.agents || [];
+      return agents.some(a => a.type === "human");
+    }
+
+    // Get the team controlled by human
+    function getHumanTeam() {
+      const agents = state.scenario?.agents || [];
+      const human = agents.find(a => a.type === "human");
+      return human?.team || "BLUE";
+    }
+
+    // Start human turn - delegates to the main startHumanTurn defined above
+    // (removed duplicate - see main definition above)
+
+    // Show/hide the Your Actions sidebar panel
+    function showYourActionsPanel(show) {
+      const panel = document.getElementById("your-actions-panel");
+      if (!panel) return;
+      panel.style.display = show ? "block" : "none";
+    }
+
+    // Populate entity actions using server-validated allowed actions
+    async function populateEntityActionsList() {
+      const container = document.getElementById("entity-actions-list");
+      if (!container) return;
+
+      container.innerHTML = '<div style="color: var(--muted); text-align:center; padding:8px;">Loading actions...</div>';
+
+      try {
+        // Fetch current world with allowed actions from server
+        const worldData = await fetchJson("/current-world");
+        if (!worldData || !worldData.entities) {
+          container.innerHTML = '<div style="color: var(--muted);">No data available</div>';
+          return;
+        }
+
+        const humanTeam = getHumanTeam();
+        const entities = worldData.entities || [];
+        const allowedMap = worldData.allowed_actions || {};
+        const humanEntities = entities.filter(e => e.team === humanTeam && e.alive);
+
+        if (humanEntities.length === 0) {
+          container.innerHTML = '<div style="color: var(--muted);">No units available</div>';
+          return;
+        }
+
+        // Update force summary
+        const forceSummary = document.getElementById("force-summary");
+        if (forceSummary) {
+          const total = entities.filter(e => e.team === humanTeam).length;
+          const alive = humanEntities.length;
+          const missiles = humanEntities.reduce((s, e) => s + (e.missiles || 0), 0);
+          forceSummary.textContent = `Units: ${alive}/${total} alive | Missiles: ${missiles}`;
+        }
+
+        let html = '';
+        for (const entity of humanEntities) {
+          const kind = (entity.kind || entity.type || 'unit').toLowerCase();
+          const name = entity.name || `${kind} #${entity.id}`;
+          const allowed = allowedMap[String(entity.id)] || allowedMap[entity.id] || [];
+
+          // Build action options from server-validated allowed actions
+          let actionOptions = '';
+          let hasWait = false;
+
+          for (const action of allowed) {
+            const actionType = action.type;
+            const params = action.params || {};
+            const label = action.label || actionType;
+
+            if (actionType === "WAIT") {
+              hasWait = true;
+              actionOptions += `<option value="WAIT" selected>WAIT (Hold position)</option>`;
+            } else if (actionType === "MOVE") {
+              const dir = params.dir || "";
+              const arrow = dir === "UP" ? "\u2191" : dir === "DOWN" ? "\u2193" : dir === "RIGHT" ? "\u2192" : dir === "LEFT" ? "\u2190" : "?";
+              const dirLabel = dir === "UP" ? "North" : dir === "DOWN" ? "South" : dir === "RIGHT" ? "East" : dir === "LEFT" ? "West" : dir;
+              actionOptions += `<option value="MOVE_${dir}">MOVE ${arrow} ${dirLabel}</option>`;
+            } else if (actionType === "SHOOT") {
+              const targetId = params.target_id;
+              // Find target name from all entities
+              const target = entities.find(e => e.id === targetId);
+              const targetName = target ? (target.name || `#${targetId}`) : `#${targetId}`;
+              const targetKind = target ? (target.kind || target.type || "") : "";
+              // Calculate distance
+              let dist = "";
+              if (entity.position && target?.position) {
+                const dx = Math.abs(entity.position[0] - target.position[0]);
+                const dy = Math.abs(entity.position[1] - target.position[1]);
+                const distVal = Math.sqrt(dx * dx + dy * dy).toFixed(1);
+                dist = ` (dist: ${distVal})`;
+              }
+              actionOptions += `<option value="SHOOT_${targetId}">SHOOT ${targetName} ${targetKind}${dist}</option>`;
+            } else if (actionType === "TOGGLE") {
+              const onOff = params.on ? "ON" : "OFF";
+              actionOptions += `<option value="TOGGLE_${onOff}">RADAR ${onOff}</option>`;
+            }
+          }
+
+          if (!hasWait) {
+            actionOptions = `<option value="WAIT" selected>WAIT (Hold position)</option>` + actionOptions;
+          }
+
+          // Entity status badges
+          let badges = '';
+          if (entity.missiles !== null && entity.missiles !== undefined) {
+            badges += `<span style="font-size:9px; padding:1px 4px; border-radius:3px; background:${entity.missiles > 0 ? 'rgba(59,130,246,0.2)' : 'rgba(239,68,68,0.2)'}; color:${entity.missiles > 0 ? '#60a5fa' : '#ef4444'};">MSL: ${entity.missiles}</span>`;
+          }
+          if (entity.radar_on !== null && entity.radar_on !== undefined) {
+            badges += ` <span style="font-size:9px; padding:1px 4px; border-radius:3px; background:${entity.radar_on ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}; color:${entity.radar_on ? '#22c55e' : '#ef4444'};">RDR: ${entity.radar_on ? 'ON' : 'OFF'}</span>`;
+          }
+          if (entity.cooldown_remaining > 0) {
+            badges += ` <span style="font-size:9px; padding:1px 4px; border-radius:3px; background:rgba(234,179,8,0.2); color:#eab308;">CD: ${entity.cooldown_remaining}</span>`;
+          }
+
+          // Color based on entity kind
+          const borderColor = kind === 'awacs' ? '#22c55e' : kind === 'sam' ? '#eab308' : kind === 'decoy' ? '#a855f7' : '#3b82f6';
+
+          html += `
+            <div class="entity-action-row" style="padding: 8px; margin-bottom: 6px; background: rgba(124,210,255,0.06); border-radius: 8px; border-left: 3px solid ${borderColor};">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-weight: 600; color: var(--accent);">#${entity.id} ${name}</span>
+                <span style="font-size: 10px; color: var(--muted);">${kind}</span>
+              </div>
+              ${badges ? `<div style="margin-bottom: 4px;">${badges}</div>` : ''}
+              <select id="action-select-${entity.id}" class="entity-action-select" data-entity-id="${entity.id}" style="width: 100%; padding: 6px; border-radius: 6px; background: #1b2235; border: 1px solid var(--border); color: var(--text); font-size: 11px; cursor: pointer;">
+                ${actionOptions}
+              </select>
+            </div>
+          `;
+        }
+
+        container.innerHTML = html;
+
+        // Add change listeners
+        container.querySelectorAll('.entity-action-select').forEach(select => {
+          select.addEventListener('change', () => {
+            const entityId = parseInt(select.dataset.entityId);
+            updatePendingAction(entityId, select.value);
+          });
+          // Initialize with default WAIT action
+          const entityId = parseInt(select.dataset.entityId);
+          updatePendingAction(entityId, select.value);
+        });
+      } catch (err) {
+        console.error("Error loading actions:", err);
+        container.innerHTML = `<div style="color: #ef4444;">Failed to load actions: ${err.message}</div>`;
+      }
+    }
+
+    // Update pending action for an entity based on dropdown selection
+    function updatePendingAction(entityId, actionValue) {
+      let action = { type: "WAIT" };
+
+      if (actionValue === "WAIT") {
+        action = { type: "WAIT" };
+      } else if (actionValue.startsWith("MOVE_")) {
+        const dir = actionValue.replace("MOVE_", "");
+        action = { type: "MOVE", params: { dir } };
+      } else if (actionValue.startsWith("SHOOT_")) {
+        const targetId = parseInt(actionValue.replace("SHOOT_", ""));
+        action = { type: "SHOOT", params: { target_id: targetId } };
+      } else if (actionValue === "TOGGLE_ON") {
+        action = { type: "TOGGLE", params: { on: true } };
+      } else if (actionValue === "TOGGLE_OFF") {
+        action = { type: "TOGGLE", params: { on: false } };
+      }
+
+      state.pendingHumanActions[entityId] = action;
+    }
+
+    // endHumanTurn is defined above (consolidated, no duplicate needed)
+
+    // Show/hide turn indicator
+    function showTurnIndicator(show, team = "BLUE") {
+      // Update the floating indicator
+      const indicator = document.getElementById("turn-indicator");
+      if (indicator) {
+        if (show) {
+          const textEl = indicator.querySelector(".turn-indicator-text");
+          if (textEl) {
+            textEl.textContent = ` Your Turn (${team})`;
+          }
+          indicator.style.display = "block";
+          indicator.classList.add("visible");
+        } else {
+          indicator.classList.remove("visible");
+          indicator.style.display = "none";
+        }
+      }
+
+      // Also toggle the inline Next Turn button and status in header
+      const nextTurnBtn = document.getElementById("next-turn-btn");
+      const statusPill = document.getElementById("human-turn-status");
+
+      if (nextTurnBtn) {
+        nextTurnBtn.style.display = show ? "inline-flex" : "none";
+      }
+      if (statusPill) {
+        statusPill.textContent = `Your Turn (${team})`;
+        statusPill.style.display = show ? "inline-flex" : "none";
+      }
+    }
+
+    // Show/hide action panel
+    function showActionPanel(show) {
+      const panel = document.getElementById("action-panel");
+      if (!panel) return;
+      if (show) {
+        panel.classList.add("visible");
+      } else {
+        panel.classList.remove("visible");
+      }
+    }
+
+    // Open action panel for a specific entity
+    async function openActionPanelForEntity(entityId) {
+      state.selectedEntityId = entityId;
+      const panel = document.getElementById("action-panel");
+      const entityName = document.getElementById("action-entity-name");
+      const entityType = document.getElementById("action-entity-type");
+      const actionsGrid = document.getElementById("actions-grid");
+
+      // Get entity from current frame
+      const frame = state.frames[state.currentIndex];
+      const entities = frame?.entities || frame?.world?.entities || [];
+      const entity = entities.find(e => e.id === entityId);
+
+      if (!entity) {
+        console.error("Entity not found:", entityId);
+        return;
+      }
+
+      // Set entity info
+      if (entityName) entityName.textContent = entity.name || `Entity #${entityId}`;
+      if (entityType) entityType.textContent = entity.type || entity.kind || "Unknown";
+
+      // Clear and populate actions
+      if (actionsGrid) {
+        actionsGrid.innerHTML = '<div class="loading">Loading actions...</div>';
+      }
+
+      showActionPanel(true);
+
+      // Fetch allowed actions from API
+      try {
+        const actions = await fetchJson(`/allowed-actions/${entityId}`);
+        if (actionsGrid) {
+          renderActionButtons(entityId, actions, entity);
+        }
+      } catch (err) {
+        console.error("Failed to fetch actions:", err);
+        if (actionsGrid) {
+          actionsGrid.innerHTML = `<div class="error">Failed to load actions</div>`;
+        }
+      }
+    }
+
+    // Render action buttons in the panel
+    function renderActionButtons(entityId, actionsData, entity) {
+      const actionsGrid = document.getElementById("actions-grid");
+      if (!actionsGrid) return;
+
+      const actions = actionsData.actions || [];
+
+      if (actions.length === 0) {
+        actionsGrid.innerHTML = '<div class="no-actions">No actions available</div>';
+        return;
+      }
+
+      // Build buttons for each action
+      const buttons = actions.map(action => {
+        const actionType = action.type || "WAIT";
+        const params = action.params || {};
+        let label = actionType;
+
+        // Format action label
+        if (actionType === "MOVE") {
+          label = `MOVE ${params.dir || ""}`;
+        } else if (actionType === "SHOOT") {
+          label = `SHOOT → #${params.target_id}`;
+        } else if (actionType === "TOGGLE") {
+          label = params.on ? "RADAR ON" : "RADAR OFF";
+        }
+
+        const actionKey = JSON.stringify(action);
+        const isSelected = state.pendingHumanActions[entityId] &&
+          JSON.stringify(state.pendingHumanActions[entityId]) === actionKey;
+
+        return `<button class="action-btn ${isSelected ? 'selected' : ''}" 
+                        data-action='${actionKey}' 
+                        data-entity-id="${entityId}">
+                  ${label}
+                </button>`;
+      }).join("");
+
+      actionsGrid.innerHTML = buttons;
+
+      // Add click handlers
+      actionsGrid.querySelectorAll(".action-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const action = JSON.parse(btn.dataset.action);
+          const entId = parseInt(btn.dataset.entityId);
+
+          // Set this as the pending action for this entity
+          state.pendingHumanActions[entId] = action;
+
+          // Update button states
+          actionsGrid.querySelectorAll(".action-btn").forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+
+          // Update pending actions list
+          updatePendingActionsList();
+        });
+      });
+    }
+
+    // Update the pending actions display
+    function updatePendingActionsList() {
+      const list = document.getElementById("pending-actions-list");
+      if (!list) return;
+
+      const entries = Object.entries(state.pendingHumanActions);
+
+      if (entries.length === 0) {
+        list.innerHTML = '<div class="no-pending">Click entities to select actions</div>';
+        return;
+      }
+
+      list.innerHTML = entries.map(([entityId, action]) => {
+        const actionType = action.type || "WAIT";
+        let label = actionType;
+        const params = action.params || {};
+
+        if (actionType === "MOVE") {
+          label = `MOVE ${params.dir || ""}`;
+        } else if (actionType === "SHOOT") {
+          label = `SHOOT → #${params.target_id}`;
+        } else if (actionType === "TOGGLE") {
+          label = params.on ? "RADAR ON" : "RADAR OFF";
+        }
+
+        return `<div class="pending-action">
+                  <span class="entity-id">#${entityId}</span>
+                  <span class="action-label">${label}</span>
+                </div>`;
+      }).join("");
+    }
+
+    // Load default scenario
+    async function loadDefaultScenario() {
+      try {
+        const scenario = await fetchJson("/default-scenario");
+        state.scenario = scenario;
+        state.scenarioName = "Default Scenario (Human vs AI)";
+        state.uploadInfo = {
+          kind: "scenario",
+          name: state.scenarioName,
+          detail: summarizeScenario(scenario),
+        };
+        updateStartButton();
+        updateExportButton();
+        updateUploadSummary();
+        closeWelcomeModal();
+      } catch (err) {
+        console.error("Failed to load default scenario:", err);
+        alert("Failed to load default scenario: " + err.message);
+      }
+    }
+
+    // Close welcome modal
+    function closeWelcomeModal() {
+      const modal = document.getElementById("welcome-modal");
+      if (modal) modal.classList.remove("open");
+    }
+
     // ----------- Live play -----------
     async function startLive(worldOverride = null) {
       if (!state.scenario) {
@@ -1034,13 +2414,33 @@
         }
         state.mode = "live";
         state.victoryInfo = null;
-        setPlaying(true);
+
+        // Check if this is a human vs agent game
+        const isHuman = isHumanVsAgentGame();
+
+        // Only auto-play if NOT human vs agent
+        if (!isHuman) {
+          setPlaying(true);
+        } else {
+          setPlaying(false);
+        }
+
         updateInjectionStatus();
         updateTimeline();
         setModePill();
         updateForkButton();
-        await stepLive(); // fetch first frame
-        if (state.playing) loop();
+
+        // Always fetch initial frame (frame 0) to establish world state
+        // This is required for the canvas to have something to render
+        await stepLive();
+
+        // For human vs agent games, start human turn after first frame is loaded
+        if (isHuman && !isFrameDone(state.frames[state.currentIndex])) {
+          console.log("🎮 [GAME START] Initial state loaded (frame 0), starting human turn");
+          startHumanTurn();
+        } else if (state.playing) {
+          loop();
+        }
       } catch (err) {
         console.error(err);
         alert("Failed to start game: " + err.message);
@@ -1051,10 +2451,27 @@
 
     async function stepLive() {
       const injection = state.pendingInjection || {};
+      console.log("📤 [STEP] Sending to backend:", {
+        hasInjection: !!state.pendingInjection,
+        injection: injection
+      });
+
       const frame = await fetchJson("/step", {
         method: "POST",
         body: JSON.stringify({ injections: injection }),
       });
+
+      console.log("📥 [STEP] Received frame:", {
+        turn: frame.turn,
+        hasActions: !!frame.actions,
+        actionCount: frame.actions ? Object.keys(frame.actions).length : 0,
+        blueActions: frame.actions?.blue ? Object.keys(frame.actions.blue).length : 0,
+        redActions: frame.actions?.red ? Object.keys(frame.actions.red).length : 0,
+        done: frame.done,
+        combatResults: frame.step_info?.combat?.combat_results?.length || 0,
+        fullActions: frame.actions  // Show full actions for debugging
+      });
+
       if (state.pendingInjection && state.injectionMode === "once") {
         state.pendingInjection = null;
         updateInjectionStatus("Applied once; cleared", "warn");
@@ -1065,6 +2482,9 @@
       updateTimeline();
       drawCurrent();
       updateMeta();
+      // Update strategic status from action metadata
+      const redMeta = frame.action_metadata?.red || frame.action_metadata?.blue || null;
+      updateStrategicStatus(redMeta, frame.step_info);
       if (isFrameDone(frame)) {
         setPlaying(false);
         // Try to fetch the terminal world-only frame once
@@ -1188,10 +2608,6 @@
       if (state.mode === "live") await stepLive();
       else advanceReplay();
     });
-    document.getElementById("speed-slider").addEventListener("input", e => {
-      state.speed = parseFloat(e.target.value);
-      document.getElementById("speed-label").textContent = `${state.speed.toFixed(2).replace(/\.00$/, ".0")}x`;
-    });
     document.getElementById("view-select").addEventListener("change", e => {
       state.view = e.target.value;
       drawCurrent();
@@ -1221,14 +2637,14 @@
       drawCurrent();
       updateMeta();
     });
-      document.getElementById("export-btn").addEventListener("click", () => {
-        if (!state.frames.length) return alert("No frames to export.");
-        const payload = { source: "wg-control-panel", generated_at: new Date().toISOString(), scenario: state.scenario, frames: state.frames };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "recording.json";
+    document.getElementById("export-btn").addEventListener("click", () => {
+      if (!state.frames.length) return alert("No frames to export.");
+      const payload = { source: "wg-control-panel", generated_at: new Date().toISOString(), scenario: state.scenario, frames: state.frames };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "recording.json";
       a.click();
       URL.revokeObjectURL(url);
       updateExportButton();
@@ -1266,21 +2682,6 @@
     });
     document.getElementById("frame-modal-close").addEventListener("click", () => frameModal.classList.remove("open"));
     document.querySelector("#frame-detail-modal .modal-backdrop").addEventListener("click", () => frameModal.classList.remove("open"));
-    document.getElementById("open-actions-modal").addEventListener("click", e => {
-      e.stopPropagation();
-      const frame = state.frames[state.currentIndex] || {};
-      openFrameModal("Actions", frame.actions || []);
-    });
-    document.getElementById("open-meta-modal").addEventListener("click", e => {
-      e.stopPropagation();
-      const frame = state.frames[state.currentIndex] || {};
-      openFrameModal("Metadata", frame.action_metadata || {});
-    });
-    document.getElementById("open-info-modal").addEventListener("click", e => {
-      e.stopPropagation();
-      const frame = state.frames[state.currentIndex] || {};
-      openFrameModal("Info", frame.step_info || {});
-    });
     document.getElementById("entity-modal-close").addEventListener("click", () => entityModal.classList.remove("open"));
     document.querySelector("#entity-modal .modal-backdrop").addEventListener("click", () => entityModal.classList.remove("open"));
     canvas.addEventListener("click", e => {
@@ -1538,14 +2939,57 @@
         ctx.restore();
 
         if (state.showIds) {
+          // Draw ID with background for legibility
+          const idText = `#${entity.id}`;
+          const idW = ctx.measureText(idText).width;
+
+          ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+          ctx.fillRect(px + 2, py + 2, idW + 4, 14);
+
           ctx.fillStyle = "#f8fafc";
           ctx.font = "bold 11px Inter, sans-serif";
           ctx.textAlign = "left";
           ctx.textBaseline = "top";
-          ctx.fillText(`#${entity.id}`, px + 6, py + 6);
+          ctx.fillText(idText, px + 4, py + 4);
+
+          // Draw type indicator (A, S, D, F)
+          let labelChar = "";
+          if (kind === "awacs") labelChar = "A";
+          else if (kind === "sam") labelChar = "S";
+          else if (kind === "decoy") labelChar = "D";
+          else if (kind === "aircraft" || kind === "fighter") labelChar = "F";
+
+          if (labelChar) {
+            ctx.save();
+            ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+            ctx.font = "bold 14px Inter, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.shadowColor = "rgba(0,0,0,0.8)";
+            ctx.shadowBlur = 4;
+            ctx.fillText(labelChar, cx, cy);
+            ctx.restore();
+          }
+
           if (entity.can_shoot && entity.missiles !== undefined) {
-            ctx.textAlign = "right";
-            ctx.fillText(`M${entity.missiles}`, px + gridSize - 6, py + 6);
+            // Draw missile count with background for legibility at BOTTOM
+            const mText = `M${entity.missiles}`;
+            ctx.font = "bold 11px Inter, sans-serif";
+            const mW = ctx.measureText(mText).width;
+            const mH = 13;
+
+            ctx.save();
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+
+            // Background pill centered at bottom
+            ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            // x: center - half_width - padding, y: bottom - height - padding
+            ctx.fillRect(cx - mW / 2 - 2, py + gridSize - 2 - mH, mW + 4, mH);
+
+            ctx.fillStyle = "#f8fafc";
+            ctx.fillText(mText, cx, py + gridSize - 4);
+            ctx.restore();
           }
         }
 
@@ -1713,7 +3157,7 @@
       }
     }
 
-    function drawArrowHead(x, y, dx, dy, normalize=false) {
+    function drawArrowHead(x, y, dx, dy, normalize = false) {
       if (normalize) {
         const len = Math.hypot(dx, dy) || 1;
         dx /= len; dy /= len;
@@ -1750,9 +3194,7 @@
       document.getElementById("winner-pill").textContent = formatVictory(victory);
       const tracking = `NoShoot: ${frame.world.turns_without_shooting ?? "?"}, NoMove: ${frame.world.turns_without_movement ?? "?"}`;
       document.getElementById("tracking-pill").textContent = `Tracking: ${tracking}`;
-      renderJSON(document.getElementById("actions-json"), frame.actions || []);
-      renderJSON(document.getElementById("meta-json"), frame.action_metadata || {});
-      renderJSON(document.getElementById("info-json"), frame.step_info || {});
+      // Frame detail JSON panels removed from UI
     }
     // Ensure canvas adapts on resize (using latest frame)
     window.addEventListener("resize", () => drawCurrent());
@@ -1809,6 +3251,38 @@
     updateForkButton();
     setModePill();
     pingBackendWithRetry(2, 800);
+
+    // ----------- Human vs Agent Event Listeners -----------
+
+    // Welcome modal - Start Game button
+    document.getElementById("welcome-start-btn")?.addEventListener("click", closeWelcomeModal);
+    document.getElementById("welcome-modal")?.querySelector(".modal-backdrop")?.addEventListener("click", closeWelcomeModal);
+
+    // Default scenario button
+    document.getElementById("use-default-scenario-btn")?.addEventListener("click", loadDefaultScenario);
+
+    // Action panel buttons
+    document.getElementById("action-panel-close")?.addEventListener("click", () => showActionPanel(false));
+    document.getElementById("clear-actions-btn")?.addEventListener("click", () => {
+      state.pendingHumanActions = {};
+      updatePendingActionsList();
+      if (state.selectedEntityId) {
+        const entityData = state.availableActionsCache[state.selectedEntityId];
+        if (entityData) renderActionButtons(entityData);
+      }
+    });
+    document.getElementById("end-turn-btn")?.addEventListener("click", endHumanTurn);
+
+    // Next Turn button in header (main way for user to advance the turn)
+    document.getElementById("next-turn-btn")?.addEventListener("click", endHumanTurn);
+
+    // Submit Actions button in sidebar panel
+    document.getElementById("submit-actions-btn")?.addEventListener("click", endHumanTurn);
+
+    // Note: Human turn uses simple Next Turn button in header - no entity click interception needed
+    // Existing Entity Details modal works fine for viewing entity info
+
   </script>
 </body>
+
 </html>

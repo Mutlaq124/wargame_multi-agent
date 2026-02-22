@@ -1,0 +1,25 @@
+================================================================================
+TACTICAL RESPONSE - AIRCRAFT - TURN 5
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 10,
+      "idx": 5,
+      "action_type": "SHOOT",
+      "why": "AIRCRAFT #10 has 1 missile and is in AGGRESSIVE mode. Enemy AIRCRAFT #2 is a HIGH threat at 4 tiles with a 25% hit probability, exceeding the 0.1 threshold for aggressive engagement. Prioritizing the higher hit probability target."
+    },
+    {
+      "id": 11,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "AIRCRAFT #11 has 1 missile and is in AGGRESSIVE mode. No shoot options meet the 0.1 hit probability threshold. Moving LEFT to APPROACH the nearest enemy AIRCRAFT #6, as per aggressive tactics."
+    }
+  ],
+  "claimed_targets": [
+    2
+  ]
+}
+
+================================================================================

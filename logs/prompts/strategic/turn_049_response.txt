@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 49
+================================================================================
+
+{
+  "turn": 49,
+  "priorities": [
+    "Maintain air superiority and eliminate HVT",
+    "Press advantage on left sector"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions, avoid direct engagement due to low missile count"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Target HVT 6 and engage any visible threats in the left sector"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 484
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

@@ -1,0 +1,17 @@
+================================================================================
+TACTICAL RESPONSE - DECOY - TURN 2
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 12,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "As a DECOY in RECON mode, the objective is to move forward to scout and draw fire. Moving LEFT will approach the HIGH threat enemy (id 3) at distance 4, drawing its attention and screening our main force. This move also keeps the DECOY within a good distance (4-6 tiles) to draw fire effectively without being immediately critical."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

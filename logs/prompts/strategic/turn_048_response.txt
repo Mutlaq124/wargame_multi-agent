@@ -1,0 +1,34 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 48
+================================================================================
+
+{
+  "turn": 48,
+  "priorities": [
+    "Maintain air superiority and offensive pressure",
+    "Eliminate high-value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intelligence on enemy positions, avoid direct engagement"
+    },
+    {
+      "role": "SAM",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage and destroy visible enemy threats in left sector"
+    }
+  ],
+  "hvt_targets": [
+    6
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 462
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

@@ -1,0 +1,17 @@
+================================================================================
+TACTICAL RESPONSE - AWACS - TURN 5
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 9,
+      "idx": 0,
+      "action_type": "WAIT",
+      "why": "AWACS is not under immediate threat (all enemies are LOW threat, dist >10, and cannot hit AWACS). Waiting is safe and maintains current radar coverage."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================

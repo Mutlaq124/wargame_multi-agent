@@ -1,0 +1,39 @@
+================================================================================
+STRATEGIC RESPONSE - TURN 25
+================================================================================
+
+{
+  "turn": 25,
+  "priorities": [
+    "Maintain air superiority and eliminate threats",
+    "Protect high-value targets"
+  ],
+  "directives": [
+    {
+      "role": "AWACS",
+      "mode": "RECON",
+      "priority": "Gather intel on enemy positions, avoid direct engagement"
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage visible enemy in right sector, exploit air superiority"
+    },
+    {
+      "role": "SAM",
+      "mode": "DEFENSIVE",
+      "priority": "Protect allied assets, especially HVT 10, from air threats"
+    }
+  ],
+  "hvt_targets": [
+    10
+  ]
+}
+
+================================================================================
+METADATA:
+- Response Length: 604
+- Model: google/gemini-2.5-flash
+- Temperature: 0.5
+- Max Tokens: 1500
+================================================================================

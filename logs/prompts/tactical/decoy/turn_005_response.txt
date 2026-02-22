@@ -1,0 +1,17 @@
+================================================================================
+TACTICAL RESPONSE - DECOY - TURN 5
+================================================================================
+
+{
+  "decisions": [
+    {
+      "id": 12,
+      "idx": 3,
+      "action_type": "MOVE",
+      "why": "DECOY is in AGGRESSIVE mode and has a CRITICAL threat at W. Moving LEFT will APPROACH this threat, drawing fire and screening allies as per DECOY tactics. The DECOY has 0 missiles, so shooting is not an option."
+    }
+  ],
+  "claimed_targets": []
+}
+
+================================================================================
