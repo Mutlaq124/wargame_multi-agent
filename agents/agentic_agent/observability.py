@@ -36,6 +36,8 @@ if not _logfire_enabled:
         def warning(self, *a, **kw): pass
         def error(self, *a, **kw): pass
         def debug(self, *a, **kw): pass
+        def instrument_openai(self, *a, **kw): pass
+        def instrument_pydantic_ai(self, *a, **kw): pass
 
     logfire = _NoOpLogfire()  # type: ignore[assignment]
 

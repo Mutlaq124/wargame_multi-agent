@@ -43,46 +43,55 @@ class LLMAgentV2(BaseAgent):
         super().__init__(team, name or f"LLMAgentV2-{team.name}")
         
         logfire.instrument_openai()
-        
-        # API Key
-        self.openrouter_key = openrouter_key or os.getenv("OPENROUTER_API_KEY")
-        if not self.openrouter_key:
-            raise ValueError("OPENROUTER_API_KEY environment variable required")
 
-        self.strategic_llm = OpenRouterClient(
-            api_key=self.openrouter_key,
-            model=strategic_model
-        )
-        
-        self.tactical_llm = OpenRouterClient(  
-            api_key=self.openrouter_key,
-            model=tactical_model
-        )
-        
-        # Initialize commanders
-        self.strategic_commander = StrategicCommander(
-            llm_client=self.strategic_llm,
-            team_name=self.team.name
-        )
-        
-        self.tactical_executor = TacticalExecutor(
-            llm_client=self.tactical_llm,
-            team_name=self.team.name
-        )
-        
+        # API Key
+        self.openrouter_key = openrouter_key or os.getenv("OPENROUTER_API_KEY", "").strip()
+        self._llm_disabled = False
+        if not self.openrouter_key:
+            logger.error(
+                "OPENROUTER_API_KEY is not set. LLM agent '%s' will return empty actions. "
+                "Set the env var on Render (Dashboard → Environment).",
+                self.name
+            )
+            self._llm_disabled = True
+
+        if not self._llm_disabled:
+            self.strategic_llm = OpenRouterClient(
+                api_key=self.openrouter_key,
+                model=strategic_model
+            )
+            self.tactical_llm = OpenRouterClient(
+                api_key=self.openrouter_key,
+                model=tactical_model
+            )
+            self.strategic_commander = StrategicCommander(
+                llm_client=self.strategic_llm,
+                team_name=self.team.name
+            )
+            self.tactical_executor = TacticalExecutor(
+                llm_client=self.tactical_llm,
+                team_name=self.team.name
+            )
+        else:
+            self.strategic_llm = None
+            self.tactical_llm = None
+            self.strategic_commander = None
+            self.tactical_executor = None
+
         # Strategic memory with enhanced tracking
         self.enable_memory = enable_memory
         self.strategic_memory = StrategicMemory() if enable_memory else None
-        
-        # NEW: Enemy memory - track last seen positions
+
+        # Enemy memory - track last seen positions
         self._enemy_memory: Dict[int, Dict[str, Any]] = {}
         self._recorded_kill_ids: Set[int] = set()
-        
+
         logfire.info("agent_initialized",
                     name=self.name,
                     strategic_model=strategic_model,
                     tactical_model=tactical_model,
                     memory_enabled=enable_memory,
+                    llm_disabled=self._llm_disabled,
                     provider="openrouter_only")
 
     def get_actions(
@@ -92,8 +101,13 @@ class LLMAgentV2(BaseAgent):
         **kwargs: Any,
     ) -> tuple[Dict[int, Action], Dict[str, Any]]:
         """Main decision-making pipeline with enhanced memory and UI metadata."""
+        # Graceful degradation: if no API key, return empty actions
+        if self._llm_disabled:
+            logger.warning("LLM disabled (no API key) — %s returning empty actions.", self.name)
+            return {}, {"error": "OPENROUTER_API_KEY not configured. Set it in Render Dashboard → Environment."}
+
         world: WorldState = state["world"]
-        
+
         with logfire.span("agent_turn", turn=world.turn, team=self.team.name):
             try:
                 # === STAGE 1: Build States ===
