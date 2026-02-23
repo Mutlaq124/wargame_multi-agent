@@ -853,7 +853,7 @@
     <h1>Ops Deck</h1>
     <div class="row" style="gap:6px;">
       <label class="label" for="backend-url">Backend</label>
-      <input id="backend-url" type="text" value="http://localhost:8000" style="width: 220px;">
+      <input id="backend-url" type="text" value="" style="width: 220px;" placeholder="auto-detected">
       <span id="connection-status" class="pill dot warn clickable">Checking...</span>
       <span class="pill" id="mode-pill">Idle</span>
     </div>
@@ -1191,7 +1191,22 @@
     const ctx = canvas.getContext("2d");
 
     const state = {
-      baseUrl: document.getElementById("backend-url").value.trim(),
+      baseUrl: (() => {
+        // In production (Render/Railway), use the same origin as the page.
+        // In local dev, fall back to localhost:8000.
+        const inputVal = document.getElementById("backend-url").value.trim();
+        if (inputVal) return inputVal;
+        const origin = window.location.origin;
+        // If served from localhost, keep using localhost:8000 (dev default)
+        if (origin.includes("localhost") || origin.includes("127.0.0.1")) {
+          const url = "http://localhost:8000";
+          document.getElementById("backend-url").value = url;
+          return url;
+        }
+        // Production: backend IS this server - use same origin
+        document.getElementById("backend-url").value = origin;
+        return origin;
+      })(),
       connected: false,
       mode: "idle", // idle | live | replay
       scenario: null,
