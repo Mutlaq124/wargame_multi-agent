@@ -1,6 +1,6 @@
 # 2D War Game — Agentic AI Combat Simulator
 
-> **Production-grade multi-agent LLM system** — hierarchical C3 (Command, Control, Communication) architecture, memory-augmented, fully observable. Human (Blue) vs LLM Agent (Red) — powered by OpenRouter.
+> **Multi-agent LLM system** — hierarchical C3 (Command, Control, Communication) architecture, memory-augmented, fully observable. Human (Blue) vs LLM Agent (Red).
 
 ---
 
@@ -29,7 +29,8 @@ uv run python main.py
 ![Multi-Agentic Architecture for Wargame](images/Wargame_agentic_workflow.png)
 
 ### UI Screenshots
-![Ops Deck Interface](images/User_interface.png)
+![Ops Deck Interface](images/UI.png)
+### Agent Reasoning Panel
 ![Agent Reasoning Panel](images/Agent_reasoning_UI.png)
 
 The server starts at `http://127.0.0.1:8000` and auto-opens the browser.  
