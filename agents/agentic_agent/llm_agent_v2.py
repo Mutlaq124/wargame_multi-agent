@@ -42,7 +42,7 @@ class LLMAgentV2(BaseAgent):
         """Initialize V2 agent with enhanced memory tracking."""
         super().__init__(team, name or f"LLMAgentV2-{team.name}")
         
-        logfire.instrument_openai()
+        # HTTP spans come from logfire.instrument_requests() called in configure_logfire()
 
         # API Key
         self.openrouter_key = openrouter_key or os.getenv("OPENROUTER_API_KEY", "").strip()

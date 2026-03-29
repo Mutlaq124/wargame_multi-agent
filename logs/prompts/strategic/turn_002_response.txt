@@ -4,33 +4,33 @@ STRATEGIC RESPONSE - TURN 2
 
 {
   "turn": 2,
-  "situation_analysis": "Enemy forces are scattered across the center, posing a moderate threat. Our AWACS and DECOY have limited missile defense, requiring careful positioning.",
+  "situation_analysis": "Enemy forces are scattered across the center, posing a moderate threat. Our AWACS and Decoy have limited missile coverage, requiring careful positioning.",
   "enemy_formation": "SCATTERED",
   "momentum_suggestion": "SITUATION_NEUTRAL",
   "priorities": [
-    "Locate and engage enemy aircraft in the center sector.",
-    "Protect our AWACS and SAMs from flank attacks."
+    "Locate and identify enemy high-value targets.",
+    "Maintain AWACS safety and radar coverage."
   ],
   "directives": [
     {
       "role": "AWACS",
       "mode": "SUPPORT",
-      "priority": "Maintain central position for maximum radar coverage, staying clear of potential enemy engagement zones."
+      "priority": "Maintain maximum radar coverage while staying at a safe distance from potential threats."
     },
     {
       "role": "AIRCRAFT",
-      "mode": "AGGRESSIVE",
-      "priority": "Advance towards the center to engage detected enemy aircraft, prioritizing targets that pose a threat to our AWACS or SAMs."
+      "mode": "RECON",
+      "priority": "Advance cautiously to gain intel on enemy positions and identify their AWACS or other HVTs, avoiding direct engagement unless a clear advantage is present."
     },
     {
       "role": "DECOY",
       "mode": "RECON",
-      "priority": "Move forward to scout for additional enemy positions and draw potential enemy fire, screening our main force."
+      "priority": "Move forward to draw enemy fire and scout for hidden units, acting as an early warning system."
     },
     {
       "role": "SAM",
       "mode": "DEFENSIVE",
-      "priority": "Hold current positions, activating radar to cover the central sector and prepare for engagement if enemy aircraft approach."
+      "priority": "Hold current positions, remaining stealthy if possible, and prepare to engage any enemy aircraft that come within range to protect our rear assets."
     }
   ],
   "hvt_targets": []
@@ -38,7 +38,7 @@ STRATEGIC RESPONSE - TURN 2
 
 ================================================================================
 METADATA:
-- Response Length: 1247
+- Response Length: 1254
 - Model: google/gemini-2.5-flash
 - Temperature: 0.5
 - Max Tokens: 2000

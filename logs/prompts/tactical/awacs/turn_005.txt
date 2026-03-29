@@ -40,10 +40,10 @@ UNIT CAPABILITIES:
 
 === USER PROMPT ===
 **AWACS TACTICAL - Mode: DEFENSIVE**
-Objective: Maintain safe distance from enemy aircraft and provide radar coverage.
+Objective: Maintain safe distance from known threats and provide radar coverage.
 
-**SITUATION:** The battlefield is balanced with 4 visible enemy aircraft concentrated in the center. Our AWACS and DECOY have low missile counts, requiring protection.
-**ENEMY FORMATION:** AGGRESSIVE_PUSH
+**SITUATION:** The battlefield is balanced with scattered enemy aircraft in the center. Our AWACS and Decoy are vulnerable with low missile coverage.
+**ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
 - NO moving to occupied positions: []
@@ -68,8 +68,8 @@ Objective: Maintain safe distance from enemy aircraft and provide radar coverage
  {
   "id": 9,
   "pos": [
-   17,
-   7
+   19,
+   6
   ],
   "missiles": 0,
   "enemies": [
@@ -77,7 +77,7 @@ Objective: Maintain safe distance from enemy aircraft and provide radar coverage
     "id": 2,
     "type": "AIRCRAFT",
     "bearing": "W",
-    "dist": 13,
+    "dist": 16,
     "threat": "LOW",
     "hit_prob": 0.0,
     "hit_prob_from_enemy": 0.0,
@@ -99,7 +99,18 @@ Objective: Maintain safe distance from enemy aircraft and provide radar coverage
     "id": 5,
     "type": "AIRCRAFT",
     "bearing": "W",
-    "dist": 13,
+    "dist": 16,
+    "threat": "LOW",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.0,
+    "can_they_hit_me": false,
+    "is_hvt": false
+   },
+   {
+    "id": 4,
+    "type": "AIRCRAFT",
+    "bearing": "W",
+    "dist": 16,
     "threat": "LOW",
     "hit_prob": 0.0,
     "hit_prob_from_enemy": 0.0,
@@ -110,7 +121,7 @@ Objective: Maintain safe distance from enemy aircraft and provide radar coverage
     "id": 6,
     "type": "AIRCRAFT",
     "bearing": "W",
-    "dist": 15,
+    "dist": 16,
     "threat": "LOW",
     "hit_prob": 0.0,
     "hit_prob_from_enemy": 0.0,
@@ -150,15 +161,6 @@ Objective: Maintain safe distance from enemy aircraft and provide radar coverage
     "effect": "APPROACH",
     "intent": "Close to engage",
     "description": "MOVE LEFT to APPROACH enemies"
-   },
-   {
-    "idx": 4,
-    "act": "MOVE",
-    "dir": "RIGHT",
-    "conflict": false,
-    "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE RIGHT to APPROACH enemies"
    }
   ]
  }
@@ -198,6 +200,6 @@ METADATA:
 - Turn: 5
 - Units: [9]
 - Directive Mode: DEFENSIVE
-- Directive Priority: Maintain safe distance from enemy aircraft and provide radar coverage.
+- Directive Priority: Maintain safe distance from known threats and provide radar coverage.
 - Shared Intel: []
 ================================================================================

@@ -39,10 +39,10 @@ UNIT CAPABILITIES:
 ================================================================================
 
 === USER PROMPT ===
-**AWACS TACTICAL - Mode: SUPPORT**
-Objective: Establish wide radar coverage while maintaining safe distance.
+**AWACS TACTICAL - Mode: DEFENSIVE**
+Objective: HIGH
 
-**SITUATION:** We have air superiority with a numerical advantage against three scattered enemy aircraft concentrated in the center. Our AWACS and Decoy are vulnerable with low missile coverage.
+**SITUATION:** We have air superiority with a scattered enemy force concentrated in the center. Our AWACS and Decoy are vulnerable to an average of less than one missile.
 **ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
@@ -182,7 +182,7 @@ METADATA:
 - Role: AWACS
 - Turn: 0
 - Units: [9]
-- Directive Mode: SUPPORT
-- Directive Priority: Establish wide radar coverage while maintaining safe distance.
+- Directive Mode: DEFENSIVE
+- Directive Priority: HIGH
 - Shared Intel: []
 ================================================================================

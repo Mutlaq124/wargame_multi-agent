@@ -6,9 +6,9 @@ TACTICAL RESPONSE - AWACS - TURN 3
   "decisions": [
     {
       "id": 9,
-      "idx": 0,
-      "action_type": "WAIT",
-      "why": "AWACS is unarmed and the enemy is at a medium distance (10). While the enemy can hit, the probability is low (0.1). Waiting is the safest option as there are no immediate retreat options that significantly improve the situation, and moving closer is not advised for an unarmed unit."
+      "idx": 4,
+      "action_type": "MOVE",
+      "why": "AWACS is in DEFENSIVE mode and has an enemy at MEDIUM threat (dist 9) with a non-zero hit probability from the enemy (0.16). The AWACS has 0 missiles. Retreating to the RIGHT increases distance from the nearest enemy to the WEST."
     }
   ],
   "claimed_targets": []

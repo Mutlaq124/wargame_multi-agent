@@ -39,14 +39,14 @@ UNIT CAPABILITIES:
 ================================================================================
 
 === USER PROMPT ===
-**AIRCRAFT TACTICAL - Mode: AGGRESSIVE**
-Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritizing targets that can be eliminated with current missile count.
+**AIRCRAFT TACTICAL - Mode: RECON**
+Objective: Avoid engagement due to critical missile shortage, gather intelligence on enemy positions.
 
-**SITUATION:** We maintain air superiority with two enemy aircraft eliminated; however, our aircraft missile count is critically low. The remaining enemy forces are concentrated in the center.
-**ENEMY FORMATION:** AGGRESSIVE_PUSH
+**SITUATION:** Our aircraft are critically low on missiles, while enemy aircraft are concentrated in the center. We need to preserve our remaining assets and re-evaluate our offensive capabilities.
+**ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
-- NO moving to occupied positions: [(17, 7)]
+- NO moving to occupied positions: [(17, 6)]
 - NO shooting claimed targets
 - Choose idx from opts array
 - Include action_type in each decision for validation
@@ -58,7 +58,7 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
 - conflict: true if move would collide (avoid these!)
 
 **ALLIED SAM COVERAGE:** 2 SAM(s) providing support
-**AWACS INTEL:** 3 enemy contacts reported
+**AWACS INTEL:** 5 enemy contacts reported
 
 **AIRCRAFT TACTICS:**
 - HVT Priority: Shoot if is_hvt=true AND hit_prob >0.15
@@ -71,19 +71,30 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
  {
   "id": 10,
   "pos": [
-   11,
+   10,
    9
   ],
   "missiles": 0,
   "enemies": [
    {
+    "id": 2,
+    "type": "AIRCRAFT",
+    "bearing": "W",
+    "dist": 4,
+    "threat": "HIGH",
+    "hit_prob": 0.25,
+    "hit_prob_from_enemy": 0.51,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
     "id": 3,
     "type": "AIRCRAFT",
     "bearing": "NW",
-    "dist": 7,
-    "threat": "MEDIUM",
+    "dist": 6,
+    "threat": "HIGH",
     "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.4,
+    "hit_prob_from_enemy": 0.45,
     "can_they_hit_me": true,
     "is_hvt": false
    },
@@ -94,7 +105,18 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
     "dist": 5,
     "threat": "HIGH",
     "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.4,
+    "hit_prob_from_enemy": 0.45,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
+    "id": 4,
+    "type": "AIRCRAFT",
+    "bearing": "NW",
+    "dist": 10,
+    "threat": "MEDIUM",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.24,
     "can_they_hit_me": true,
     "is_hvt": false
    },
@@ -102,10 +124,10 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
     "id": 6,
     "type": "AIRCRAFT",
     "bearing": "NW",
-    "dist": 11,
+    "dist": 10,
     "threat": "MEDIUM",
     "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.23,
+    "hit_prob_from_enemy": 0.27,
     "can_they_hit_me": true,
     "is_hvt": false
    }
@@ -122,17 +144,15 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
     "dir": "UP",
     "conflict": false,
     "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE UP to APPROACH enemies"
+    "description": "MOVE UP (APPROACH nearest at W)"
    },
    {
     "idx": 2,
     "act": "MOVE",
     "dir": "DOWN",
     "conflict": false,
-    "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE DOWN to APPROACH enemies"
+    "effect": "RETREAT",
+    "description": "MOVE DOWN (RETREAT nearest at W)"
    },
    {
     "idx": 3,
@@ -140,17 +160,15 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
     "dir": "LEFT",
     "conflict": false,
     "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE LEFT to APPROACH enemies"
+    "description": "MOVE LEFT (APPROACH nearest at W)"
    },
    {
     "idx": 4,
     "act": "MOVE",
     "dir": "RIGHT",
     "conflict": false,
-    "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE RIGHT to APPROACH enemies"
+    "effect": "RETREAT",
+    "description": "MOVE RIGHT (RETREAT nearest at W)"
    }
   ]
  },
@@ -158,18 +176,29 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
   "id": 11,
   "pos": [
    10,
-   2
+   3
   ],
-  "missiles": 1,
+  "missiles": 0,
   "enemies": [
+   {
+    "id": 2,
+    "type": "AIRCRAFT",
+    "bearing": "SW",
+    "dist": 10,
+    "threat": "MEDIUM",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.24,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
    {
     "id": 3,
     "type": "AIRCRAFT",
     "bearing": "SW",
-    "dist": 7,
-    "threat": "MEDIUM",
+    "dist": 6,
+    "threat": "HIGH",
     "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.4,
+    "hit_prob_from_enemy": 0.45,
     "can_they_hit_me": true,
     "is_hvt": false
    },
@@ -185,13 +214,24 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
     "is_hvt": false
    },
    {
+    "id": 4,
+    "type": "AIRCRAFT",
+    "bearing": "W",
+    "dist": 4,
+    "threat": "HIGH",
+    "hit_prob": 0.25,
+    "hit_prob_from_enemy": 0.51,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
     "id": 6,
     "type": "AIRCRAFT",
     "bearing": "W",
-    "dist": 5,
+    "dist": 4,
     "threat": "HIGH",
-    "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.45,
+    "hit_prob": 0.1,
+    "hit_prob_from_enemy": 0.46,
     "can_they_hit_me": true,
     "is_hvt": false
    }
@@ -207,9 +247,8 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
     "act": "MOVE",
     "dir": "UP",
     "conflict": false,
-    "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE UP to APPROACH enemies"
+    "effect": "RETREAT",
+    "description": "MOVE UP (RETREAT nearest at W)"
    },
    {
     "idx": 2,
@@ -217,8 +256,7 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
     "dir": "DOWN",
     "conflict": false,
     "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE DOWN to APPROACH enemies"
+    "description": "MOVE DOWN (APPROACH nearest at W)"
    },
    {
     "idx": 3,
@@ -226,17 +264,15 @@ Objective: Engage high-threat enemy aircraft with coordinated strikes, prioritiz
     "dir": "LEFT",
     "conflict": false,
     "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE LEFT to APPROACH enemies"
+    "description": "MOVE LEFT (APPROACH nearest at W)"
    },
    {
     "idx": 4,
     "act": "MOVE",
     "dir": "RIGHT",
     "conflict": false,
-    "effect": "APPROACH",
-    "intent": "Close to engage",
-    "description": "MOVE RIGHT to APPROACH enemies"
+    "effect": "RETREAT",
+    "description": "MOVE RIGHT (RETREAT nearest at W)"
    }
   ]
  }
@@ -275,7 +311,7 @@ METADATA:
 - Role: AIRCRAFT
 - Turn: 7
 - Units: [10, 11]
-- Directive Mode: AGGRESSIVE
-- Directive Priority: Engage high-threat enemy aircraft with coordinated strikes, prioritizing targets that can be eliminated with current missile count.
+- Directive Mode: RECON
+- Directive Priority: Avoid engagement due to critical missile shortage, gather intelligence on enemy positions.
 - Shared Intel: ['awacs_sightings', 'sam_coverage']
 ================================================================================

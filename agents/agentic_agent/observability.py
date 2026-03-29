@@ -1,27 +1,24 @@
-"""Centralized Logfire observability — gracefully disabled when LOGFIRE_TOKEN is not set."""
+"""Logfire observability helpers — configure_logfire() in runtime/logfire_config.py must run first."""
 import os
 import logging
 from contextlib import contextmanager
 
 _log = logging.getLogger(__name__)
 
-# Only configure Logfire if a token is explicitly provided.
+# Do NOT call logfire.configure() here — that is done once in runtime/logfire_config.py
+# which is called at api/app.py startup before any agent modules are imported.
+# Importing logfire here is safe; configure() just needs to happen before first span.
+
 _LOGFIRE_TOKEN = os.getenv("LOGFIRE_TOKEN", "").strip()
 _logfire_enabled = bool(_LOGFIRE_TOKEN)
 
 if _logfire_enabled:
     try:
         import logfire as _logfire_mod
-        _logfire_mod.configure(
-            token=_LOGFIRE_TOKEN,
-            environment=os.getenv("ENV", "production"),
-            console=os.getenv("LOGFIRE_CONSOLE", "false").lower() == "true",
-            send_to_logfire=True,
-        )
         logfire = _logfire_mod
-        _log.info("Logfire observability enabled.")
-    except Exception as e:
-        _log.warning("Logfire configure failed (%s) — falling back to no-op.", e)
+        _log.info("Logfire module loaded for observability (configured centrally).")
+    except ImportError as e:
+        _log.warning("logfire package not found (%s) — falling back to no-op.", e)
         _logfire_enabled = False
 
 if not _logfire_enabled:
@@ -37,6 +34,7 @@ if not _logfire_enabled:
         def error(self, *a, **kw): pass
         def debug(self, *a, **kw): pass
         def instrument_openai(self, *a, **kw): pass
+        def instrument_requests(self, *a, **kw): pass
         def instrument_pydantic_ai(self, *a, **kw): pass
 
     logfire = _NoOpLogfire()  # type: ignore[assignment]

@@ -6,9 +6,9 @@ TACTICAL RESPONSE - DECOY - TURN 4
   "decisions": [
     {
       "id": 12,
-      "idx": 3,
+      "idx": 1,
       "action_type": "MOVE",
-      "why": "Aggressive mode, moving left to approach the critical threat at W and draw fire, as per DECOY tactics."
+      "why": "The Decoy is in RECON mode and should avoid direct engagement. Moving UP (RETREAT) moves away from the CRITICAL threat to the West, while still being able to draw fire from other HIGH threats."
     }
   ],
   "claimed_targets": []

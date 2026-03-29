@@ -39,11 +39,11 @@ UNIT CAPABILITIES:
 ================================================================================
 
 === USER PROMPT ===
-**AIRCRAFT TACTICAL - Mode: AGGRESSIVE**
-Objective: Advance and engage enemy aircraft, focusing fire
+**AIRCRAFT TACTICAL - Mode: RECON**
+Objective: Advance cautiously to gain intel, avoid direct engagement unless favorable.
 
-**SITUATION:** We have air superiority and a numerical advantage against a concentrated enemy force in the center. Our AWACS and Decoy are vulnerable to missile depletion.
-**ENEMY FORMATION:** CONCENTRATED_CENTER
+**SITUATION:** Enemy forces are scattered across the center, posing a moderate threat with multiple aircraft. Our AWACS and Decoy have low missile averages, but are not armed.
+**ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
 - NO moving to occupied positions: [(17, 6), (16, 6)]
@@ -58,7 +58,7 @@ Objective: Advance and engage enemy aircraft, focusing fire
 - conflict: true if move would collide (avoid these!)
 
 **ALLIED SAM COVERAGE:** 2 SAM(s) providing support
-**AWACS INTEL:** 3 enemy contacts reported
+**AWACS INTEL:** 5 enemy contacts reported
 
 **AIRCRAFT TACTICS:**
 - HVT Priority: Shoot if is_hvt=true AND hit_prob >0.15
@@ -106,6 +106,28 @@ Objective: Advance and engage enemy aircraft, focusing fire
     "threat": "HIGH",
     "hit_prob": 0.0,
     "hit_prob_from_enemy": 0.4,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
+    "id": 4,
+    "type": "AIRCRAFT",
+    "bearing": "NW",
+    "dist": 11,
+    "threat": "MEDIUM",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.22,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
+    "id": 6,
+    "type": "AIRCRAFT",
+    "bearing": "NW",
+    "dist": 11,
+    "threat": "MEDIUM",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.23,
     "can_they_hit_me": true,
     "is_hvt": false
    }
@@ -157,19 +179,19 @@ Objective: Advance and engage enemy aircraft, focusing fire
  {
   "id": 11,
   "pos": [
-   12,
-   4
+   11,
+   3
   ],
   "missiles": 4,
   "enemies": [
    {
     "id": 3,
     "type": "AIRCRAFT",
-    "bearing": "W",
+    "bearing": "SW",
     "dist": 7,
     "threat": "MEDIUM",
     "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.38,
+    "hit_prob_from_enemy": 0.4,
     "can_they_hit_me": true,
     "is_hvt": false
    },
@@ -180,7 +202,7 @@ Objective: Advance and engage enemy aircraft, focusing fire
     "dist": 11,
     "threat": "MEDIUM",
     "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.23,
+    "hit_prob_from_enemy": 0.22,
     "can_they_hit_me": true,
     "is_hvt": false
    },
@@ -192,6 +214,28 @@ Objective: Advance and engage enemy aircraft, focusing fire
     "threat": "MEDIUM",
     "hit_prob": 0.0,
     "hit_prob_from_enemy": 0.23,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
+    "id": 4,
+    "type": "AIRCRAFT",
+    "bearing": "W",
+    "dist": 5,
+    "threat": "HIGH",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.45,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
+    "id": 6,
+    "type": "AIRCRAFT",
+    "bearing": "W",
+    "dist": 5,
+    "threat": "HIGH",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.4,
     "can_they_hit_me": true,
     "is_hvt": false
    }
@@ -275,7 +319,7 @@ METADATA:
 - Role: AIRCRAFT
 - Turn: 1
 - Units: [10, 11]
-- Directive Mode: AGGRESSIVE
-- Directive Priority: Advance and engage enemy aircraft, focusing fire
+- Directive Mode: RECON
+- Directive Priority: Advance cautiously to gain intel, avoid direct engagement unless favorable.
 - Shared Intel: ['awacs_sightings', 'sam_coverage']
 ================================================================================

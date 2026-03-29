@@ -63,21 +63,20 @@ KEY TACTICS:
 **TURN 1 STRATEGIC COMMAND**
 
 **FORCE COMPOSITION**
-Allied: {"AWACS": 1, "AIRCRAFT": 2, "DECOY": 1, "SAM": 2} | Enemy: {"AIRCRAFT": 3}
-Enemy Intent: CONCENTRATED_CENTER
+Allied: {"AWACS": 1, "AIRCRAFT": 2, "DECOY": 1, "SAM": 2} | Enemy: {"AIRCRAFT": 5}
+Enemy Intent: SCATTERED
 
 **INTELLIGENCE REPORT**
-Forces:    6 Allied | 3 Visible Enemies
+Forces:    6 Allied | 5 Visible Enemies
 Missiles:  20 total | {"AIRCRAFT": 4.0, "SAM": 6.0, "AWACS": 0.0, "DECOY": 0.0} by role
-Threat:    6.0 weighted (SAM×3, AIRCRAFT×2, AWACS×1.5)
-Position:  Left:0 | Center:3 | Right:0
+Threat:    10.0 weighted (SAM×3, AIRCRAFT×2, AWACS×1.5)
+Position:  Left:0 | Center:5 | Right:0
 HVTs:      None
-Status:    AIR_SUPERIORITY
+Status:    BALANCED
 
 
 **ADVISORY ANALYSIS**
 • ⚠️ CRITICAL: AWACS, DECOY <1 missile avg
-• ✓ Air superiority (Consider AGGRESSIVE push)
 • 📍 Enemy concentration: center sector
 
 **ACTIVE ROLES:** AWACS, AIRCRAFT, DECOY, SAM
@@ -135,8 +134,8 @@ METADATA:
 - Turn: 1
 - Team: RED
 - Allies: 6 {'AWACS': 1, 'AIRCRAFT': 2, 'DECOY': 1, 'SAM': 2}
-- Enemies: 3 {'AIRCRAFT': 3}
-- Status: AIR_SUPERIORITY
+- Enemies: 5 {'AIRCRAFT': 5}
+- Status: BALANCED
 - Momentum: 0.0
-- Enemy Intent: CONCENTRATED_CENTER
+- Enemy Intent: SCATTERED
 ================================================================================

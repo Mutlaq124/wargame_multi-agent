@@ -8,7 +8,7 @@ TACTICAL RESPONSE - DECOY - TURN 0
       "id": 12,
       "idx": 3,
       "action_type": "MOVE",
-      "why": "In RECON mode, the Decoy should move towards enemies to draw fire and confirm locations. Moving LEFT (West) directly approaches the closest enemy (ID 3) which is at a HIGH threat level (dist 6) and can hit the Decoy. This move will close the distance to a more ideal range (4-6 tiles) for drawing fire."
+      "why": "The Decoy is in RECON mode and should avoid direct combat unless critical. Moving LEFT will approach the closest enemy (id 3) to a distance of 5, which is ideal for drawing fire without being too close, and also keeps it somewhat screened from the other enemies."
     }
   ],
   "claimed_targets": []

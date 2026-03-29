@@ -63,14 +63,14 @@ KEY TACTICS:
 **TURN 5 STRATEGIC COMMAND**
 
 **FORCE COMPOSITION**
-Allied: {"AWACS": 1, "AIRCRAFT": 2, "DECOY": 1, "SAM": 2} | Enemy: {"AIRCRAFT": 4}
-Enemy Intent: CONCENTRATED_CENTER
+Allied: {"AWACS": 1, "AIRCRAFT": 2, "DECOY": 1, "SAM": 2} | Enemy: {"AIRCRAFT": 5}
+Enemy Intent: SCATTERED
 
 **INTELLIGENCE REPORT**
-Forces:    6 Allied | 4 Visible Enemies
-Missiles:  14 total | {"AIRCRAFT": 1.0, "SAM": 6.0, "AWACS": 0.0, "DECOY": 0.0} by role
-Threat:    8.0 weighted (SAM×3, AIRCRAFT×2, AWACS×1.5)
-Position:  Left:0 | Center:4 | Right:0
+Forces:    6 Allied | 5 Visible Enemies
+Missiles:  16 total | {"AIRCRAFT": 2.0, "SAM": 6.0, "AWACS": 0.0, "DECOY": 0.0} by role
+Threat:    10.0 weighted (SAM×3, AIRCRAFT×2, AWACS×1.5)
+Position:  Left:0 | Center:5 | Right:0
 HVTs:      None
 Status:    BALANCED
 
@@ -78,7 +78,7 @@ Status:    BALANCED
 - Last 3 turns: 0K / 0L (0% Acc)
 - Momentum: 0.0 (SITUATION_NEUTRAL)
 - Missing enemies: 0
-- Recent events: T4: Eliminated enemy AIRCRAFT#4
+- Recent events: None
 
 
 **ADVISORY ANALYSIS**
@@ -140,8 +140,8 @@ METADATA:
 - Turn: 5
 - Team: RED
 - Allies: 6 {'AWACS': 1, 'AIRCRAFT': 2, 'DECOY': 1, 'SAM': 2}
-- Enemies: 4 {'AIRCRAFT': 4}
+- Enemies: 5 {'AIRCRAFT': 5}
 - Status: BALANCED
 - Momentum: 0.0
-- Enemy Intent: CONCENTRATED_CENTER
+- Enemy Intent: SCATTERED
 ================================================================================

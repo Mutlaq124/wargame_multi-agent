@@ -40,13 +40,13 @@ UNIT CAPABILITIES:
 
 === USER PROMPT ===
 **DECOY TACTICAL - Mode: AGGRESSIVE**
-Objective: Move forward to draw enemy fire and provide a screen for allied units.
+Objective: Move forward to draw enemy fire and reveal hidden units.
 
-**SITUATION:** The battlefield is balanced with 4 visible enemy aircraft concentrated in the center. Our AWACS and DECOY have low missile counts, requiring protection.
-**ENEMY FORMATION:** AGGRESSIVE_PUSH
+**SITUATION:** The battlefield is balanced with scattered enemy aircraft in the center. Our AWACS and Decoy are vulnerable with low missile coverage.
+**ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
-- NO moving to occupied positions: [(10, 9), (17, 7), (10, 3)]
+- NO moving to occupied positions: [(10, 4), (10, 8), (19, 6)]
 - NO shooting claimed targets
 - Choose idx from opts array
 - Include action_type in each decision for validation
@@ -68,30 +68,30 @@ Objective: Move forward to draw enemy fire and provide a screen for allied units
  {
   "id": 12,
   "pos": [
-   8,
-   6
+   9,
+   7
   ],
   "missiles": 0,
   "enemies": [
    {
     "id": 2,
     "type": "AIRCRAFT",
-    "bearing": "S",
+    "bearing": "SW",
     "dist": 5,
     "threat": "HIGH",
     "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.45,
+    "hit_prob_from_enemy": 0.48,
     "can_they_hit_me": true,
     "is_hvt": false
    },
    {
     "id": 3,
     "type": "AIRCRAFT",
-    "bearing": "W",
-    "dist": 1,
+    "bearing": "NW",
+    "dist": 2,
     "threat": "CRITICAL",
-    "hit_prob": 0.4,
-    "hit_prob_from_enemy": 0.64,
+    "hit_prob": 0.28,
+    "hit_prob_from_enemy": 0.62,
     "can_they_hit_me": true,
     "is_hvt": false
    },
@@ -107,13 +107,24 @@ Objective: Move forward to draw enemy fire and provide a screen for allied units
     "is_hvt": false
    },
    {
+    "id": 4,
+    "type": "AIRCRAFT",
+    "bearing": "N",
+    "dist": 7,
+    "threat": "MEDIUM",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.38,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
     "id": 6,
     "type": "AIRCRAFT",
     "bearing": "NW",
-    "dist": 5,
-    "threat": "HIGH",
+    "dist": 7,
+    "threat": "MEDIUM",
     "hit_prob": 0.0,
-    "hit_prob_from_enemy": 0.48,
+    "hit_prob_from_enemy": 0.4,
     "can_they_hit_me": true,
     "is_hvt": false
    }
@@ -130,15 +141,15 @@ Objective: Move forward to draw enemy fire and provide a screen for allied units
     "dir": "UP",
     "conflict": false,
     "effect": "RETREAT",
-    "description": "MOVE UP (RETREAT nearest at W)"
+    "description": "MOVE UP (RETREAT nearest at NW)"
    },
    {
     "idx": 2,
     "act": "MOVE",
     "dir": "DOWN",
     "conflict": false,
-    "effect": "RETREAT",
-    "description": "MOVE DOWN (RETREAT nearest at W)"
+    "effect": "APPROACH",
+    "description": "MOVE DOWN (APPROACH nearest at NW)"
    },
    {
     "idx": 3,
@@ -146,7 +157,7 @@ Objective: Move forward to draw enemy fire and provide a screen for allied units
     "dir": "LEFT",
     "conflict": false,
     "effect": "APPROACH",
-    "description": "MOVE LEFT (APPROACH nearest at W)"
+    "description": "MOVE LEFT (APPROACH nearest at NW)"
    },
    {
     "idx": 4,
@@ -154,13 +165,13 @@ Objective: Move forward to draw enemy fire and provide a screen for allied units
     "dir": "RIGHT",
     "conflict": false,
     "effect": "RETREAT",
-    "description": "MOVE RIGHT (RETREAT nearest at W)"
+    "description": "MOVE RIGHT (RETREAT nearest at NW)"
    }
   ]
  }
 ]
 
-**Claimed Targets:** [2]
+**Claimed Targets:** [2, 3, 4]
 
 **DECISION RULES:**
 1. **CRITICAL threats (dist ≤3):** SHOOT if hit_prob >0.05 (survival first)
@@ -194,6 +205,6 @@ METADATA:
 - Turn: 5
 - Units: [12]
 - Directive Mode: AGGRESSIVE
-- Directive Priority: Move forward to draw enemy fire and provide a screen for allied units.
+- Directive Priority: Move forward to draw enemy fire and reveal hidden units.
 - Shared Intel: ['enemy_positions']
 ================================================================================

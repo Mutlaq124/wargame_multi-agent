@@ -6,9 +6,9 @@ TACTICAL RESPONSE - AWACS - TURN 4
   "decisions": [
     {
       "id": 9,
-      "idx": 0,
-      "action_type": "WAIT",
-      "why": "AWACS is not under immediate threat (all enemies are >10 units away) and can safely WAIT to maintain current radar coverage."
+      "idx": 4,
+      "action_type": "MOVE",
+      "why": "AWACS is in DEFENSIVE mode and has an enemy at a distance of 10 with a hit probability of 0.1. Moving RIGHT increases distance from the closest threat."
     }
   ],
   "claimed_targets": []

@@ -1,7 +1,6 @@
 # 2D War Game — Agentic AI Combat Simulator
 
-Turn-based air combat simulation with a FastAPI backend, HTML/JS UI, and a **hierarchical multi-agent LLM AI** opponent.
-Human (Blue) vs LLM Agent (Red) — powered by OpenRouter.
+> **Production-grade multi-agent LLM system** — hierarchical C3 (Command, Control, Communication) architecture, memory-augmented, fully observable. Human (Blue) vs LLM Agent (Red) — powered by OpenRouter.
 
 ---
 
@@ -26,8 +25,12 @@ copy .env.example .env   # or create .env manually
 uv run python main.py
 ```
 
-### Arhcitecture Design
+### Architecture Design
 ![Multi-Agentic Architecture for Wargame](images/Wargame_agentic_workflow.png)
+
+### UI Screenshots
+![Ops Deck Interface](images/User_interface.png)
+![Agent Reasoning Panel](images/Agent_reasoning_UI.png)
 
 The server starts at `http://127.0.0.1:8000` and auto-opens the browser.  
 Logs go to stdout and `storage/logs/backend.log`.
@@ -165,15 +168,23 @@ Registry auto-discovers agent modules — no manual imports needed.
 
 ```bash
 # Set LOGFIRE_TOKEN in .env to enable cloud traces
-# View at: https://logfire.pydantic.dev/
+# Dashboard: https://logfire-us.pydantic.dev/mtech/wargame-agent
 ```
+![Logfire Results Dashboard](images/logfire_UI.png)
 
-Tracked spans: `agent_turn`, `strategic_planning`, `tactical_awacs`, `tactical_sam`, `tactical_aircraft`, `tactical_decoy`, `fallback`.
+**How it's instrumented:**
+- `logfire.configure()` is called once at startup in `runtime/logfire_config.py` (via `api/app.py`)
+- `logfire.instrument_requests()` captures all OpenRouter LLM HTTP calls as spans
+- `logfire.instrument_pydantic_ai()` traces Pydantic-AI validation
+- Manual spans: `agent_turn`, `strategic_planning`, `tactical_awacs`, `tactical_sam`, `tactical_aircraft`, `tactical_decoy`, `fallback`
+
+> **Note:** The `LOGFIRE_TOKEN` in `.env` must be a **write token** from the Logfire project settings, not a read/CLI token.
 
 ---
 
 ## Useful Links
 - [OpenRouter](https://openrouter.ai/docs) — LLM API gateway
 - [Pydantic](https://docs.pydantic.dev/) — Data validation
-- [Logfire](https://logfire.pydantic.dev/docs/) — Observability
+- [Logfire](https://logfire.pydantic.dev/docs/) — Observability (dashboard: [wargame-agent](https://logfire-us.pydantic.dev/mtech/wargame-agent))
 - [FastAPI](https://fastapi.tiangolo.com/) — Backend framework
+- [Portfolio writeup](PORTFOLIO.md) — Senior-level architecture breakdown

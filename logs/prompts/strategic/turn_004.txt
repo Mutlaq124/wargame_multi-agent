@@ -68,7 +68,7 @@ Enemy Intent: SCATTERED
 
 **INTELLIGENCE REPORT**
 Forces:    6 Allied | 5 Visible Enemies
-Missiles:  16 total | {"AIRCRAFT": 2.0, "SAM": 6.0, "AWACS": 0.0, "DECOY": 0.0} by role
+Missiles:  18 total | {"AIRCRAFT": 3.0, "SAM": 6.0, "AWACS": 0.0, "DECOY": 0.0} by role
 Threat:    10.0 weighted (SAM×3, AIRCRAFT×2, AWACS×1.5)
 Position:  Left:0 | Center:5 | Right:0
 HVTs:      None

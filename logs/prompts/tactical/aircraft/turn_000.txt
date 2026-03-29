@@ -39,10 +39,10 @@ UNIT CAPABILITIES:
 ================================================================================
 
 === USER PROMPT ===
-**AIRCRAFT TACTICAL - Mode: RECON**
-Objective: Move forward cautiously to detect enemy aircraft without engaging.
+**AIRCRAFT TACTICAL - Mode: AGGRESSIVE**
+Objective: MEDIUM
 
-**SITUATION:** We have air superiority with a numerical advantage against three scattered enemy aircraft concentrated in the center. Our AWACS and Decoy are vulnerable with low missile coverage.
+**SITUATION:** We have air superiority with a scattered enemy force concentrated in the center. Our AWACS and Decoy are vulnerable to an average of less than one missile.
 **ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
@@ -275,7 +275,7 @@ METADATA:
 - Role: AIRCRAFT
 - Turn: 0
 - Units: [10, 11]
-- Directive Mode: RECON
-- Directive Priority: Move forward cautiously to detect enemy aircraft without engaging.
+- Directive Mode: AGGRESSIVE
+- Directive Priority: MEDIUM
 - Shared Intel: ['awacs_sightings', 'sam_coverage']
 ================================================================================

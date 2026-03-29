@@ -6,21 +6,18 @@ TACTICAL RESPONSE - AIRCRAFT - TURN 2
   "decisions": [
     {
       "id": 10,
-      "idx": 5,
-      "action_type": "SHOOT",
-      "why": "Aggressive mode, shooting AIRCRAFT #2 with 25% hit probability, which is > 0.1."
+      "idx": 2,
+      "action_type": "MOVE",
+      "why": "RECON mode, enemy is HIGH threat and can hit me. Retreat to avoid engagement and gather intel."
     },
     {
       "id": 11,
-      "idx": 5,
-      "action_type": "SHOOT",
-      "why": "Aggressive mode, shooting AIRCRAFT #4 with 25% hit probability, which is > 0.1."
+      "idx": 1,
+      "action_type": "MOVE",
+      "why": "RECON mode, enemy is HIGH threat and can hit me. Retreat to avoid engagement and gather intel."
     }
   ],
-  "claimed_targets": [
-    2,
-    4
-  ]
+  "claimed_targets": []
 }
 
 ================================================================================

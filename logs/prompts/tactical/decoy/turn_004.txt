@@ -39,14 +39,14 @@ UNIT CAPABILITIES:
 ================================================================================
 
 === USER PROMPT ===
-**DECOY TACTICAL - Mode: AGGRESSIVE**
-Objective: Move forward into the central area to draw enemy fire and reveal positions.
+**DECOY TACTICAL - Mode: RECON**
+Objective: Move forward to draw enemy fire and scout for additional enemy positions, avoiding direct engagement.
 
-**SITUATION:** The battlefield is balanced with no recent engagements. Enemy forces are scattered, with a concentration in the center sector, posing a potential threat.
+**SITUATION:** The battlefield is balanced with multiple enemy aircraft scattered across the center. Our AWACS and Decoy units are low on missiles, requiring careful management of resources.
 **ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
-- NO moving to occupied positions: [(10, 9), (17, 7), (10, 3)]
+- NO moving to occupied positions: [(18, 6), (10, 8), (10, 4), (19, 6)]
 - NO shooting claimed targets
 - Choose idx from opts array
 - Include action_type in each decision for validation
@@ -88,10 +88,10 @@ Objective: Move forward into the central area to draw enemy fire and reveal posi
     "id": 3,
     "type": "AIRCRAFT",
     "bearing": "W",
-    "dist": 2,
+    "dist": 1,
     "threat": "CRITICAL",
-    "hit_prob": 0.1,
-    "hit_prob_from_enemy": 0.58,
+    "hit_prob": 0.4,
+    "hit_prob_from_enemy": 0.64,
     "can_they_hit_me": true,
     "is_hvt": false
    },
@@ -171,7 +171,7 @@ Objective: Move forward into the central area to draw enemy fire and reveal posi
  }
 ]
 
-**Claimed Targets:** [2, 4]
+**Claimed Targets:** [2, 3, 4]
 
 **DECISION RULES:**
 1. **CRITICAL threats (dist ≤3):** SHOOT if hit_prob >0.05 (survival first)
@@ -204,7 +204,7 @@ METADATA:
 - Role: DECOY
 - Turn: 4
 - Units: [12]
-- Directive Mode: AGGRESSIVE
-- Directive Priority: Move forward into the central area to draw enemy fire and reveal positions.
+- Directive Mode: RECON
+- Directive Priority: Move forward to draw enemy fire and scout for additional enemy positions, avoiding direct engagement.
 - Shared Intel: ['enemy_positions']
 ================================================================================

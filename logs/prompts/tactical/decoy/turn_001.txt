@@ -39,14 +39,14 @@ UNIT CAPABILITIES:
 ================================================================================
 
 === USER PROMPT ===
-**DECOY TACTICAL - Mode: AGGRESSIVE**
-Objective: Advance as bait, draw enemy fire away from armed units
+**DECOY TACTICAL - Mode: RECON**
+Objective: Move forward to draw enemy attention and scout, avoid direct engagement.
 
-**SITUATION:** We have air superiority and a numerical advantage against a concentrated enemy force in the center. Our AWACS and Decoy are vulnerable to missile depletion.
-**ENEMY FORMATION:** CONCENTRATED_CENTER
+**SITUATION:** Enemy forces are scattered across the center, posing a moderate threat with multiple aircraft. Our AWACS and Decoy have low missile averages, but are not armed.
+**ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
-- NO moving to occupied positions: [(12, 4), (17, 6), (10, 9), (11, 9), (11, 4), (16, 6)]
+- NO moving to occupied positions: [(17, 6), (10, 3), (10, 9), (11, 3), (11, 9), (16, 6)]
 - NO shooting claimed targets
 - Choose idx from opts array
 - Include action_type in each decision for validation
@@ -99,6 +99,28 @@ Objective: Advance as bait, draw enemy fire away from armed units
     "id": 5,
     "type": "AIRCRAFT",
     "bearing": "SW",
+    "dist": 9,
+    "threat": "MEDIUM",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.3,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
+    "id": 4,
+    "type": "AIRCRAFT",
+    "bearing": "NW",
+    "dist": 9,
+    "threat": "MEDIUM",
+    "hit_prob": 0.0,
+    "hit_prob_from_enemy": 0.32,
+    "can_they_hit_me": true,
+    "is_hvt": false
+   },
+   {
+    "id": 6,
+    "type": "AIRCRAFT",
+    "bearing": "NW",
     "dist": 9,
     "threat": "MEDIUM",
     "hit_prob": 0.0,
@@ -186,7 +208,7 @@ METADATA:
 - Role: DECOY
 - Turn: 1
 - Units: [12]
-- Directive Mode: AGGRESSIVE
-- Directive Priority: Advance as bait, draw enemy fire away from armed units
+- Directive Mode: RECON
+- Directive Priority: Move forward to draw enemy attention and scout, avoid direct engagement.
 - Shared Intel: ['enemy_positions']
 ================================================================================

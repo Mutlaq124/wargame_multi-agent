@@ -63,31 +63,29 @@ KEY TACTICS:
 **TURN 7 STRATEGIC COMMAND**
 
 **FORCE COMPOSITION**
-Allied: {"AWACS": 1, "AIRCRAFT": 2, "DECOY": 1, "SAM": 2} | Enemy: {"AIRCRAFT": 3}
-Enemy Intent: CONCENTRATED_CENTER
+Allied: {"AWACS": 1, "AIRCRAFT": 2, "SAM": 2} | Enemy: {"AIRCRAFT": 5}
+Enemy Intent: SCATTERED
 
 **INTELLIGENCE REPORT**
-Forces:    6 Allied | 3 Visible Enemies
-Missiles:  13 total | {"AIRCRAFT": 0.5, "SAM": 6.0, "AWACS": 0.0, "DECOY": 0.0} by role
-Threat:    6.0 weighted (SAM×3, AIRCRAFT×2, AWACS×1.5)
-Position:  Left:0 | Center:3 | Right:0
+Forces:    5 Allied | 5 Visible Enemies
+Missiles:  12 total | {"AIRCRAFT": 0.0, "SAM": 6.0, "AWACS": 0.0, "DECOY": 0.0} by role
+Threat:    10.0 weighted (SAM×3, AIRCRAFT×2, AWACS×1.5)
+Position:  Left:0 | Center:5 | Right:0
 HVTs:      None
-Status:    AIR_SUPERIORITY
+Status:    BALANCED
 
 **RECENT HISTORY:**
-- Last 3 turns: 2K / 0L (29% Acc)
-- Momentum: 1.0 (MAINTAIN_AGGRESSIVE)
-- Missing enemies: 2
-- Recent events: T5: Eliminated AIRCRAFT#4, T5: Eliminated enemy AIRCRAFT#2, T6: Eliminated AIRCRAFT#2
+- Last 3 turns: 0K / 0L (0% Acc)
+- Momentum: 0.0 (SITUATION_NEUTRAL)
+- Missing enemies: 0
+- Recent events: None
 
 
 **ADVISORY ANALYSIS**
-• ⚠️ CRITICAL: AIRCRAFT, AWACS, DECOY <1 missile avg
-• ✓ Air superiority (Consider AGGRESSIVE push)
+• ⚠️ CRITICAL: AIRCRAFT, AWACS <1 missile avg
 • 📍 Enemy concentration: center sector
-• 📈 MOMENTUM: +1.0 (Winning - maintain pressure)
 
-**ACTIVE ROLES:** AWACS, AIRCRAFT, DECOY, SAM
+**ACTIVE ROLES:** AWACS, AIRCRAFT, SAM
 
 **MISSION ORDERS**
 
@@ -98,12 +96,11 @@ OUTPUT FORMAT (JSON only):
   "turn": 7,
   "situation_analysis": "<BRIEF_ANALYSIS>",
   "enemy_formation": "<ENEMY_INTENT>",
-  "momentum_suggestion": "MAINTAIN_AGGRESSIVE",
+  "momentum_suggestion": "SITUATION_NEUTRAL",
   "priorities": ["<PRIORITY_1>", "<PRIORITY_2>"],
   "directives": [
     {"role": "AWACS", "mode": "<MODE>", "priority": "<PRIORITY>"}
     {"role": "AIRCRAFT", "mode": "<MODE>", "priority": "<PRIORITY>"}
-    {"role": "DECOY", "mode": "<MODE>", "priority": "<PRIORITY>"}
     {"role": "SAM", "mode": "<MODE>", "priority": "<PRIORITY>"}
   ],
   "hvt_targets": []
@@ -141,9 +138,9 @@ OUTPUT FORMAT (JSON only):
 METADATA:
 - Turn: 7
 - Team: RED
-- Allies: 6 {'AWACS': 1, 'AIRCRAFT': 2, 'DECOY': 1, 'SAM': 2}
-- Enemies: 3 {'AIRCRAFT': 3}
-- Status: AIR_SUPERIORITY
-- Momentum: 1.0
-- Enemy Intent: CONCENTRATED_CENTER
+- Allies: 5 {'AWACS': 1, 'AIRCRAFT': 2, 'SAM': 2}
+- Enemies: 5 {'AIRCRAFT': 5}
+- Status: BALANCED
+- Momentum: 0.0
+- Enemy Intent: SCATTERED
 ================================================================================

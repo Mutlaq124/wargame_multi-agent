@@ -4,33 +4,33 @@ STRATEGIC RESPONSE - TURN 5
 
 {
   "turn": 5,
-  "situation_analysis": "The battlefield is balanced with 4 visible enemy aircraft concentrated in the center. Our AWACS and DECOY have low missile counts, requiring protection.",
-  "enemy_formation": "AGGRESSIVE_PUSH",
+  "situation_analysis": "The battlefield is balanced with scattered enemy aircraft in the center. Our AWACS and Decoy are vulnerable with low missile coverage.",
+  "enemy_formation": "SCATTERED",
   "momentum_suggestion": "SITUATION_NEUTRAL",
   "priorities": [
-    "Protect AWACS and DECOY from immediate threats",
-    "Eliminate concentrated enemy aircraft in the center"
+    "Protect AWACS",
+    "Identify and eliminate enemy threats"
   ],
   "directives": [
     {
       "role": "AWACS",
       "mode": "DEFENSIVE",
-      "priority": "Maintain safe distance from enemy aircraft and provide radar coverage."
+      "priority": "Maintain safe distance from known threats and provide radar coverage."
     },
     {
       "role": "AIRCRAFT",
       "mode": "AGGRESSIVE",
-      "priority": "Engage and destroy enemy aircraft, focusing fire on clustered targets."
+      "priority": "Engage visible enemy aircraft, prioritizing those closest to our AWACS."
     },
     {
       "role": "DECOY",
       "mode": "AGGRESSIVE",
-      "priority": "Move forward to draw enemy fire and provide a screen for allied units."
+      "priority": "Move forward to draw enemy fire and reveal hidden units."
     },
     {
       "role": "SAM",
       "mode": "AGGRESSIVE",
-      "priority": "Target and eliminate enemy aircraft within range, prioritizing those threatening our AWACS or Aircraft."
+      "priority": "Target any enemy aircraft within range, focusing fire on threats to our AWACS."
     }
   ],
   "hvt_targets": []
@@ -38,7 +38,7 @@ STRATEGIC RESPONSE - TURN 5
 
 ================================================================================
 METADATA:
-- Response Length: 1112
+- Response Length: 1001
 - Model: google/gemini-2.5-flash
 - Temperature: 0.5
 - Max Tokens: 2000

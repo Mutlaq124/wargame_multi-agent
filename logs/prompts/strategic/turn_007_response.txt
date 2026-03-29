@@ -4,33 +4,29 @@ STRATEGIC RESPONSE - TURN 7
 
 {
   "turn": 7,
-  "situation_analysis": "We maintain air superiority with two enemy aircraft eliminated; however, our aircraft missile count is critically low. The remaining enemy forces are concentrated in the center.",
-  "enemy_formation": "AGGRESSIVE_PUSH",
-  "momentum_suggestion": "MAINTAIN_AGGRESSIVE",
+  "situation_analysis": "Our aircraft are critically low on missiles, while enemy aircraft are concentrated in the center. We need to preserve our remaining assets and re-evaluate our offensive capabilities.",
+  "enemy_formation": "SCATTERED",
+  "momentum_suggestion": "SITUATION_NEUTRAL",
   "priorities": [
-    "Eliminate remaining enemy aircraft to secure victory",
-    "Conserve aircraft missiles for high-probability shots"
+    "Preserve remaining aircraft missiles",
+    "Maintain AWACS safety",
+    "Utilize SAMs for defense"
   ],
   "directives": [
     {
       "role": "AWACS",
-      "mode": "SUPPORT",
-      "priority": "Maintain radar coverage for allied units while staying out of enemy range."
+      "mode": "DEFENSIVE",
+      "priority": "Maintain safe distance from enemy aircraft, provide radar coverage."
     },
     {
       "role": "AIRCRAFT",
-      "mode": "AGGRESSIVE",
-      "priority": "Engage high-threat enemy aircraft with coordinated strikes, prioritizing targets that can be eliminated with current missile count."
-    },
-    {
-      "role": "DECOY",
-      "mode": "AGGRESSIVE",
-      "priority": "Move forward to draw enemy fire and provide a screen for our armed units."
+      "mode": "RECON",
+      "priority": "Avoid engagement due to critical missile shortage, gather intelligence on enemy positions."
     },
     {
       "role": "SAM",
-      "mode": "AGGRESSIVE",
-      "priority": "Target enemy aircraft within range, prioritizing those engaged by allied aircraft to ensure destruction."
+      "mode": "DEFENSIVE",
+      "priority": "Hold ground, engage high-threat targets within range to protect AWACS and aircraft."
     }
   ],
   "hvt_targets": []
@@ -38,7 +34,7 @@ STRATEGIC RESPONSE - TURN 7
 
 ================================================================================
 METADATA:
-- Response Length: 1214
+- Response Length: 964
 - Model: google/gemini-2.5-flash
 - Temperature: 0.5
 - Max Tokens: 2000

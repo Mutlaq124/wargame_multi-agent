@@ -4,28 +4,33 @@ STRATEGIC RESPONSE - TURN 3
 
 {
   "turn": 3,
-  "situation_analysis": "Allied forces maintain air superiority after eliminating an enemy aircraft, with one enemy aircraft remaining. Our AWACS and Decoy units have critically low missile counts, requiring careful management.",
-  "enemy_formation": "AGGRESSIVE_PUSH",
+  "situation_analysis": "Enemy forces are scattered with a concentration in the center. Our AWACS and Decoy are critically low on missile protection.",
+  "enemy_formation": "SCATTERED",
   "momentum_suggestion": "SITUATION_NEUTRAL",
   "priorities": [
-    "Eliminate the remaining enemy aircraft",
-    "Protect AWACS and conserve missiles"
+    "Protect AWACS",
+    "Identify and engage enemy aircraft"
   ],
   "directives": [
     {
       "role": "AWACS",
-      "mode": "SUPPORT",
-      "priority": "High"
+      "mode": "DEFENSIVE",
+      "priority": "Maintain safe distance from enemy aircraft and provide radar coverage."
+    },
+    {
+      "role": "AIRCRAFT",
+      "mode": "AGGRESSIVE",
+      "priority": "Engage high-threat enemy aircraft, focusing on the central concentration."
     },
     {
       "role": "DECOY",
-      "mode": "RECON",
-      "priority": "Medium"
+      "mode": "AGGRESSIVE",
+      "priority": "Advance to draw enemy fire and reveal positions, screening more valuable units."
     },
     {
       "role": "SAM",
-      "mode": "AGGRESSIVE",
-      "priority": "High"
+      "mode": "DEFENSIVE",
+      "priority": "Hold ground, remain stealthed if possible, and prepare to engage any enemy aircraft that come within range."
     }
   ],
   "hvt_targets": []
@@ -33,7 +38,7 @@ STRATEGIC RESPONSE - TURN 3
 
 ================================================================================
 METADATA:
-- Response Length: 744
+- Response Length: 1043
 - Model: google/gemini-2.5-flash
 - Temperature: 0.5
 - Max Tokens: 2000

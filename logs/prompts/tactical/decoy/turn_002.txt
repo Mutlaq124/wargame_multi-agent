@@ -40,13 +40,13 @@ UNIT CAPABILITIES:
 
 === USER PROMPT ===
 **DECOY TACTICAL - Mode: RECON**
-Objective: Move forward to scout for additional enemy positions and draw potential enemy fire, screening our main force.
+Objective: Move forward to draw enemy fire and scout for hidden units, acting as an early warning system.
 
-**SITUATION:** Enemy forces are scattered across the center, posing a moderate threat. Our AWACS and DECOY have limited missile defense, requiring careful positioning.
+**SITUATION:** Enemy forces are scattered across the center, posing a moderate threat. Our AWACS and Decoy have limited missile coverage, requiring careful positioning.
 **ENEMY FORMATION:** SCATTERED
 
 **CONSTRAINTS:**
-- NO moving to occupied positions: [(10, 9), (17, 6), (10, 3)]
+- NO moving to occupied positions: [(17, 6), (10, 8), (10, 3), (10, 9), (10, 4)]
 - NO shooting claimed targets
 - Choose idx from opts array
 - Include action_type in each decision for validation
@@ -175,7 +175,7 @@ Objective: Move forward to scout for additional enemy positions and draw potenti
  }
 ]
 
-**Claimed Targets:** [2, 4]
+**Claimed Targets:** []
 
 **DECISION RULES:**
 1. **CRITICAL threats (dist ≤3):** SHOOT if hit_prob >0.05 (survival first)
@@ -209,6 +209,6 @@ METADATA:
 - Turn: 2
 - Units: [12]
 - Directive Mode: RECON
-- Directive Priority: Move forward to scout for additional enemy positions and draw potential enemy fire, screening our main force.
+- Directive Priority: Move forward to draw enemy fire and scout for hidden units, acting as an early warning system.
 - Shared Intel: ['enemy_positions']
 ================================================================================

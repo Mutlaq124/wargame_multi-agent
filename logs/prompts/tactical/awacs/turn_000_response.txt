@@ -8,7 +8,7 @@ TACTICAL RESPONSE - AWACS - TURN 0
       "id": 9,
       "idx": 4,
       "action_type": "MOVE",
-      "why": "AWACS is vulnerable with enemies able to hit it. Retreating to increase distance from the nearest threat."
+      "why": "AWACS is vulnerable with enemies able to hit it. Retreating to the right to increase distance from the nearest enemy to the west."
     }
   ],
   "claimed_targets": []

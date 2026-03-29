@@ -6,15 +6,15 @@ TACTICAL RESPONSE - AIRCRAFT - TURN 0
   "decisions": [
     {
       "id": 10,
-      "idx": 4,
+      "idx": 3,
       "action_type": "MOVE",
-      "why": "RECON mode, moving right to cautiously approach and detect enemies without engaging, avoiding occupied positions."
+      "why": "No immediate shot opportunity. Moving LEFT to APPROACH enemies to the W and NW."
     },
     {
       "id": 11,
-      "idx": 1,
+      "idx": 3,
       "action_type": "MOVE",
-      "why": "RECON mode, moving up to cautiously approach and detect enemies without engaging, avoiding occupied positions."
+      "why": "No immediate shot opportunity. Moving LEFT to APPROACH enemies to the W and SW."
     }
   ],
   "claimed_targets": []

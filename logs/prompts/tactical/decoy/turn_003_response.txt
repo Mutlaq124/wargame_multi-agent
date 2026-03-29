@@ -8,7 +8,7 @@ TACTICAL RESPONSE - DECOY - TURN 3
       "id": 12,
       "idx": 3,
       "action_type": "MOVE",
-      "why": "The enemy is at CRITICAL distance (2 tiles) to the west. As a Decoy in RECON mode, I should avoid combat unless absolutely necessary. However, my primary role is to draw fire. Moving left (APPROACH) will draw the enemy closer, fulfilling my role while also putting me in a position to potentially screen for other units if needed. Retreating would be less effective for drawing fire."
+      "why": "Decoy is in AGGRESSIVE mode and needs to draw fire. Moving left (APPROACH) towards the nearest critical threat (id 3) will achieve this, as it is within 2 units. This aligns with the objective to advance and draw enemy fire."
     }
   ],
   "claimed_targets": []
