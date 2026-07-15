@@ -34,8 +34,8 @@ class LLMAgentV2(BaseAgent):
         self,
         team: Team,
         name: str = None,
-        strategic_model: str = "openrouter/free",
-        tactical_model: str = "openrouter/free",
+        strategic_model: str = "google/gemma-4-26b-a4b-it:free",
+        tactical_model: str = "google/gemma-4-26b-a4b-it:free",
         openrouter_key: Optional[str] = None,
         enable_memory: bool = True
     ):

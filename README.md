@@ -134,8 +134,8 @@ Tracks `recent_plans` (last 3), `recent_outcomes` (last 3), `narrative_history` 
 # In scenario.py or agent init
 LLMAgentV2(
     team=Team.RED,
-    strategic_model="openrouter/free",  # Any OpenRouter model
-    tactical_model="openrouter/free",
+    strategic_model="google/gemma-4-26b-a4b-it:free",  # Any OpenRouter model (falls back to openrouter/free on 429/5xx)
+    tactical_model="google/gemma-4-26b-a4b-it:free",
     openrouter_key=os.getenv("OPENROUTER_API_KEY"),
     enable_memory=True,
 )
