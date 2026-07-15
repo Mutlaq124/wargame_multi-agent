@@ -48,7 +48,7 @@ class BaseLLMClient(ABC):
 class OpenRouterClient(BaseLLMClient):
     """OpenRouter client with JSON mode support (auto-instrumented by Logfire)."""
     
-    def __init__(self, api_key: Optional[str] = None, model: str = "openai/gpt-4o-mini"):
+    def __init__(self, api_key: Optional[str] = None, model: str = "meta-llama/llama-3.2-3b-instruct:free"):
         super().__init__(model, api_key or os.getenv("OPENROUTER_API_KEY"))
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
     
