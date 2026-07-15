@@ -34,8 +34,8 @@ class LLMAgentV2(BaseAgent):
         self,
         team: Team,
         name: str = None,
-        strategic_model: str = "meta-llama/llama-3.2-3b-instruct:free",
-        tactical_model: str = "meta-llama/llama-3.2-3b-instruct:free",
+        strategic_model: str = "openrouter/free",
+        tactical_model: str = "openrouter/free",
         openrouter_key: Optional[str] = None,
         enable_memory: bool = True
     ):
